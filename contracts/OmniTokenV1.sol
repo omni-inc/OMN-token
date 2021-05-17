@@ -12,20 +12,25 @@ contract OmniTokenV1 is Initializable, OwnableUpgradeable, ERC20PausableUpgradea
   string greeting;
 
   function initialize(string memory _greeting) initializer public {
-        __Ownable_init();
-        __ERC20_init('OMNI App', 'OMNI');
-        __ERC20Pausable_init();
+			__Ownable_init();
+			__ERC20_init('OMNI App', 'OMNI');
+			__ERC20Pausable_init();
 
-    console.log("Deploying a Greeter with greeting:", _greeting);
-    greeting = _greeting;
+			console.log("Deploying a OMNI Token: ", _greeting);
+			greeting = _greeting;
   }
 
-  function greet() public view returns (string memory) {
-    return greeting;
-  }
-
-  function setGreeting(string memory _greeting) public {
-    console.log("Changing greeting from '%s' to '%s'", greeting, _greeting);
-    greeting = _greeting;
-  }
+	    /**
+     * @dev Creates `amount` new tokens for `to`.
+     *
+     * See {ERC20-_mint}.
+     *
+     * Requirements:
+     *
+     * - the caller must have the `OWNER`.
+		 * - After upgrade the SmartContract and Eliminate this method
+     */
+    function mint( uint256 amount) public onlyOwner() {
+        _mint(owner(), amount);
+    }
 }
