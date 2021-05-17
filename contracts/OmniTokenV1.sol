@@ -3,12 +3,13 @@ pragma solidity ^0.8.4;
 pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20PausableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/presets/ERC20PresetFixedSupplyUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "hardhat/console.sol";
 
 
-contract OmniTokenV1 is Initializable, OwnableUpgradeable, ERC20PausableUpgradeable {
+contract OmniTokenV1 is Initializable, OwnableUpgradeable, ERC20PausableUpgradeable, ERC20PresetFixedSupplyUpgradeable {
 	string greeting;
 
 	function initialize(string memory _greeting) initializer public {
