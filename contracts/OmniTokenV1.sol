@@ -9,18 +9,18 @@ import "hardhat/console.sol";
 
 
 contract OmniTokenV1 is Initializable, OwnableUpgradeable, ERC20PausableUpgradeable {
-  string greeting;
+	string greeting;
 
-  function initialize(string memory _greeting) initializer public {
-			__Ownable_init();
-			__ERC20_init('OMNI App', 'OMNI');
-			__ERC20Pausable_init();
+	function initialize(string memory _greeting) initializer public {
+		__Ownable_init();
+		__ERC20_init('OMNI App', 'OMNI');
+		__ERC20Pausable_init();
 
-			console.log("Deploying a OMNI Token: ", _greeting);
-			greeting = _greeting;
-  }
+		console.log("Deploying a OMNI Token: ", _greeting);
+		greeting = _greeting;
+	}
 
-	    /**
+	/**
      * @dev Creates `amount` new tokens for `to`.
      *
      * See {ERC20-_mint}.

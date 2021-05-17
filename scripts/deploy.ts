@@ -35,20 +35,6 @@ const main = async () => {
 	console.log("Balance of the Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString());
 	console.log("Total Supply: ", (await omnitoken.totalSupply()).toString())
 
-
-	// Upgrade the Smart Contract and disable mint function
-	const OmniTokenV2 = await ethers.getContractFactory("OmniTokenV2");
-	const omnitokenv2 = await upgrades.upgradeProxy(omnitoken.address, OmniTokenV2);
-
-	await omnitokenv2.deployed();
-	// verify the Address V2
-	console.log("Omni Token V2 deployed to:", omnitokenv2.address);
-	// Try to Mint token
-	// await omnitokenv2.mint('1000000000000000000000000'); // to.throw("TypeError: omnitokenv2.mint is not a function");
-	// Verify the balance of the Owner
-	console.log("Balance of the Owner v2: ", (await omnitokenv2.balanceOf(await accounts[0].getAddress())).toString());
-	console.log("Total Supply v2: ", (await omnitokenv2.totalSupply()).toString());
-
 }
 
 // We recommend this pattern to be able to use async/await everywhere
