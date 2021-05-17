@@ -5,6 +5,7 @@ import "@nomiclabs/hardhat-ethers";
 import "hardhat-typechain";
 import "@typechain/ethers-v5";
 import 'dotenv/config';
+import '@openzeppelin/hardhat-upgrades';
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
 task("accounts", "Prints the list of accounts", async (args, hre) => {

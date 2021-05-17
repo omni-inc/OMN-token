@@ -3,7 +3,7 @@
 //
 // When running the script with `hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
-import { run, ethers } from 'hardhat';
+import { run, ethers, upgrades } from 'hardhat';
 import "@nomiclabs/hardhat-ethers";
 
 const main = async () => {
@@ -19,14 +19,15 @@ const main = async () => {
 
 	const accounts = await ethers.getSigners();
 
-  console.log("Accounts:", accounts.map((a: { address: any; }) => a.address));
+  console.log("Accounts:", accounts.map((a) => a.address));
 
-  const Greeter = await ethers.getContractFactory("Greeter");
-  const greeter = await Greeter.deploy("Hello, Hardhat!");
+  const OmniToken = await ethers.getContractFactory("OmniTokenV1");
+	const omnitoken = await upgrades.deployProxy(OmniToken, ["Hello, Hardhat!"])
+  // const greeter = await Greeter.deploy("Hello, Hardhat!");
 
-  await greeter.deployed();
+  await omnitoken.deployed();
 
-  console.log("Greeter deployed to:", greeter.address);
+  console.log("Greeter deployed to:", omnitoken.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

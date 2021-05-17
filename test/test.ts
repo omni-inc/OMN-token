@@ -5,7 +5,7 @@ import  { expect } from "chai";
 
 describe("Greeter", async () => {
   it("Should return the new greeting once it's changed", async () => {
-    const Greeter = await ethers.getContractFactory("Greeter");
+    const Greeter = await ethers.getContractFactory("OmniTokenV1");
     const greeter = await Greeter.deploy("Hello, world!");
 
     await greeter.deployed();
