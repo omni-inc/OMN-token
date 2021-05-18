@@ -8,6 +8,8 @@ export type { ERC20PausableUpgradeable } from "./ERC20PausableUpgradeable";
 export type { IERC20MetadataUpgradeable } from "./IERC20MetadataUpgradeable";
 export type { IERC20Upgradeable } from "./IERC20Upgradeable";
 export type { OmniTokenV1 } from "./OmniTokenV1";
+export type { ERC20PermitUpgradeable } from "./ERC20PermitUpgradeable";
+export type { IERC20PermitUpgradeable } from "./IERC20PermitUpgradeable";
 
 export { OwnableUpgradeable__factory } from "./factories/OwnableUpgradeable__factory";
 export { PausableUpgradeable__factory } from "./factories/PausableUpgradeable__factory";
@@ -16,3 +18,5 @@ export { ERC20PausableUpgradeable__factory } from "./factories/ERC20PausableUpgr
 export { IERC20MetadataUpgradeable__factory } from "./factories/IERC20MetadataUpgradeable__factory";
 export { IERC20Upgradeable__factory } from "./factories/IERC20Upgradeable__factory";
 export { OmniTokenV1__factory } from "./factories/OmniTokenV1__factory";
+export { ERC20PermitUpgradeable__factory } from "./factories/ERC20PermitUpgradeable__factory";
+export { IERC20PermitUpgradeable__factory } from "./factories/IERC20PermitUpgradeable__factory";

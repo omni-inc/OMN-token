@@ -11,7 +11,11 @@ Before to Start
 #### Start migration
 ---
 ```
-npx hardhat run --network localhost scripts/deploy.ts --verbose
+npx hardhat run scripts/deploy.ts --verbose
+```
+OR
+```
+npm run deploy
 ```
 
 #### Start Hardhat test
