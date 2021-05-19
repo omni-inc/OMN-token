@@ -25,14 +25,17 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
+    "blacklist(address)": FunctionFragment;
     "burn(uint256)": FunctionFragment;
     "burnFrom(address,uint256)": FunctionFragment;
     "canTransfer(address,uint256)": FunctionFragment;
+    "claimValues(address,address)": FunctionFragment;
     "decimals()": FunctionFragment;
     "decreaseAllowance(address,uint256)": FunctionFragment;
     "getMaxTotalSupply()": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
     "initialize(string)": FunctionFragment;
+    "isBlacklisted(address)": FunctionFragment;
     "mint(uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "nonces(address)": FunctionFragment;
@@ -47,8 +50,7 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferMany(address[],uint256[])": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
-    "withdraw(uint256)": FunctionFragment;
-    "withdrawToken(address,uint256)": FunctionFragment;
+    "unBlacklist(address)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -64,6 +66,7 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
+  encodeFunctionData(functionFragment: "blacklist", values: [string]): string;
   encodeFunctionData(functionFragment: "burn", values: [BigNumberish]): string;
   encodeFunctionData(
     functionFragment: "burnFrom",
@@ -72,6 +75,10 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "canTransfer",
     values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "claimValues",
+    values: [string, string]
   ): string;
   encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
   encodeFunctionData(
@@ -87,6 +94,10 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "initialize", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "isBlacklisted",
+    values: [string]
+  ): string;
   encodeFunctionData(functionFragment: "mint", values: [BigNumberish]): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "nonces", values: [string]): string;
@@ -130,14 +141,7 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
-  encodeFunctionData(
-    functionFragment: "withdraw",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "withdrawToken",
-    values: [string, BigNumberish]
-  ): string;
+  encodeFunctionData(functionFragment: "unBlacklist", values: [string]): string;
 
   decodeFunctionResult(
     functionFragment: "DOMAIN_SEPARATOR",
@@ -146,10 +150,15 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "blacklist", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burnFrom", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "canTransfer",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "claimValues",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
@@ -166,6 +175,10 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "isBlacklisted",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
@@ -195,24 +208,29 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "withdrawToken",
+    functionFragment: "unBlacklist",
     data: BytesLike
   ): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
+    "Blacklisted(address)": EventFragment;
+    "BlacklisterChanged(address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "Paused(address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
+    "UnBlacklisted(address)": EventFragment;
     "Unpaused(address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Blacklisted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "BlacklisterChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "UnBlacklisted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
 }
 
@@ -295,6 +313,16 @@ export class OmniTokenV1 extends Contract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    blacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "blacklist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     burn(
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -328,6 +356,18 @@ export class OmniTokenV1 extends Contract {
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
+
+    claimValues(
+      _token: string,
+      _to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "claimValues(address,address)"(
+      _token: string,
+      _to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     decimals(overrides?: CallOverrides): Promise<[number]>;
 
@@ -370,6 +410,16 @@ export class OmniTokenV1 extends Contract {
       _greeting: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    isBlacklisted(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    "isBlacklisted(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
 
     mint(
       _amount: BigNumberish,
@@ -496,25 +546,13 @@ export class OmniTokenV1 extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    withdraw(
-      amount: BigNumberish,
+    unBlacklist(
+      _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "withdraw(uint256)"(
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    withdrawToken(
-      _token: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "withdrawToken(address,uint256)"(
-      _token: string,
-      amount: BigNumberish,
+    "unBlacklist(address)"(
+      _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
@@ -554,6 +592,16 @@ export class OmniTokenV1 extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  blacklist(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "blacklist(address)"(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   burn(
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -587,6 +635,18 @@ export class OmniTokenV1 extends Contract {
     amount: BigNumberish,
     overrides?: CallOverrides
   ): Promise<boolean>;
+
+  claimValues(
+    _token: string,
+    _to: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "claimValues(address,address)"(
+    _token: string,
+    _to: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   decimals(overrides?: CallOverrides): Promise<number>;
 
@@ -629,6 +689,13 @@ export class OmniTokenV1 extends Contract {
     _greeting: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  isBlacklisted(_account: string, overrides?: CallOverrides): Promise<boolean>;
+
+  "isBlacklisted(address)"(
+    _account: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   mint(
     _amount: BigNumberish,
@@ -755,25 +822,13 @@ export class OmniTokenV1 extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  withdraw(
-    amount: BigNumberish,
+  unBlacklist(
+    _account: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "withdraw(uint256)"(
-    amount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  withdrawToken(
-    _token: string,
-    amount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "withdrawToken(address,uint256)"(
-    _token: string,
-    amount: BigNumberish,
+  "unBlacklist(address)"(
+    _account: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -813,6 +868,13 @@ export class OmniTokenV1 extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    blacklist(_account: string, overrides?: CallOverrides): Promise<void>;
+
+    "blacklist(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     burn(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     "burn(uint256)"(
@@ -843,6 +905,18 @@ export class OmniTokenV1 extends Contract {
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    claimValues(
+      _token: string,
+      _to: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "claimValues(address,address)"(
+      _token: string,
+      _to: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     decimals(overrides?: CallOverrides): Promise<number>;
 
@@ -882,6 +956,16 @@ export class OmniTokenV1 extends Contract {
       _greeting: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    isBlacklisted(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "isBlacklisted(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     mint(_amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
@@ -995,24 +1079,12 @@ export class OmniTokenV1 extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    withdraw(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
+    unBlacklist(_account: string, overrides?: CallOverrides): Promise<void>;
 
-    "withdraw(uint256)"(
-      amount: BigNumberish,
+    "unBlacklist(address)"(
+      _account: string,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    withdrawToken(
-      _token: string,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    "withdrawToken(address,uint256)"(
-      _token: string,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
   };
 
   filters: {
@@ -1024,6 +1096,14 @@ export class OmniTokenV1 extends Contract {
       [string, string, BigNumber],
       { owner: string; spender: string; value: BigNumber }
     >;
+
+    Blacklisted(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
+
+    BlacklisterChanged(
+      newBlacklister: string | null
+    ): TypedEventFilter<[string], { newBlacklister: string }>;
 
     OwnershipTransferred(
       previousOwner: string | null,
@@ -1043,6 +1123,10 @@ export class OmniTokenV1 extends Contract {
       [string, string, BigNumber],
       { from: string; to: string; value: BigNumber }
     >;
+
+    UnBlacklisted(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
 
     Unpaused(account: null): TypedEventFilter<[string], { account: string }>;
   };
@@ -1083,6 +1167,16 @@ export class OmniTokenV1 extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    blacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "blacklist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     burn(
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1115,6 +1209,18 @@ export class OmniTokenV1 extends Contract {
       sender: string,
       amount: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    claimValues(
+      _token: string,
+      _to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "claimValues(address,address)"(
+      _token: string,
+      _to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     decimals(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1157,6 +1263,16 @@ export class OmniTokenV1 extends Contract {
     "initialize(string)"(
       _greeting: string,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    isBlacklisted(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "isBlacklisted(address)"(
+      _account: string,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     mint(
@@ -1284,25 +1400,13 @@ export class OmniTokenV1 extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    withdraw(
-      amount: BigNumberish,
+    unBlacklist(
+      _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "withdraw(uint256)"(
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    withdrawToken(
-      _token: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "withdrawToken(address,uint256)"(
-      _token: string,
-      amount: BigNumberish,
+    "unBlacklist(address)"(
+      _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
@@ -1348,6 +1452,16 @@ export class OmniTokenV1 extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    blacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "blacklist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     burn(
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1380,6 +1494,18 @@ export class OmniTokenV1 extends Contract {
       sender: string,
       amount: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    claimValues(
+      _token: string,
+      _to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "claimValues(address,address)"(
+      _token: string,
+      _to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -1424,6 +1550,16 @@ export class OmniTokenV1 extends Contract {
     "initialize(string)"(
       _greeting: string,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    isBlacklisted(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "isBlacklisted(address)"(
+      _account: string,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     mint(
@@ -1554,25 +1690,13 @@ export class OmniTokenV1 extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    withdraw(
-      amount: BigNumberish,
+    unBlacklist(
+      _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "withdraw(uint256)"(
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    withdrawToken(
-      _token: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "withdrawToken(address,uint256)"(
-      _token: string,
-      amount: BigNumberish,
+    "unBlacklist(address)"(
+      _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

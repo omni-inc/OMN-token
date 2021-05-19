@@ -7,16 +7,16 @@ pragma solidity ^0.8.4;
 pragma experimental ABIEncoderV2;
 
 import "../lib/@openzeppelin/contracts-upgradeable/token/ERC20/extensions/draft-ERC20PermitUpgradeable.sol";
-import "../lib/@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import "../lib/@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
-import "../lib/@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import "../lib/@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol";
 import "../lib/@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
+import "../lib/@openzeppelin/contracts-upgradeable/utils/cryptography/SignatureCheckerUpgradeable.sol";
 import "../lib/@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "../lib/main/Blacklistable.sol";
+import "../lib/main/Claimable.sol";
 import "hardhat/console.sol";
 
 
-contract OmniTokenV1 is Initializable, OwnableUpgradeable, PausableUpgradeable, ERC20PermitUpgradeable {
+contract OmniTokenV1 is Initializable, Claimable, Blacklistable, PausableUpgradeable, ERC20PermitUpgradeable {
 	using AddressUpgradeable for address;
 	using SafeMathUpgradeable for uint256;
 	using SafeERC20Upgradeable for IERC20Upgradeable;
@@ -46,6 +46,7 @@ contract OmniTokenV1 is Initializable, OwnableUpgradeable, PausableUpgradeable, 
 	function transferMany(address[] calldata recipients, uint256[] calldata amounts)
         external
 	    onlyOwner()
+		whenNotPaused()
     {
         require(recipients.length == amounts.length, "ERC20 OMN: Wrong array length");
 
@@ -66,38 +67,12 @@ contract OmniTokenV1 is Initializable, OwnableUpgradeable, PausableUpgradeable, 
         }
     }
 
-    function withdraw(uint256 amount) public onlyOwner() {
-        require(address(this).balance >= amount, "ERC20: Address: insufficient balance");
-
-        // solhint-disable-next-line avoid-low-level-calls, avoid-call-value
-        (bool success, ) = _msgSender().call{ value: amount }("");
-        require(success, "ERC20: Address: unable to send value, recipient may have reverted");
-    }
-
-	function withdrawToken(IERC20Upgradeable _token, uint256 amount) public onlyOwner() returns (bool) {
-		require(IERC20Upgradeable(_token).balanceOf(address(this)) >= amount, "ERC20: Address: insufficient balance");
-		IERC20Upgradeable(_token).safeTransfer(
-			_msgSender(),
-			amount
-		);
-		return true;
-	}
-
     function pause(bool status) public onlyOwner() {
         if (status) {
             _pause();
         } else {
             _unpause();
         }
-    }
-
-	/**
-     * @dev Destroys `amount` tokens from the caller.
-     *
-     * See {ERC20-_burn}.
-     */
-    function burn(uint256 amount) public virtual {
-        _burn(_msgSender(), amount);
     }
 
     /**
@@ -118,7 +93,16 @@ contract OmniTokenV1 is Initializable, OwnableUpgradeable, PausableUpgradeable, 
         _burn(account, amount);
     }
 
-		/**
+	/**
+     * @dev Destroys `amount` tokens from the caller.
+     *
+     * See {ERC20-_burn}.
+     */
+    function burn(uint256 amount) public virtual {
+        _burn(_msgSender(), amount);
+    }
+
+	/**
      * @dev Creates `amount` new tokens for `to`.
      *
      * See {ERC20-_mint}.
@@ -133,9 +117,10 @@ contract OmniTokenV1 is Initializable, OwnableUpgradeable, PausableUpgradeable, 
         _mint(owner(), _amount);
     }
 
-	// @override
-	function _beforeTokenTransfer(address sender, address recipient, uint256 amount) internal virtual override {
-		require(!paused(), "ERC20Pausable: token transfer while paused");
+		// @override
+	function _beforeTokenTransfer(address sender, address recipient, uint256 amount) internal virtual override notBlacklisted(sender) {
+		require(!isBlacklisted(recipient), "ERC20 OMN: recipient account is blacklisted");
+		require(!paused(), "ERC20Pausable: token transfer/mint/burn while paused");
         require(canTransfer(sender, amount), "ERC20 OMN: Wait for vesting day!");
         super._beforeTokenTransfer(sender, recipient, amount);
     }
