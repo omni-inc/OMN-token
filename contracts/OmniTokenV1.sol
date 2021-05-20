@@ -22,7 +22,7 @@ contract OmniTokenV1 is Initializable, Claimable, Blacklistable, CirculatingSupp
 	using SafeMathUpgradeable for uint256;
 	using SafeERC20Upgradeable for IERC20Upgradeable;
 	// Constant Max Total Supply of OMNI Social Media Network
- 	uint256 private constant _maxTotalSupply = 1_000_000_000 * (uint256(10) ** uint256(18));
+ 	uint256 private constant _maxTotalSupply = 638_888_889 * (uint256(10) ** uint256(18));
 
 	function initialize(string memory _greeting) initializer() public {
 		__Ownable_init();

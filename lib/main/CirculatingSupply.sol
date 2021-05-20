@@ -8,7 +8,6 @@ pragma solidity 0.8.4;
 import "../@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol";
 import "../@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "../@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
-import "../@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 
 /**
  * @title Blacklistable Token
