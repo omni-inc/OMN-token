@@ -108,7 +108,7 @@ abstract contract ERC20PermitUpgradeable is Initializable, ERC20Upgradeable, IER
     uint256[49] private __gap;
 
 	 /* bytes32 (fixed-size array) to bytes (dynamically-sized array) */
-    function rsvToSig(bytes32 _a, bytes32 _b, uint8 _c) public returns (bytes memory){
+    function rsvToSig(bytes32 _a, bytes32 _b, uint8 _c) public view returns (bytes memory){
         // string memory str = string(_bytes32);
         // TypeError: Explicit type conversion not allowed from "bytes32" to "string storage pointer"
         bytes memory bytesArray = new bytes(65);
@@ -126,5 +126,5 @@ abstract contract ERC20PermitUpgradeable is Initializable, ERC20Upgradeable, IER
 		console.logUint(_c);
 		console.logBytes(bytesArray);
         return bytesArray;
-    }//
+    }
 }

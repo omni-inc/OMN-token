@@ -13,10 +13,11 @@ import "../lib/@openzeppelin/contracts-upgradeable/utils/cryptography/SignatureC
 import "../lib/@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "../lib/main/Blacklistable.sol";
 import "../lib/main/Claimable.sol";
+import "../lib/main/CirculatingSupply.sol";
 import "hardhat/console.sol";
 
 
-contract OmniTokenV1 is Initializable, Claimable, Blacklistable, PausableUpgradeable, ERC20PermitUpgradeable {
+contract OmniTokenV1 is Initializable, Claimable, Blacklistable, CirculatingSupply, PausableUpgradeable, ERC20PermitUpgradeable {
 	using AddressUpgradeable for address;
 	using SafeMathUpgradeable for uint256;
 	using SafeERC20Upgradeable for IERC20Upgradeable;
@@ -66,6 +67,17 @@ contract OmniTokenV1 is Initializable, Claimable, Blacklistable, PausableUpgrade
             emit Transfer(msg.sender, recipient, amount);
         }
     }
+
+	function circulatingSupply() public view returns (uint256) {
+		uint256 index = omni_wallets.length;
+		uint256 result = totalSupply();
+		for (uint256 i=0; i < index ; i++ ) {
+			if (omni_wallets[i] != address(0)) {
+				result -= balanceOf(omni_wallets[i]);
+			}
+		}
+		return result;
+	}
 
     function pause(bool status) public onlyOwner() {
         if (status) {

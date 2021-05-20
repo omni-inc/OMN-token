@@ -12,14 +12,15 @@ import "../@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
  * @title Blacklistable Token
  * @dev Allows accounts to be blacklisted by Owner
  */
+
 contract Blacklistable is OwnableUpgradeable {
     using AddressUpgradeable for address;
 
-    mapping(address => bool) internal blacklisted;
+	// Mapping blacklisted Address
+    mapping(address => bool) public blacklisted;
 
-    event Blacklisted(address indexed _account);
-    event UnBlacklisted(address indexed _account);
-    event BlacklisterChanged(address indexed newBlacklister);
+    event addBlacklisted(address indexed _account);
+    event dropBlacklisted(address indexed _account);
 
 
     /**
@@ -48,7 +49,7 @@ contract Blacklistable is OwnableUpgradeable {
      */
     function blacklist(address _account) public onlyOwner() {
         blacklisted[_account] = true;
-        emit Blacklisted(_account);
+        emit addBlacklisted(_account);
     }
 
     /**
@@ -57,7 +58,7 @@ contract Blacklistable is OwnableUpgradeable {
      */
     function unBlacklist(address _account) public onlyOwner() {
         blacklisted[_account] = false;
-        emit UnBlacklisted(_account);
+        emit dropBlacklisted(_account);
     }
 
 }

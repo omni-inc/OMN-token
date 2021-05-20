@@ -12,6 +12,7 @@ export type { IERC1271Upgradeable } from "./IERC1271Upgradeable";
 export type { ERC20PermitUpgradeable } from "./ERC20PermitUpgradeable";
 export type { IERC20PermitUpgradeable } from "./IERC20PermitUpgradeable";
 export type { Blacklistable } from "./Blacklistable";
+export type { CirculatingSupply } from "./CirculatingSupply";
 export type { Claimable } from "./Claimable";
 
 export { OwnableUpgradeable__factory } from "./factories/OwnableUpgradeable__factory";
@@ -25,4 +26,5 @@ export { IERC1271Upgradeable__factory } from "./factories/IERC1271Upgradeable__f
 export { ERC20PermitUpgradeable__factory } from "./factories/ERC20PermitUpgradeable__factory";
 export { IERC20PermitUpgradeable__factory } from "./factories/IERC20PermitUpgradeable__factory";
 export { Blacklistable__factory } from "./factories/Blacklistable__factory";
+export { CirculatingSupply__factory } from "./factories/CirculatingSupply__factory";
 export { Claimable__factory } from "./factories/Claimable__factory";

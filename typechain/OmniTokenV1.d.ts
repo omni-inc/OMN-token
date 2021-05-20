@@ -22,20 +22,25 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 interface OmniTokenV1Interface extends ethers.utils.Interface {
   functions: {
     "DOMAIN_SEPARATOR()": FunctionFragment;
+    "addOmniWallet(address)": FunctionFragment;
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "blacklist(address)": FunctionFragment;
+    "blacklisted(address)": FunctionFragment;
     "burn(uint256)": FunctionFragment;
     "burnFrom(address,uint256)": FunctionFragment;
     "canTransfer(address,uint256)": FunctionFragment;
+    "circulatingSupply()": FunctionFragment;
     "claimValues(address,address)": FunctionFragment;
     "decimals()": FunctionFragment;
     "decreaseAllowance(address,uint256)": FunctionFragment;
+    "dropOmniWallet(address)": FunctionFragment;
     "getMaxTotalSupply()": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
     "initialize(string)": FunctionFragment;
     "isBlacklisted(address)": FunctionFragment;
+    "isOmniWallet(address)": FunctionFragment;
     "mint(uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "nonces(address)": FunctionFragment;
@@ -59,6 +64,10 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "addOmniWallet",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "allowance",
     values: [string, string]
   ): string;
@@ -68,6 +77,7 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(functionFragment: "blacklist", values: [string]): string;
+  encodeFunctionData(functionFragment: "blacklisted", values: [string]): string;
   encodeFunctionData(functionFragment: "burn", values: [BigNumberish]): string;
   encodeFunctionData(
     functionFragment: "burnFrom",
@@ -78,6 +88,10 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "circulatingSupply",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "claimValues",
     values: [string, string]
   ): string;
@@ -85,6 +99,10 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "decreaseAllowance",
     values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "dropOmniWallet",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "getMaxTotalSupply",
@@ -97,6 +115,10 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "initialize", values: [string]): string;
   encodeFunctionData(
     functionFragment: "isBlacklisted",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isOmniWallet",
     values: [string]
   ): string;
   encodeFunctionData(functionFragment: "mint", values: [BigNumberish]): string;
@@ -152,14 +174,26 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     functionFragment: "DOMAIN_SEPARATOR",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "addOmniWallet",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "blacklist", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "blacklisted",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burnFrom", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "canTransfer",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "circulatingSupply",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -169,6 +203,10 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "decreaseAllowance",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "dropOmniWallet",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -182,6 +220,10 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isBlacklisted",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isOmniWallet",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
@@ -221,23 +263,25 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
-    "Blacklisted(address)": EventFragment;
-    "BlacklisterChanged(address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "Paused(address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
-    "UnBlacklisted(address)": EventFragment;
     "Unpaused(address)": EventFragment;
+    "addBlacklisted(address)": EventFragment;
+    "dropBlacklisted(address)": EventFragment;
+    "inOmniWallet(address)": EventFragment;
+    "unOmniWallet(address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Blacklisted"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "BlacklisterChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "UnBlacklisted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "addBlacklisted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "dropBlacklisted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "inOmniWallet"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "unOmniWallet"): EventFragment;
 }
 
 export class OmniTokenV1 extends Contract {
@@ -288,6 +332,16 @@ export class OmniTokenV1 extends Contract {
 
     "DOMAIN_SEPARATOR()"(overrides?: CallOverrides): Promise<[string]>;
 
+    addOmniWallet(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "addOmniWallet(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     allowance(
       owner: string,
       spender: string,
@@ -329,6 +383,13 @@ export class OmniTokenV1 extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    blacklisted(arg0: string, overrides?: CallOverrides): Promise<[boolean]>;
+
+    "blacklisted(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
     burn(
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -363,6 +424,10 @@ export class OmniTokenV1 extends Contract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    circulatingSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    "circulatingSupply()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     claimValues(
       _token: string,
       _to: string,
@@ -388,6 +453,16 @@ export class OmniTokenV1 extends Contract {
     "decreaseAllowance(address,uint256)"(
       spender: string,
       subtractedValue: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    dropOmniWallet(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "dropOmniWallet(address)"(
+      _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -423,6 +498,16 @@ export class OmniTokenV1 extends Contract {
     ): Promise<[boolean]>;
 
     "isBlacklisted(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    isOmniWallet(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    "isOmniWallet(address)"(
       _account: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
@@ -500,15 +585,15 @@ export class OmniTokenV1 extends Contract {
       _a: BytesLike,
       _b: BytesLike,
       _c: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+      overrides?: CallOverrides
+    ): Promise<[string]>;
 
     "rsvToSig(bytes32,bytes32,uint8)"(
       _a: BytesLike,
       _b: BytesLike,
       _c: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+      overrides?: CallOverrides
+    ): Promise<[string]>;
 
     symbol(overrides?: CallOverrides): Promise<[string]>;
 
@@ -581,6 +666,16 @@ export class OmniTokenV1 extends Contract {
 
   "DOMAIN_SEPARATOR()"(overrides?: CallOverrides): Promise<string>;
 
+  addOmniWallet(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "addOmniWallet(address)"(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   allowance(
     owner: string,
     spender: string,
@@ -622,6 +717,13 @@ export class OmniTokenV1 extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  blacklisted(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+  "blacklisted(address)"(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   burn(
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -656,6 +758,10 @@ export class OmniTokenV1 extends Contract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  circulatingSupply(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "circulatingSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   claimValues(
     _token: string,
     _to: string,
@@ -681,6 +787,16 @@ export class OmniTokenV1 extends Contract {
   "decreaseAllowance(address,uint256)"(
     spender: string,
     subtractedValue: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  dropOmniWallet(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "dropOmniWallet(address)"(
+    _account: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -713,6 +829,13 @@ export class OmniTokenV1 extends Contract {
   isBlacklisted(_account: string, overrides?: CallOverrides): Promise<boolean>;
 
   "isBlacklisted(address)"(
+    _account: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  isOmniWallet(_account: string, overrides?: CallOverrides): Promise<boolean>;
+
+  "isOmniWallet(address)"(
     _account: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
@@ -790,15 +913,15 @@ export class OmniTokenV1 extends Contract {
     _a: BytesLike,
     _b: BytesLike,
     _c: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   "rsvToSig(bytes32,bytes32,uint8)"(
     _a: BytesLike,
     _b: BytesLike,
     _c: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   symbol(overrides?: CallOverrides): Promise<string>;
 
@@ -871,6 +994,16 @@ export class OmniTokenV1 extends Contract {
 
     "DOMAIN_SEPARATOR()"(overrides?: CallOverrides): Promise<string>;
 
+    addOmniWallet(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "addOmniWallet(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     allowance(
       owner: string,
       spender: string,
@@ -909,6 +1042,13 @@ export class OmniTokenV1 extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    blacklisted(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+    "blacklisted(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     burn(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     "burn(uint256)"(
@@ -940,6 +1080,10 @@ export class OmniTokenV1 extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    circulatingSupply(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "circulatingSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     claimValues(
       _token: string,
       _to: string,
@@ -965,6 +1109,16 @@ export class OmniTokenV1 extends Contract {
     "decreaseAllowance(address,uint256)"(
       spender: string,
       subtractedValue: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    dropOmniWallet(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "dropOmniWallet(address)"(
+      _account: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -997,6 +1151,13 @@ export class OmniTokenV1 extends Contract {
     ): Promise<boolean>;
 
     "isBlacklisted(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    isOmniWallet(_account: string, overrides?: CallOverrides): Promise<boolean>;
+
+    "isOmniWallet(address)"(
       _account: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
@@ -1145,14 +1306,6 @@ export class OmniTokenV1 extends Contract {
       { owner: string; spender: string; value: BigNumber }
     >;
 
-    Blacklisted(
-      _account: string | null
-    ): TypedEventFilter<[string], { _account: string }>;
-
-    BlacklisterChanged(
-      newBlacklister: string | null
-    ): TypedEventFilter<[string], { newBlacklister: string }>;
-
     OwnershipTransferred(
       previousOwner: string | null,
       newOwner: string | null
@@ -1172,17 +1325,39 @@ export class OmniTokenV1 extends Contract {
       { from: string; to: string; value: BigNumber }
     >;
 
-    UnBlacklisted(
+    Unpaused(account: null): TypedEventFilter<[string], { account: string }>;
+
+    addBlacklisted(
       _account: string | null
     ): TypedEventFilter<[string], { _account: string }>;
 
-    Unpaused(account: null): TypedEventFilter<[string], { account: string }>;
+    dropBlacklisted(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
+
+    inOmniWallet(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
+
+    unOmniWallet(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
   };
 
   estimateGas: {
     DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<BigNumber>;
 
     "DOMAIN_SEPARATOR()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    addOmniWallet(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "addOmniWallet(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     allowance(
       owner: string,
@@ -1225,6 +1400,13 @@ export class OmniTokenV1 extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    blacklisted(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "blacklisted(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     burn(
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1259,6 +1441,10 @@ export class OmniTokenV1 extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    circulatingSupply(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "circulatingSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     claimValues(
       _token: string,
       _to: string,
@@ -1284,6 +1470,16 @@ export class OmniTokenV1 extends Contract {
     "decreaseAllowance(address,uint256)"(
       spender: string,
       subtractedValue: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    dropOmniWallet(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "dropOmniWallet(address)"(
+      _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1319,6 +1515,16 @@ export class OmniTokenV1 extends Contract {
     ): Promise<BigNumber>;
 
     "isBlacklisted(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    isOmniWallet(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "isOmniWallet(address)"(
       _account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1396,14 +1602,14 @@ export class OmniTokenV1 extends Contract {
       _a: BytesLike,
       _b: BytesLike,
       _c: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     "rsvToSig(bytes32,bytes32,uint8)"(
       _a: BytesLike,
       _b: BytesLike,
       _c: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1480,6 +1686,16 @@ export class OmniTokenV1 extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    addOmniWallet(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "addOmniWallet(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     allowance(
       owner: string,
       spender: string,
@@ -1524,6 +1740,16 @@ export class OmniTokenV1 extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    blacklisted(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "blacklisted(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     burn(
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1558,6 +1784,12 @@ export class OmniTokenV1 extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    circulatingSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "circulatingSupply()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     claimValues(
       _token: string,
       _to: string,
@@ -1583,6 +1815,16 @@ export class OmniTokenV1 extends Contract {
     "decreaseAllowance(address,uint256)"(
       spender: string,
       subtractedValue: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    dropOmniWallet(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "dropOmniWallet(address)"(
+      _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1620,6 +1862,16 @@ export class OmniTokenV1 extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "isBlacklisted(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isOmniWallet(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "isOmniWallet(address)"(
       _account: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1700,14 +1952,14 @@ export class OmniTokenV1 extends Contract {
       _a: BytesLike,
       _b: BytesLike,
       _c: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     "rsvToSig(bytes32,bytes32,uint8)"(
       _a: BytesLike,
       _b: BytesLike,
       _c: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;

@@ -19,21 +19,26 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
-interface BlacklistableInterface extends ethers.utils.Interface {
+interface CirculatSupplyInterface extends ethers.utils.Interface {
   functions: {
-    "blacklist(address)": FunctionFragment;
-    "blacklisted(address)": FunctionFragment;
-    "isBlacklisted(address)": FunctionFragment;
+    "addOmniWallet(address)": FunctionFragment;
+    "dropOmniWallet(address)": FunctionFragment;
+    "isOmniWallet(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
-    "unBlacklist(address)": FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: "blacklist", values: [string]): string;
-  encodeFunctionData(functionFragment: "blacklisted", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "isBlacklisted",
+    functionFragment: "addOmniWallet",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "dropOmniWallet",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isOmniWallet",
     values: [string]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -45,15 +50,17 @@ interface BlacklistableInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
-  encodeFunctionData(functionFragment: "unBlacklist", values: [string]): string;
 
-  decodeFunctionResult(functionFragment: "blacklist", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "blacklisted",
+    functionFragment: "addOmniWallet",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "isBlacklisted",
+    functionFragment: "dropOmniWallet",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isOmniWallet",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -65,23 +72,19 @@ interface BlacklistableInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "unBlacklist",
-    data: BytesLike
-  ): Result;
 
   events: {
     "OwnershipTransferred(address,address)": EventFragment;
-    "addBlacklisted(address)": EventFragment;
-    "dropBlacklisted(address)": EventFragment;
+    "inOmniWallet(address)": EventFragment;
+    "unOmniWallet(address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "addBlacklisted"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "dropBlacklisted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "inOmniWallet"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "unOmniWallet"): EventFragment;
 }
 
-export class Blacklistable extends Contract {
+export class CirculatSupply extends Contract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -122,35 +125,38 @@ export class Blacklistable extends Contract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: BlacklistableInterface;
+  interface: CirculatSupplyInterface;
 
   functions: {
-    blacklist(
+    addOmniWallet(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "blacklist(address)"(
+    "addOmniWallet(address)"(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    blacklisted(arg0: string, overrides?: CallOverrides): Promise<[boolean]>;
-
-    "blacklisted(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    isBlacklisted(
+    dropOmniWallet(
       _account: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
-    "isBlacklisted(address)"(
+    "dropOmniWallet(address)"(
       _account: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    isOmniWallet(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "isOmniWallet(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
@@ -173,41 +179,37 @@ export class Blacklistable extends Contract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    unBlacklist(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "unBlacklist(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
   };
 
-  blacklist(
+  addOmniWallet(
     _account: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "blacklist(address)"(
+  "addOmniWallet(address)"(
     _account: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  blacklisted(arg0: string, overrides?: CallOverrides): Promise<boolean>;
-
-  "blacklisted(address)"(
-    arg0: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  isBlacklisted(_account: string, overrides?: CallOverrides): Promise<boolean>;
-
-  "isBlacklisted(address)"(
+  dropOmniWallet(
     _account: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "dropOmniWallet(address)"(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  isOmniWallet(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "isOmniWallet(address)"(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
@@ -231,37 +233,30 @@ export class Blacklistable extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  unBlacklist(
-    _account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "unBlacklist(address)"(
-    _account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   callStatic: {
-    blacklist(_account: string, overrides?: CallOverrides): Promise<void>;
-
-    "blacklist(address)"(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    blacklisted(arg0: string, overrides?: CallOverrides): Promise<boolean>;
-
-    "blacklisted(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    isBlacklisted(
+    addOmniWallet(
       _account: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    "isBlacklisted(address)"(
+    "addOmniWallet(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    dropOmniWallet(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "dropOmniWallet(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    isOmniWallet(_account: string, overrides?: CallOverrides): Promise<boolean>;
+
+    "isOmniWallet(address)"(
       _account: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
@@ -283,13 +278,6 @@ export class Blacklistable extends Contract {
       newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    unBlacklist(_account: string, overrides?: CallOverrides): Promise<void>;
-
-    "unBlacklist(address)"(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
   };
 
   filters: {
@@ -301,41 +289,44 @@ export class Blacklistable extends Contract {
       { previousOwner: string; newOwner: string }
     >;
 
-    addBlacklisted(
+    inOmniWallet(
       _account: string | null
     ): TypedEventFilter<[string], { _account: string }>;
 
-    dropBlacklisted(
+    unOmniWallet(
       _account: string | null
     ): TypedEventFilter<[string], { _account: string }>;
   };
 
   estimateGas: {
-    blacklist(
+    addOmniWallet(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "blacklist(address)"(
+    "addOmniWallet(address)"(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    blacklisted(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "blacklisted(address)"(
-      arg0: string,
-      overrides?: CallOverrides
+    dropOmniWallet(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    isBlacklisted(
+    "dropOmniWallet(address)"(
       _account: string,
-      overrides?: CallOverrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "isBlacklisted(address)"(
+    isOmniWallet(
       _account: string,
-      overrides?: CallOverrides
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "isOmniWallet(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
@@ -359,47 +350,37 @@ export class Blacklistable extends Contract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
-
-    unBlacklist(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "unBlacklist(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    blacklist(
+    addOmniWallet(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "blacklist(address)"(
+    "addOmniWallet(address)"(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    blacklisted(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "blacklisted(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    isBlacklisted(
+    dropOmniWallet(
       _account: string,
-      overrides?: CallOverrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "isBlacklisted(address)"(
+    "dropOmniWallet(address)"(
       _account: string,
-      overrides?: CallOverrides
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    isOmniWallet(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "isOmniWallet(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -421,16 +402,6 @@ export class Blacklistable extends Contract {
 
     "transferOwnership(address)"(
       newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    unBlacklist(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "unBlacklist(address)"(
-      _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };
