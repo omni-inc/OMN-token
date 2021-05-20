@@ -44,6 +44,7 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     "paused()": FunctionFragment;
     "permit(address,address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
+    "rsvToSig(bytes32,bytes32,uint8)": FunctionFragment;
     "symbol()": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
@@ -120,6 +121,10 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "rsvToSig",
+    values: [BytesLike, BytesLike, BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
@@ -190,6 +195,7 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "rsvToSig", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
@@ -490,6 +496,20 @@ export class OmniTokenV1 extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    rsvToSig(
+      _a: BytesLike,
+      _b: BytesLike,
+      _c: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "rsvToSig(bytes32,bytes32,uint8)"(
+      _a: BytesLike,
+      _b: BytesLike,
+      _c: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     symbol(overrides?: CallOverrides): Promise<[string]>;
 
     "symbol()"(overrides?: CallOverrides): Promise<[string]>;
@@ -766,6 +786,20 @@ export class OmniTokenV1 extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  rsvToSig(
+    _a: BytesLike,
+    _b: BytesLike,
+    _c: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "rsvToSig(bytes32,bytes32,uint8)"(
+    _a: BytesLike,
+    _b: BytesLike,
+    _c: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   symbol(overrides?: CallOverrides): Promise<string>;
 
   "symbol()"(overrides?: CallOverrides): Promise<string>;
@@ -1022,6 +1056,20 @@ export class OmniTokenV1 extends Contract {
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
     "renounceOwnership()"(overrides?: CallOverrides): Promise<void>;
+
+    rsvToSig(
+      _a: BytesLike,
+      _b: BytesLike,
+      _c: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "rsvToSig(bytes32,bytes32,uint8)"(
+      _a: BytesLike,
+      _b: BytesLike,
+      _c: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     symbol(overrides?: CallOverrides): Promise<string>;
 
@@ -1344,6 +1392,20 @@ export class OmniTokenV1 extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    rsvToSig(
+      _a: BytesLike,
+      _b: BytesLike,
+      _c: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "rsvToSig(bytes32,bytes32,uint8)"(
+      _a: BytesLike,
+      _b: BytesLike,
+      _c: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
     "symbol()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1631,6 +1693,20 @@ export class OmniTokenV1 extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "renounceOwnership()"(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    rsvToSig(
+      _a: BytesLike,
+      _b: BytesLike,
+      _c: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "rsvToSig(bytes32,bytes32,uint8)"(
+      _a: BytesLike,
+      _b: BytesLike,
+      _c: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

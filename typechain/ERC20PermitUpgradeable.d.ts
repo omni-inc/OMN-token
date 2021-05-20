@@ -31,6 +31,7 @@ interface ERC20PermitUpgradeableInterface extends ethers.utils.Interface {
     "name()": FunctionFragment;
     "nonces(address)": FunctionFragment;
     "permit(address,address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
+    "rsvToSig(bytes32,bytes32,uint8)": FunctionFragment;
     "symbol()": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
@@ -73,6 +74,10 @@ interface ERC20PermitUpgradeableInterface extends ethers.utils.Interface {
       BytesLike
     ]
   ): string;
+  encodeFunctionData(
+    functionFragment: "rsvToSig",
+    values: [BytesLike, BytesLike, BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
@@ -106,6 +111,7 @@ interface ERC20PermitUpgradeableInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "permit", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "rsvToSig", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
@@ -266,6 +272,20 @@ export class ERC20PermitUpgradeable extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    rsvToSig(
+      _a: BytesLike,
+      _b: BytesLike,
+      _c: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "rsvToSig(bytes32,bytes32,uint8)"(
+      _a: BytesLike,
+      _b: BytesLike,
+      _c: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     symbol(overrides?: CallOverrides): Promise<[string]>;
 
     "symbol()"(overrides?: CallOverrides): Promise<[string]>;
@@ -394,6 +414,20 @@ export class ERC20PermitUpgradeable extends Contract {
     v: BigNumberish,
     r: BytesLike,
     s: BytesLike,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  rsvToSig(
+    _a: BytesLike,
+    _b: BytesLike,
+    _c: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "rsvToSig(bytes32,bytes32,uint8)"(
+    _a: BytesLike,
+    _b: BytesLike,
+    _c: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -527,6 +561,20 @@ export class ERC20PermitUpgradeable extends Contract {
       s: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    rsvToSig(
+      _a: BytesLike,
+      _b: BytesLike,
+      _c: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "rsvToSig(bytes32,bytes32,uint8)"(
+      _a: BytesLike,
+      _b: BytesLike,
+      _c: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     symbol(overrides?: CallOverrides): Promise<string>;
 
@@ -680,6 +728,20 @@ export class ERC20PermitUpgradeable extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    rsvToSig(
+      _a: BytesLike,
+      _b: BytesLike,
+      _c: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "rsvToSig(bytes32,bytes32,uint8)"(
+      _a: BytesLike,
+      _b: BytesLike,
+      _c: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
     "symbol()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -817,6 +879,20 @@ export class ERC20PermitUpgradeable extends Contract {
       v: BigNumberish,
       r: BytesLike,
       s: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    rsvToSig(
+      _a: BytesLike,
+      _b: BytesLike,
+      _c: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "rsvToSig(bytes32,bytes32,uint8)"(
+      _a: BytesLike,
+      _b: BytesLike,
+      _c: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

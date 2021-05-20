@@ -7,7 +7,10 @@ import "../ERC20Upgradeable.sol";
 import "../../../utils/cryptography/draft-EIP712Upgradeable.sol";
 import "../../../utils/cryptography/ECDSAUpgradeable.sol";
 import "../../../utils/CountersUpgradeable.sol";
+import "../../../utils/AddressUpgradeable.sol";
 import "../../../proxy/utils/Initializable.sol";
+import "../../../interfaces/IERC1271Upgradeable.sol";
+import "hardhat/console.sol";
 
 /**
  * @dev Implementation of the ERC20 Permit extension allowing approvals to be made via signatures, as defined in
@@ -61,9 +64,18 @@ abstract contract ERC20PermitUpgradeable is Initializable, ERC20Upgradeable, IER
         );
 
         bytes32 hash = _hashTypedDataV4(structHash);
+		bytes memory signature = rsvToSig(r,s,v);
 
-        address signer = ECDSAUpgradeable.recover(hash, v, r, s);
-        require(signer == owner, "ERC20Permit: invalid signature");
+        // address signer = ECDSAUpgradeable.recover(hash, v, r, s);
+		if (AddressUpgradeable.isContract(owner)) {
+            try IERC1271Upgradeable(owner).isValidSignature(hash, signature) returns (bytes4 magicValue) {
+                require(magicValue == IERC1271Upgradeable(owner).isValidSignature.selector, "ERC20Permit: invalid signature");
+            } catch {
+                revert("ERC20Permit: invalid signature");
+            }
+        } else {
+            require(ECDSAUpgradeable.recover(hash, v, r, s) == owner , "ERC20Permit: invalid signature");
+        }
 
         _approve(owner, spender, value);
     }
@@ -94,4 +106,25 @@ abstract contract ERC20PermitUpgradeable is Initializable, ERC20Upgradeable, IER
         nonce.increment();
     }
     uint256[49] private __gap;
+
+	 /* bytes32 (fixed-size array) to bytes (dynamically-sized array) */
+    function rsvToSig(bytes32 _a, bytes32 _b, uint8 _c) public returns (bytes memory){
+        // string memory str = string(_bytes32);
+        // TypeError: Explicit type conversion not allowed from "bytes32" to "string storage pointer"
+        bytes memory bytesArray = new bytes(65);
+        for (uint256 i; i < 32; i++) {
+            bytesArray[i] = _a[i];
+        }
+		for (uint256 i=32; i < 64; i++) {
+            bytesArray[i] = _b[i-32];
+        }
+		bytes32 b;
+		assembly  { mstore(add(b,32),_c)}
+		bytesArray[64] = b[31];
+		console.logBytes32( _a);
+		console.logBytes32( _b);
+		console.logUint(_c);
+		console.logBytes(bytesArray);
+        return bytesArray;
+    }//
 }

@@ -288,6 +288,35 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "_a",
+        type: "bytes32",
+      },
+      {
+        internalType: "bytes32",
+        name: "_b",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint8",
+        name: "_c",
+        type: "uint8",
+      },
+    ],
+    name: "rsvToSig",
+    outputs: [
+      {
+        internalType: "bytes",
+        name: "",
+        type: "bytes",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "symbol",
     outputs: [
