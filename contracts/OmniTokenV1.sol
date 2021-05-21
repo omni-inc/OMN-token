@@ -14,10 +14,10 @@ import "../lib/@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol
 import "../lib/main/Blacklistable.sol";
 import "../lib/main/Claimable.sol";
 import "../lib/main/CirculatingSupply.sol";
+import "../lib/main/Vesting.sol";
 import "hardhat/console.sol";
 
-
-contract OmniTokenV1 is Initializable, Claimable, Blacklistable, CirculatingSupply, PausableUpgradeable, ERC20PermitUpgradeable {
+contract OmniTokenV1 is Initializable, Claimable, Blacklistable, CirculatingSupply, Vesting, PausableUpgradeable, ERC20PermitUpgradeable {
 	using AddressUpgradeable for address;
 	using SafeMathUpgradeable for uint256;
 	using SafeERC20Upgradeable for IERC20Upgradeable;
@@ -33,6 +33,17 @@ contract OmniTokenV1 is Initializable, Claimable, Blacklistable, CirculatingSupp
 		// Mint Total Supply
 		mint(getMaxTotalSupply());
 
+		console.log("Deploying Vesting Types");
+		// Begininng Deploy of Allocation in the ERC20
+		vestingTypes.push(VestingType(1660000000000000000, 0, 30 days, 0, true)); // 30 Days 1.66 Percent
+        vestingTypes.push(VestingType(1660000000000000000, 0, 180 days, 0, true)); // 180 Days 1.66 Percent
+        vestingTypes.push(VestingType(4160000000000000000, 0, 360 days, 0, true)); // 360 Days 4.16 Percent
+        vestingTypes.push(VestingType(4160000000000000000, 0, 30 days, 0, true)); // 30 Days 4.16 Percent
+        vestingTypes.push(VestingType(100000000000000000000, 100000000000000000000, 0, 1, true)); // 0 Days 100 Percent
+        vestingTypes.push(VestingType(11110000000000000000, 0, 30 days, 0, true)); // 30 Days 11.11 Percent
+        vestingTypes.push(VestingType(15000000000000000000, 10000000000000000000, 0, 1, true)); // 0 Days 10 initial 15 monthly Percent
+        vestingTypes.push(VestingType(25000000000000000000, 25000000000000000000, 0, 1, true)); // 0 Days 25 initial 25 monthly Percent
+		//Finish Deploy of Allocation in the ERC20
 		console.log("Deploying a OMN Token: ", _greeting);
 	}
 
@@ -41,7 +52,23 @@ contract OmniTokenV1 is Initializable, Claimable, Blacklistable, CirculatingSupp
 	}
 
 	function canTransfer(address sender, uint256 amount) public view returns (bool) {
-		return true;
+        // Control is scheduled wallet
+        if (!frozenWallets[sender].scheduled) {
+            return true;
+        }
+
+        uint256 balance = balanceOf(sender);
+        uint256 restAmount = getRestAmount(sender);
+
+        if (balance > frozenWallets[sender].totalAmount && balance.sub(frozenWallets[sender].totalAmount) >= amount) {
+            return true;
+        }
+
+        if (!isStarted(frozenWallets[sender].startDay) || balance.sub(amount) < restAmount) {
+            return false;
+        }
+
+        return true;
 	}
 
 	function transferMany(address[] calldata recipients, uint256[] calldata amounts)

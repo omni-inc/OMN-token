@@ -14,6 +14,8 @@ export type { IERC20PermitUpgradeable } from "./IERC20PermitUpgradeable";
 export type { Blacklistable } from "./Blacklistable";
 export type { CirculatingSupply } from "./CirculatingSupply";
 export type { Claimable } from "./Claimable";
+export type { Math } from "./Math";
+export type { Vesting } from "./Vesting";
 
 export { OwnableUpgradeable__factory } from "./factories/OwnableUpgradeable__factory";
 export { PausableUpgradeable__factory } from "./factories/PausableUpgradeable__factory";
@@ -28,3 +30,5 @@ export { IERC20PermitUpgradeable__factory } from "./factories/IERC20PermitUpgrad
 export { Blacklistable__factory } from "./factories/Blacklistable__factory";
 export { CirculatingSupply__factory } from "./factories/CirculatingSupply__factory";
 export { Claimable__factory } from "./factories/Claimable__factory";
+export { Math__factory } from "./factories/Math__factory";
+export { Vesting__factory } from "./factories/Vesting__factory";

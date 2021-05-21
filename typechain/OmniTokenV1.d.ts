@@ -12,6 +12,7 @@ import {
   Contract,
   ContractTransaction,
   Overrides,
+  PayableOverrides,
   CallOverrides,
 } from "ethers";
 import { BytesLike } from "@ethersproject/bytes";
@@ -22,6 +23,7 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 interface OmniTokenV1Interface extends ethers.utils.Interface {
   functions: {
     "DOMAIN_SEPARATOR()": FunctionFragment;
+    "addAllocations(address[],uint256[],uint256)": FunctionFragment;
     "addOmniWallet(address)": FunctionFragment;
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
@@ -36,12 +38,20 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     "decimals()": FunctionFragment;
     "decreaseAllowance(address,uint256)": FunctionFragment;
     "dropOmniWallet(address)": FunctionFragment;
+    "frozenWallets(address)": FunctionFragment;
     "getMaxTotalSupply()": FunctionFragment;
+    "getMonths(uint256,uint256)": FunctionFragment;
+    "getReleaseTime()": FunctionFragment;
+    "getRestAmount(address)": FunctionFragment;
+    "getTimestamp()": FunctionFragment;
+    "getTransferableAmount(address)": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
     "initialize(string)": FunctionFragment;
     "isBlacklisted(address)": FunctionFragment;
     "isOmniWallet(address)": FunctionFragment;
+    "isStarted(uint256)": FunctionFragment;
     "mint(uint256)": FunctionFragment;
+    "mulDiv(uint256,uint256,uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "nonces(address)": FunctionFragment;
     "owner()": FunctionFragment;
@@ -57,11 +67,16 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     "transferMany(address[],uint256[])": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "unBlacklist(address)": FunctionFragment;
+    "vestingTypes(uint256)": FunctionFragment;
   };
 
   encodeFunctionData(
     functionFragment: "DOMAIN_SEPARATOR",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "addAllocations",
+    values: [string[], BigNumberish[], BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "addOmniWallet",
@@ -105,8 +120,32 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
+    functionFragment: "frozenWallets",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getMaxTotalSupply",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getMonths",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getReleaseTime",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getRestAmount",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTimestamp",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTransferableAmount",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "increaseAllowance",
@@ -121,7 +160,15 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     functionFragment: "isOmniWallet",
     values: [string]
   ): string;
+  encodeFunctionData(
+    functionFragment: "isStarted",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "mint", values: [BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "mulDiv",
+    values: [BigNumberish, BigNumberish, BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "nonces", values: [string]): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -169,9 +216,17 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(functionFragment: "unBlacklist", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "vestingTypes",
+    values: [BigNumberish]
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "DOMAIN_SEPARATOR",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "addAllocations",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -210,7 +265,28 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "frozenWallets",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getMaxTotalSupply",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "getMonths", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getReleaseTime",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getRestAmount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getTimestamp",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getTransferableAmount",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -226,7 +302,9 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     functionFragment: "isOmniWallet",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "isStarted", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "mulDiv", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -258,6 +336,10 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "unBlacklist",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "vestingTypes",
     data: BytesLike
   ): Result;
 
@@ -331,6 +413,20 @@ export class OmniTokenV1 extends Contract {
     DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<[string]>;
 
     "DOMAIN_SEPARATOR()"(overrides?: CallOverrides): Promise<[string]>;
+
+    addAllocations(
+      addresses: string[],
+      totalAmounts: BigNumberish[],
+      vestingTypeIndex: BigNumberish,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "addAllocations(address[],uint256[],uint256)"(
+      addresses: string[],
+      totalAmounts: BigNumberish[],
+      vestingTypeIndex: BigNumberish,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     addOmniWallet(
       _account: string,
@@ -466,9 +562,99 @@ export class OmniTokenV1 extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    frozenWallets(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        string,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        boolean,
+        BigNumber
+      ] & {
+        wallet: string;
+        totalAmount: BigNumber;
+        monthlyAmount: BigNumber;
+        initialAmount: BigNumber;
+        startDay: BigNumber;
+        afterDays: BigNumber;
+        scheduled: boolean;
+        monthDelay: BigNumber;
+      }
+    >;
+
+    "frozenWallets(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        string,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        boolean,
+        BigNumber
+      ] & {
+        wallet: string;
+        totalAmount: BigNumber;
+        monthlyAmount: BigNumber;
+        initialAmount: BigNumber;
+        startDay: BigNumber;
+        afterDays: BigNumber;
+        scheduled: boolean;
+        monthDelay: BigNumber;
+      }
+    >;
+
     getMaxTotalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     "getMaxTotalSupply()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getMonths(
+      afterDays: BigNumberish,
+      monthDelay: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    "getMonths(uint256,uint256)"(
+      afterDays: BigNumberish,
+      monthDelay: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    getReleaseTime(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    "getReleaseTime()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getRestAmount(
+      sender: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    "getRestAmount(address)"(
+      sender: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    getTimestamp(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    "getTimestamp()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getTransferableAmount(
+      sender: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    "getTransferableAmount(address)"(
+      sender: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     increaseAllowance(
       spender: string,
@@ -512,6 +698,16 @@ export class OmniTokenV1 extends Contract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    isStarted(
+      startDay: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    "isStarted(uint256)"(
+      startDay: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
     mint(
       _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -521,6 +717,20 @@ export class OmniTokenV1 extends Contract {
       _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    mulDiv(
+      x: BigNumberish,
+      y: BigNumberish,
+      z: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    "mulDiv(uint256,uint256,uint256)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      z: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     name(overrides?: CallOverrides): Promise<[string]>;
 
@@ -660,11 +870,51 @@ export class OmniTokenV1 extends Contract {
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    vestingTypes(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber, BigNumber, BigNumber, boolean] & {
+        monthlyRate: BigNumber;
+        initialRate: BigNumber;
+        afterDays: BigNumber;
+        monthDelay: BigNumber;
+        vesting: boolean;
+      }
+    >;
+
+    "vestingTypes(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber, BigNumber, BigNumber, boolean] & {
+        monthlyRate: BigNumber;
+        initialRate: BigNumber;
+        afterDays: BigNumber;
+        monthDelay: BigNumber;
+        vesting: boolean;
+      }
+    >;
   };
 
   DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<string>;
 
   "DOMAIN_SEPARATOR()"(overrides?: CallOverrides): Promise<string>;
+
+  addAllocations(
+    addresses: string[],
+    totalAmounts: BigNumberish[],
+    vestingTypeIndex: BigNumberish,
+    overrides?: PayableOverrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "addAllocations(address[],uint256[],uint256)"(
+    addresses: string[],
+    totalAmounts: BigNumberish[],
+    vestingTypeIndex: BigNumberish,
+    overrides?: PayableOverrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   addOmniWallet(
     _account: string,
@@ -800,9 +1050,96 @@ export class OmniTokenV1 extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  frozenWallets(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<
+    [
+      string,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      boolean,
+      BigNumber
+    ] & {
+      wallet: string;
+      totalAmount: BigNumber;
+      monthlyAmount: BigNumber;
+      initialAmount: BigNumber;
+      startDay: BigNumber;
+      afterDays: BigNumber;
+      scheduled: boolean;
+      monthDelay: BigNumber;
+    }
+  >;
+
+  "frozenWallets(address)"(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<
+    [
+      string,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      boolean,
+      BigNumber
+    ] & {
+      wallet: string;
+      totalAmount: BigNumber;
+      monthlyAmount: BigNumber;
+      initialAmount: BigNumber;
+      startDay: BigNumber;
+      afterDays: BigNumber;
+      scheduled: boolean;
+      monthDelay: BigNumber;
+    }
+  >;
+
   getMaxTotalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
   "getMaxTotalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getMonths(
+    afterDays: BigNumberish,
+    monthDelay: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "getMonths(uint256,uint256)"(
+    afterDays: BigNumberish,
+    monthDelay: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  getReleaseTime(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "getReleaseTime()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getRestAmount(sender: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+  "getRestAmount(address)"(
+    sender: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  getTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "getTimestamp()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getTransferableAmount(
+    sender: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "getTransferableAmount(address)"(
+    sender: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   increaseAllowance(
     spender: string,
@@ -840,6 +1177,16 @@ export class OmniTokenV1 extends Contract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  isStarted(
+    startDay: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  "isStarted(uint256)"(
+    startDay: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   mint(
     _amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -849,6 +1196,20 @@ export class OmniTokenV1 extends Contract {
     _amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  mulDiv(
+    x: BigNumberish,
+    y: BigNumberish,
+    z: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "mulDiv(uint256,uint256,uint256)"(
+    x: BigNumberish,
+    y: BigNumberish,
+    z: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   name(overrides?: CallOverrides): Promise<string>;
 
@@ -989,10 +1350,50 @@ export class OmniTokenV1 extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  vestingTypes(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<
+    [BigNumber, BigNumber, BigNumber, BigNumber, boolean] & {
+      monthlyRate: BigNumber;
+      initialRate: BigNumber;
+      afterDays: BigNumber;
+      monthDelay: BigNumber;
+      vesting: boolean;
+    }
+  >;
+
+  "vestingTypes(uint256)"(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<
+    [BigNumber, BigNumber, BigNumber, BigNumber, boolean] & {
+      monthlyRate: BigNumber;
+      initialRate: BigNumber;
+      afterDays: BigNumber;
+      monthDelay: BigNumber;
+      vesting: boolean;
+    }
+  >;
+
   callStatic: {
     DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<string>;
 
     "DOMAIN_SEPARATOR()"(overrides?: CallOverrides): Promise<string>;
+
+    addAllocations(
+      addresses: string[],
+      totalAmounts: BigNumberish[],
+      vestingTypeIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "addAllocations(address[],uint256[],uint256)"(
+      addresses: string[],
+      totalAmounts: BigNumberish[],
+      vestingTypeIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     addOmniWallet(
       _account: string,
@@ -1122,9 +1523,99 @@ export class OmniTokenV1 extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    frozenWallets(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        string,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        boolean,
+        BigNumber
+      ] & {
+        wallet: string;
+        totalAmount: BigNumber;
+        monthlyAmount: BigNumber;
+        initialAmount: BigNumber;
+        startDay: BigNumber;
+        afterDays: BigNumber;
+        scheduled: boolean;
+        monthDelay: BigNumber;
+      }
+    >;
+
+    "frozenWallets(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        string,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        boolean,
+        BigNumber
+      ] & {
+        wallet: string;
+        totalAmount: BigNumber;
+        monthlyAmount: BigNumber;
+        initialAmount: BigNumber;
+        startDay: BigNumber;
+        afterDays: BigNumber;
+        scheduled: boolean;
+        monthDelay: BigNumber;
+      }
+    >;
+
     getMaxTotalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getMaxTotalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getMonths(
+      afterDays: BigNumberish,
+      monthDelay: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getMonths(uint256,uint256)"(
+      afterDays: BigNumberish,
+      monthDelay: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getReleaseTime(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getReleaseTime()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getRestAmount(
+      sender: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getRestAmount(address)"(
+      sender: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getTimestamp()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getTransferableAmount(
+      sender: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getTransferableAmount(address)"(
+      sender: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     increaseAllowance(
       spender: string,
@@ -1162,12 +1653,36 @@ export class OmniTokenV1 extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    isStarted(
+      startDay: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "isStarted(uint256)"(
+      startDay: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     mint(_amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     "mint(uint256)"(
       _amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    mulDiv(
+      x: BigNumberish,
+      y: BigNumberish,
+      z: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "mulDiv(uint256,uint256,uint256)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      z: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     name(overrides?: CallOverrides): Promise<string>;
 
@@ -1294,6 +1809,32 @@ export class OmniTokenV1 extends Contract {
       _account: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    vestingTypes(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber, BigNumber, BigNumber, boolean] & {
+        monthlyRate: BigNumber;
+        initialRate: BigNumber;
+        afterDays: BigNumber;
+        monthDelay: BigNumber;
+        vesting: boolean;
+      }
+    >;
+
+    "vestingTypes(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber, BigNumber, BigNumber, boolean] & {
+        monthlyRate: BigNumber;
+        initialRate: BigNumber;
+        afterDays: BigNumber;
+        monthDelay: BigNumber;
+        vesting: boolean;
+      }
+    >;
   };
 
   filters: {
@@ -1348,6 +1889,20 @@ export class OmniTokenV1 extends Contract {
     DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<BigNumber>;
 
     "DOMAIN_SEPARATOR()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    addAllocations(
+      addresses: string[],
+      totalAmounts: BigNumberish[],
+      vestingTypeIndex: BigNumberish,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "addAllocations(address[],uint256[],uint256)"(
+      addresses: string[],
+      totalAmounts: BigNumberish[],
+      vestingTypeIndex: BigNumberish,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     addOmniWallet(
       _account: string,
@@ -1483,9 +2038,56 @@ export class OmniTokenV1 extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    frozenWallets(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "frozenWallets(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getMaxTotalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getMaxTotalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getMonths(
+      afterDays: BigNumberish,
+      monthDelay: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getMonths(uint256,uint256)"(
+      afterDays: BigNumberish,
+      monthDelay: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getReleaseTime(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getReleaseTime()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getRestAmount(
+      sender: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getRestAmount(address)"(
+      sender: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getTimestamp()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getTransferableAmount(
+      sender: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getTransferableAmount(address)"(
+      sender: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     increaseAllowance(
       spender: string,
@@ -1529,6 +2131,16 @@ export class OmniTokenV1 extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    isStarted(
+      startDay: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "isStarted(uint256)"(
+      startDay: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     mint(
       _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1537,6 +2149,20 @@ export class OmniTokenV1 extends Contract {
     "mint(uint256)"(
       _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    mulDiv(
+      x: BigNumberish,
+      y: BigNumberish,
+      z: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "mulDiv(uint256,uint256,uint256)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      z: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1677,6 +2303,16 @@ export class OmniTokenV1 extends Contract {
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    vestingTypes(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "vestingTypes(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -1684,6 +2320,20 @@ export class OmniTokenV1 extends Contract {
 
     "DOMAIN_SEPARATOR()"(
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    addAllocations(
+      addresses: string[],
+      totalAmounts: BigNumberish[],
+      vestingTypeIndex: BigNumberish,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "addAllocations(address[],uint256[],uint256)"(
+      addresses: string[],
+      totalAmounts: BigNumberish[],
+      vestingTypeIndex: BigNumberish,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     addOmniWallet(
@@ -1828,9 +2478,61 @@ export class OmniTokenV1 extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    frozenWallets(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "frozenWallets(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getMaxTotalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "getMaxTotalSupply()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getMonths(
+      afterDays: BigNumberish,
+      monthDelay: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getMonths(uint256,uint256)"(
+      afterDays: BigNumberish,
+      monthDelay: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getReleaseTime(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getReleaseTime()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getRestAmount(
+      sender: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getRestAmount(address)"(
+      sender: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getTimestamp(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getTimestamp()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getTransferableAmount(
+      sender: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getTransferableAmount(address)"(
+      sender: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1876,6 +2578,16 @@ export class OmniTokenV1 extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    isStarted(
+      startDay: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "isStarted(uint256)"(
+      startDay: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     mint(
       _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1884,6 +2596,20 @@ export class OmniTokenV1 extends Contract {
     "mint(uint256)"(
       _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    mulDiv(
+      x: BigNumberish,
+      y: BigNumberish,
+      z: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "mulDiv(uint256,uint256,uint256)"(
+      x: BigNumberish,
+      y: BigNumberish,
+      z: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -2026,6 +2752,16 @@ export class OmniTokenV1 extends Contract {
     "unBlacklist(address)"(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    vestingTypes(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "vestingTypes(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
 }
