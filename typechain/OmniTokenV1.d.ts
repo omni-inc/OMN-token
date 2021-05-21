@@ -51,7 +51,6 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     "isOmniWallet(address)": FunctionFragment;
     "isStarted(uint256)": FunctionFragment;
     "mint(uint256)": FunctionFragment;
-    "mulDiv(uint256,uint256,uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "nonces(address)": FunctionFragment;
     "owner()": FunctionFragment;
@@ -165,10 +164,6 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "mint", values: [BigNumberish]): string;
-  encodeFunctionData(
-    functionFragment: "mulDiv",
-    values: [BigNumberish, BigNumberish, BigNumberish]
-  ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "nonces", values: [string]): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -304,7 +299,6 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "isStarted", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "mulDiv", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -717,20 +711,6 @@ export class OmniTokenV1 extends Contract {
       _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    mulDiv(
-      x: BigNumberish,
-      y: BigNumberish,
-      z: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    "mulDiv(uint256,uint256,uint256)"(
-      x: BigNumberish,
-      y: BigNumberish,
-      z: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
 
     name(overrides?: CallOverrides): Promise<[string]>;
 
@@ -1197,20 +1177,6 @@ export class OmniTokenV1 extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  mulDiv(
-    x: BigNumberish,
-    y: BigNumberish,
-    z: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  "mulDiv(uint256,uint256,uint256)"(
-    x: BigNumberish,
-    y: BigNumberish,
-    z: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
   name(overrides?: CallOverrides): Promise<string>;
 
   "name()"(overrides?: CallOverrides): Promise<string>;
@@ -1669,20 +1635,6 @@ export class OmniTokenV1 extends Contract {
       _amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    mulDiv(
-      x: BigNumberish,
-      y: BigNumberish,
-      z: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "mulDiv(uint256,uint256,uint256)"(
-      x: BigNumberish,
-      y: BigNumberish,
-      z: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     name(overrides?: CallOverrides): Promise<string>;
 
@@ -2151,20 +2103,6 @@ export class OmniTokenV1 extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    mulDiv(
-      x: BigNumberish,
-      y: BigNumberish,
-      z: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "mulDiv(uint256,uint256,uint256)"(
-      x: BigNumberish,
-      y: BigNumberish,
-      z: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
     "name()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -2596,20 +2534,6 @@ export class OmniTokenV1 extends Contract {
     "mint(uint256)"(
       _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    mulDiv(
-      x: BigNumberish,
-      y: BigNumberish,
-      z: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "mulDiv(uint256,uint256,uint256)"(
-      x: BigNumberish,
-      y: BigNumberish,
-      z: BigNumberish,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;

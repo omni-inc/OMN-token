@@ -30,7 +30,6 @@ interface VestingInterface extends ethers.utils.Interface {
     "getTimestamp()": FunctionFragment;
     "getTransferableAmount(address)": FunctionFragment;
     "isStarted(uint256)": FunctionFragment;
-    "mulDiv(uint256,uint256,uint256)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
@@ -68,10 +67,6 @@ interface VestingInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "isStarted",
     values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "mulDiv",
-    values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
@@ -113,7 +108,6 @@ interface VestingInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "isStarted", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "mulDiv", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
@@ -293,20 +287,6 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    mulDiv(
-      x: BigNumberish,
-      y: BigNumberish,
-      z: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    "mulDiv(uint256,uint256,uint256)"(
-      x: BigNumberish,
-      y: BigNumberish,
-      z: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
     owner(overrides?: CallOverrides): Promise<[string]>;
 
     "owner()"(overrides?: CallOverrides): Promise<[string]>;
@@ -466,20 +446,6 @@ export class Vesting extends Contract {
     startDay: BigNumberish,
     overrides?: CallOverrides
   ): Promise<boolean>;
-
-  mulDiv(
-    x: BigNumberish,
-    y: BigNumberish,
-    z: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  "mulDiv(uint256,uint256,uint256)"(
-    x: BigNumberish,
-    y: BigNumberish,
-    z: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
@@ -644,20 +610,6 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    mulDiv(
-      x: BigNumberish,
-      y: BigNumberish,
-      z: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "mulDiv(uint256,uint256,uint256)"(
-      x: BigNumberish,
-      y: BigNumberish,
-      z: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     owner(overrides?: CallOverrides): Promise<string>;
 
     "owner()"(overrides?: CallOverrides): Promise<string>;
@@ -785,20 +737,6 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    mulDiv(
-      x: BigNumberish,
-      y: BigNumberish,
-      z: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "mulDiv(uint256,uint256,uint256)"(
-      x: BigNumberish,
-      y: BigNumberish,
-      z: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     "owner()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -906,20 +844,6 @@ export class Vesting extends Contract {
 
     "isStarted(uint256)"(
       startDay: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    mulDiv(
-      x: BigNumberish,
-      y: BigNumberish,
-      z: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "mulDiv(uint256,uint256,uint256)"(
-      x: BigNumberish,
-      y: BigNumberish,
-      z: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

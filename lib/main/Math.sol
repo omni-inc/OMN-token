@@ -61,7 +61,7 @@ contract Math {
         // Factor powers of two out of denominator
         // Compute largest power of two divisor of denominator.
         // Always >= 1.
-        uint256 twos = -denominator & denominator;
+        uint256 twos = (type(uint256).max - denominator.add(uint256(1))) & denominator;
         // Divide denominator by power of two
         assembly {
             denominator := div(denominator, twos)
