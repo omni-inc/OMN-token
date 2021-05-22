@@ -23,9 +23,9 @@ struct FrozenWallet {
     bool scheduled;
     uint256 monthDelay;
 }
-
+// TODO: need to change for Daily Rate
 struct VestingType {
-    uint256 monthlyRate;
+    uint256 monthlyRate; //Daily Rate
     uint256 initialRate;
     uint256 afterDays;
     uint256 monthDelay;
@@ -44,7 +44,7 @@ contract Vesting is OwnableUpgradeable, Math {
     VestingType[] public vestingTypes;
 
 	function getReleaseTime() public pure returns (uint256) {
-        return 1611588600; // "Mon, 25 Jan 2021 15:30:00 GMT"
+        return 1623752855; // "Tuesday, 15 June 2021 10:27:35 GMT"
     }
 
     function addAllocations(address[] memory addresses, uint256[] memory totalAmounts, uint256 vestingTypeIndex) external payable onlyOwner() returns (bool) {
@@ -104,7 +104,7 @@ contract Vesting is OwnableUpgradeable, Math {
         }
 
         uint256 diff = block.timestamp.sub(time);
-        uint256 months = diff.div(30 days).add(1).sub(monthDelay);
+        uint256 months = diff.div(30 days).add(1).sub(monthDelay); // adapt this formula for days, not for month
 
         return months;
     }
