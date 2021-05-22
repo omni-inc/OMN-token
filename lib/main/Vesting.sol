@@ -10,25 +10,23 @@ import "../@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "../@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 import "../@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import "../@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
-
+import "hardhat/console.sol";
 import "./Math.sol";
 
 struct FrozenWallet {
     address wallet;
     uint256 totalAmount;
-    uint256 monthlyAmount;
+    uint256 dailyAmount;
     uint256 initialAmount;
     uint256 startDay;
     uint256 afterDays;
     bool scheduled;
-    uint256 monthDelay;
 }
 // TODO: need to change for Daily Rate
 struct VestingType {
-    uint256 monthlyRate; //Daily Rate
+    uint256 dailyRate; //Daily Rate
     uint256 initialRate;
     uint256 afterDays;
-    uint256 monthDelay;
     bool vesting;
 }
 
@@ -57,18 +55,17 @@ contract Vesting is OwnableUpgradeable, Math {
         for(uint256 i = 0; i < addressesLength; i++) {
             address _address = addresses[i];
             uint256 totalAmount = totalAmounts[i];
-            uint256 monthlyAmount = mulDiv(totalAmounts[i], vestingType.monthlyRate, 100000000000000000000);
+            uint256 dailyAmount = mulDiv(totalAmounts[i], vestingType.dailyRate, 100000000000000000000);
             uint256 initialAmount = mulDiv(totalAmounts[i], vestingType.initialRate, 100000000000000000000);
             uint256 afterDay = vestingType.afterDays;
-            uint256 monthDelay = vestingType.monthDelay;
 
-            addFrozenWallet(_address, totalAmount, monthlyAmount, initialAmount, afterDay, monthDelay);
+            addFrozenWallet(_address, totalAmount, dailyAmount, initialAmount, afterDay);
         }
 
         return true;
     }
 
-	function addFrozenWallet(address wallet, uint256 totalAmount, uint256 monthlyAmount, uint256 initialAmount, uint256 afterDays, uint256 monthDelay) internal {
+	function addFrozenWallet(address wallet, uint256 totalAmount, uint256 dailyAmount, uint256 initialAmount, uint256 afterDays) internal {
         uint256 releaseTime = getReleaseTime();
 
         if (!frozenWallets[wallet].scheduled) {
@@ -79,12 +76,11 @@ contract Vesting is OwnableUpgradeable, Math {
         FrozenWallet memory frozenWallet = FrozenWallet(
             wallet,
             totalAmount,
-            monthlyAmount,
+            dailyAmount,
             initialAmount,
             releaseTime.add(afterDays),
             afterDays,
-            true,
-            monthDelay
+            true
         );
 
         // Add wallet to frozen wallets
@@ -95,7 +91,7 @@ contract Vesting is OwnableUpgradeable, Math {
         return block.timestamp;
     }
 
-    function getMonths(uint256 afterDays, uint256 monthDelay) public view returns (uint256) {
+    function getDays(uint256 afterDays) public view returns (uint256) {
         uint256 releaseTime = getReleaseTime();
         uint256 time = releaseTime.add(afterDays);
 
@@ -104,9 +100,10 @@ contract Vesting is OwnableUpgradeable, Math {
         }
 
         uint256 diff = block.timestamp.sub(time);
-        uint256 months = diff.div(30 days).add(1).sub(monthDelay); // adapt this formula for days, not for month
-
-        return months;
+        uint256 dias = diff.div(24 hours); // adapt this formula for days, not for month
+		console.log("Calculate Diff: ", diff);
+		console.log("Calculate Days: ", dias);
+        return dias;
     }
 
     function isStarted(uint256 startDay) public view returns (bool) {
@@ -120,9 +117,9 @@ contract Vesting is OwnableUpgradeable, Math {
     }
 
     function getTransferableAmount(address sender) public view returns (uint256) {
-        uint256 months = getMonths(frozenWallets[sender].afterDays, frozenWallets[sender].monthDelay);
-        uint256 monthlyTransferableAmount = frozenWallets[sender].monthlyAmount.mul(months);
-        uint256 transferableAmount = monthlyTransferableAmount.add(frozenWallets[sender].initialAmount);
+        uint256 dias = getDays(frozenWallets[sender].afterDays);
+        uint256 dailyTransferableAmount = frozenWallets[sender].dailyAmount.mul(dias);
+        uint256 transferableAmount = dailyTransferableAmount.add(frozenWallets[sender].initialAmount);
 
         if (transferableAmount > frozenWallets[sender].totalAmount) {
             return frozenWallets[sender].totalAmount;

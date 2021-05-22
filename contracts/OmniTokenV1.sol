@@ -35,14 +35,14 @@ contract OmniTokenV1 is Initializable, Claimable, Blacklistable, CirculatingSupp
 
 		console.log("Deploying Vesting Types");
 		// Begininng Deploy of Allocation in the ERC20
-		vestingTypes.push(VestingType(1660000000000000000, 0, 30 days, 0, true)); // 30 Days 1.66 Percent
-        vestingTypes.push(VestingType(1660000000000000000, 0, 180 days, 0, true)); // 180 Days 1.66 Percent
-        vestingTypes.push(VestingType(4160000000000000000, 0, 360 days, 0, true)); // 360 Days 4.16 Percent
-        vestingTypes.push(VestingType(4160000000000000000, 0, 30 days, 0, true)); // 30 Days 4.16 Percent
-        vestingTypes.push(VestingType(100000000000000000000, 100000000000000000000, 0, 1, true)); // 0 Days 100 Percent
-        vestingTypes.push(VestingType(11110000000000000000, 0, 30 days, 0, true)); // 30 Days 11.11 Percent
-        vestingTypes.push(VestingType(15000000000000000000, 10000000000000000000, 0, 1, true)); // 0 Days 10 initial 15 monthly Percent
-        vestingTypes.push(VestingType(25000000000000000000, 25000000000000000000, 0, 1, true)); // 0 Days 25 initial 25 monthly Percent
+		vestingTypes.push(VestingType(1660000000000000000, 0, 30 days, true)); // 30 Days 1.66 Percent
+        vestingTypes.push(VestingType(1660000000000000000, 0, 180 days, true)); // 180 Days 1.66 Percent
+        vestingTypes.push(VestingType(4160000000000000000, 0, 360 days, true)); // 360 Days 4.16 Percent
+        vestingTypes.push(VestingType(4160000000000000000, 0, 30 days, true)); // 30 Days 4.16 Percent
+        vestingTypes.push(VestingType(100000000000000000000, 100000000000000000000, 0, true)); // 0 Days 100 Percent
+        vestingTypes.push(VestingType(11110000000000000000, 0, 30 days, true)); // 30 Days 11.11 Percent
+        vestingTypes.push(VestingType(15000000000000000000, 10000000000000000000, 0, true)); // 0 Days 10 initial 15 monthly Percent
+        vestingTypes.push(VestingType(25000000000000000000, 25000000000000000000, 0, true)); // 0 Days 25 initial 25 monthly Percent
 		//Finish Deploy of Allocation in the ERC20
 		console.log("Deploying a OMN Token: ", _greeting);
 	}

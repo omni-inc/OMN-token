@@ -39,8 +39,8 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     "decreaseAllowance(address,uint256)": FunctionFragment;
     "dropOmniWallet(address)": FunctionFragment;
     "frozenWallets(address)": FunctionFragment;
+    "getDays(uint256)": FunctionFragment;
     "getMaxTotalSupply()": FunctionFragment;
-    "getMonths(uint256,uint256)": FunctionFragment;
     "getReleaseTime()": FunctionFragment;
     "getRestAmount(address)": FunctionFragment;
     "getTimestamp()": FunctionFragment;
@@ -123,12 +123,12 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "getMaxTotalSupply",
-    values?: undefined
+    functionFragment: "getDays",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "getMonths",
-    values: [BigNumberish, BigNumberish]
+    functionFragment: "getMaxTotalSupply",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getReleaseTime",
@@ -263,11 +263,11 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     functionFragment: "frozenWallets",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "getDays", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getMaxTotalSupply",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "getMonths", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getReleaseTime",
     data: BytesLike
@@ -567,17 +567,15 @@ export class OmniTokenV1 extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
-        boolean,
-        BigNumber
+        boolean
       ] & {
         wallet: string;
         totalAmount: BigNumber;
-        monthlyAmount: BigNumber;
+        dailyAmount: BigNumber;
         initialAmount: BigNumber;
         startDay: BigNumber;
         afterDays: BigNumber;
         scheduled: boolean;
-        monthDelay: BigNumber;
       }
     >;
 
@@ -592,35 +590,31 @@ export class OmniTokenV1 extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
-        boolean,
-        BigNumber
+        boolean
       ] & {
         wallet: string;
         totalAmount: BigNumber;
-        monthlyAmount: BigNumber;
+        dailyAmount: BigNumber;
         initialAmount: BigNumber;
         startDay: BigNumber;
         afterDays: BigNumber;
         scheduled: boolean;
-        monthDelay: BigNumber;
       }
     >;
+
+    getDays(
+      afterDays: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    "getDays(uint256)"(
+      afterDays: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     getMaxTotalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     "getMaxTotalSupply()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    getMonths(
-      afterDays: BigNumberish,
-      monthDelay: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    "getMonths(uint256,uint256)"(
-      afterDays: BigNumberish,
-      monthDelay: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
 
     getReleaseTime(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -855,11 +849,10 @@ export class OmniTokenV1 extends Contract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
-      [BigNumber, BigNumber, BigNumber, BigNumber, boolean] & {
-        monthlyRate: BigNumber;
+      [BigNumber, BigNumber, BigNumber, boolean] & {
+        dailyRate: BigNumber;
         initialRate: BigNumber;
         afterDays: BigNumber;
-        monthDelay: BigNumber;
         vesting: boolean;
       }
     >;
@@ -868,11 +861,10 @@ export class OmniTokenV1 extends Contract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
-      [BigNumber, BigNumber, BigNumber, BigNumber, boolean] & {
-        monthlyRate: BigNumber;
+      [BigNumber, BigNumber, BigNumber, boolean] & {
+        dailyRate: BigNumber;
         initialRate: BigNumber;
         afterDays: BigNumber;
-        monthDelay: BigNumber;
         vesting: boolean;
       }
     >;
@@ -1034,24 +1026,14 @@ export class OmniTokenV1 extends Contract {
     arg0: string,
     overrides?: CallOverrides
   ): Promise<
-    [
-      string,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      boolean,
-      BigNumber
-    ] & {
+    [string, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, boolean] & {
       wallet: string;
       totalAmount: BigNumber;
-      monthlyAmount: BigNumber;
+      dailyAmount: BigNumber;
       initialAmount: BigNumber;
       startDay: BigNumber;
       afterDays: BigNumber;
       scheduled: boolean;
-      monthDelay: BigNumber;
     }
   >;
 
@@ -1059,42 +1041,30 @@ export class OmniTokenV1 extends Contract {
     arg0: string,
     overrides?: CallOverrides
   ): Promise<
-    [
-      string,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      boolean,
-      BigNumber
-    ] & {
+    [string, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, boolean] & {
       wallet: string;
       totalAmount: BigNumber;
-      monthlyAmount: BigNumber;
+      dailyAmount: BigNumber;
       initialAmount: BigNumber;
       startDay: BigNumber;
       afterDays: BigNumber;
       scheduled: boolean;
-      monthDelay: BigNumber;
     }
   >;
+
+  getDays(
+    afterDays: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "getDays(uint256)"(
+    afterDays: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   getMaxTotalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
   "getMaxTotalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  getMonths(
-    afterDays: BigNumberish,
-    monthDelay: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  "getMonths(uint256,uint256)"(
-    afterDays: BigNumberish,
-    monthDelay: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
 
   getReleaseTime(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1320,11 +1290,10 @@ export class OmniTokenV1 extends Contract {
     arg0: BigNumberish,
     overrides?: CallOverrides
   ): Promise<
-    [BigNumber, BigNumber, BigNumber, BigNumber, boolean] & {
-      monthlyRate: BigNumber;
+    [BigNumber, BigNumber, BigNumber, boolean] & {
+      dailyRate: BigNumber;
       initialRate: BigNumber;
       afterDays: BigNumber;
-      monthDelay: BigNumber;
       vesting: boolean;
     }
   >;
@@ -1333,11 +1302,10 @@ export class OmniTokenV1 extends Contract {
     arg0: BigNumberish,
     overrides?: CallOverrides
   ): Promise<
-    [BigNumber, BigNumber, BigNumber, BigNumber, boolean] & {
-      monthlyRate: BigNumber;
+    [BigNumber, BigNumber, BigNumber, boolean] & {
+      dailyRate: BigNumber;
       initialRate: BigNumber;
       afterDays: BigNumber;
-      monthDelay: BigNumber;
       vesting: boolean;
     }
   >;
@@ -1500,17 +1468,15 @@ export class OmniTokenV1 extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
-        boolean,
-        BigNumber
+        boolean
       ] & {
         wallet: string;
         totalAmount: BigNumber;
-        monthlyAmount: BigNumber;
+        dailyAmount: BigNumber;
         initialAmount: BigNumber;
         startDay: BigNumber;
         afterDays: BigNumber;
         scheduled: boolean;
-        monthDelay: BigNumber;
       }
     >;
 
@@ -1525,35 +1491,31 @@ export class OmniTokenV1 extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
-        boolean,
-        BigNumber
+        boolean
       ] & {
         wallet: string;
         totalAmount: BigNumber;
-        monthlyAmount: BigNumber;
+        dailyAmount: BigNumber;
         initialAmount: BigNumber;
         startDay: BigNumber;
         afterDays: BigNumber;
         scheduled: boolean;
-        monthDelay: BigNumber;
       }
     >;
+
+    getDays(
+      afterDays: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getDays(uint256)"(
+      afterDays: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     getMaxTotalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getMaxTotalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getMonths(
-      afterDays: BigNumberish,
-      monthDelay: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getMonths(uint256,uint256)"(
-      afterDays: BigNumberish,
-      monthDelay: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     getReleaseTime(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1766,11 +1728,10 @@ export class OmniTokenV1 extends Contract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
-      [BigNumber, BigNumber, BigNumber, BigNumber, boolean] & {
-        monthlyRate: BigNumber;
+      [BigNumber, BigNumber, BigNumber, boolean] & {
+        dailyRate: BigNumber;
         initialRate: BigNumber;
         afterDays: BigNumber;
-        monthDelay: BigNumber;
         vesting: boolean;
       }
     >;
@@ -1779,11 +1740,10 @@ export class OmniTokenV1 extends Contract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
-      [BigNumber, BigNumber, BigNumber, BigNumber, boolean] & {
-        monthlyRate: BigNumber;
+      [BigNumber, BigNumber, BigNumber, boolean] & {
+        dailyRate: BigNumber;
         initialRate: BigNumber;
         afterDays: BigNumber;
-        monthDelay: BigNumber;
         vesting: boolean;
       }
     >;
@@ -1997,21 +1957,19 @@ export class OmniTokenV1 extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getDays(
+      afterDays: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getDays(uint256)"(
+      afterDays: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getMaxTotalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getMaxTotalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getMonths(
-      afterDays: BigNumberish,
-      monthDelay: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getMonths(uint256,uint256)"(
-      afterDays: BigNumberish,
-      monthDelay: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     getReleaseTime(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2426,21 +2384,19 @@ export class OmniTokenV1 extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getDays(
+      afterDays: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getDays(uint256)"(
+      afterDays: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getMaxTotalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "getMaxTotalSupply()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getMonths(
-      afterDays: BigNumberish,
-      monthDelay: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getMonths(uint256,uint256)"(
-      afterDays: BigNumberish,
-      monthDelay: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
