@@ -31,8 +31,8 @@ const main = async () => {
 	// verify the Address
   console.log("Omni Token deployed to:", omnitoken.address);
 	// Verify the balance of the Owner
-	console.log("Balance of the Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "must be one billon!!!");
-	console.log("Total Supply: ", (await omnitoken.totalSupply()).toString(), "must be one billon!!!");
+	console.log("Balance of the Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "must be 638 million!!! in wei");
+	console.log("Total Supply: ", (await omnitoken.totalSupply()).toString(), "must be 638 million!!! in wei");
 	// Try to mint one additional Token
 	console.log("============= Try to Mint Any Additional Token (Expect Revert) =================");
 	try {

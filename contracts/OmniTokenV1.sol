@@ -35,14 +35,31 @@ contract OmniTokenV1 is Initializable, Claimable, Blacklistable, CirculatingSupp
 
 		console.log("Deploying Vesting Types");
 		// Begininng Deploy of Allocation in the ERC20
-		vestingTypes.push(VestingType(1660000000000000000, 0, 30 days, true)); // 30 Days 1.66 Percent
-        vestingTypes.push(VestingType(1660000000000000000, 0, 180 days, true)); // 180 Days 1.66 Percent
-        vestingTypes.push(VestingType(4160000000000000000, 0, 360 days, true)); // 360 Days 4.16 Percent
-        vestingTypes.push(VestingType(4160000000000000000, 0, 30 days, true)); // 30 Days 4.16 Percent
+		// Allocation #1 Early Backers Total (6.95652174144928)% and Daily Rate in wei (134295786514465), Start After 30 days Locked the Token
+		vestingTypes.push(VestingType(134295786514465, 0, 30 days, true)); // 30 Days Locked, 0.0134295786514465 Percent daily for 518 days
+		// Allocation #2 Seed Total (9.39130435095652)% and Daily Rate in wei (205499001115022), Start After 30 days Locked the Token
+		vestingTypes.push(VestingType(205499001115022, 0, 30 days, true)); // 30 Days Locked, 0.0205499001115022 Percent daily for 457 days
+		// Allocation #3 Private Total (9.13043478565218)%, Unlocked 10% when start the vesting, Start with 30 days Locked the Token and After (9.13043478565218)% in Daily Rate in wei of (207509881492095),
+        vestingTypes.push(VestingType(207509881492095, 10000000000000000000, 30 days, true)); // 10% Unlocked when start, 30 Days Locked, 0.0207509881492095 Percent daily for 396 Days
+		// Allocation #4 Public (1.30434782652174)% /#10 Liquidity (3.000000001)% and Daily Rate in wei (0), Unlocked the all Token immediatly when Start the Vesting
         vestingTypes.push(VestingType(100000000000000000000, 100000000000000000000, 0, true)); // 0 Days 100 Percent
-        vestingTypes.push(VestingType(11110000000000000000, 0, 30 days, true)); // 30 Days 11.11 Percent
-        vestingTypes.push(VestingType(15000000000000000000, 10000000000000000000, 0, true)); // 0 Days 10 initial 15 monthly Percent
-        vestingTypes.push(VestingType(25000000000000000000, 25000000000000000000, 0, true)); // 0 Days 25 initial 25 monthly Percent
+		// Allocation #5 OMNI Team Total (10)% and Daily Rate in wei (363636363636364), Start After 273 days Locked the Token
+		vestingTypes.push(VestingType(363636363636364, 0, 273 days, true)); // 273 Days Locked, 0.0363636363636364 Percent daily for 275 days
+		// Allocation #6 Advisors Total (5)% and Daily Rate in wei (126262626262626), Start After 30 days Locked the Token
+		vestingTypes.push(VestingType(126262626262626, 0, 30 days, true)); // 30 Days Locked, 0.0205499001115022 Percent daily for 396 days
+		// Allocation #7 Marketing Total (10.00000002)% and Daily Rate in wei (298507463283582), Start After 122 days Locked the Token
+		vestingTypes.push(VestingType(298507463283582, 0, 122 days, true)); // 122 Days Locked, 0.0298507463283582 Percent daily for 335 days
+		// Allocation #8 Foundation Total (8)% and Daily Rate in wei (125000000000000), Start After 273 days Locked the Token
+		vestingTypes.push(VestingType(125000000000000, 0, 273 days, true)); // 273 Days Locked, 0.0125 Percent daily for 640 days
+		// Allocation #9 Tech PartnersTotal (5)% and Daily Rate in wei (78247261345853), Start After 365 days Locked the Token
+		vestingTypes.push(VestingType(78247261345853, 0, 365 days, true)); // 365 Days Locked, 0.0078247261345853 Percent daily for 639 days
+		// Allocation #11 Ecosystem Total (20)% and Daily Rate in wei (156617071260767), Start After 92 days Locked the Token
+		vestingTypes.push(VestingType(156617071260767, 0, 92 days, true)); // 92 Days Locked, 0.0156617071260767 Percent daily for 1277 days
+		// Allocation #12 Community Reserve Total (3)% and Daily Rate in wei (25295109612142), Start After 183 days Locked the Token
+		vestingTypes.push(VestingType(25295109612142, 0, 183 days, true)); // 183 Days Locked, 0.0025295109612142 Percent daily for 1186 days
+		// Allocation #13 Company Reserve Total (9.21739127442027)% and Daily Rate in wei (91624167737776), Start After 273 days Locked the Token
+		vestingTypes.push(VestingType(91624167737776, 0, 273 days, true)); // 273 Days Locked, 0.0091624167737776 Percent daily for 1006 days
+
 		//Finish Deploy of Allocation in the ERC20
 		console.log("Deploying a OMN Token: ", _greeting);
 	}
