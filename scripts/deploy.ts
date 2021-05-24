@@ -24,8 +24,7 @@ const main = async () => {
   // console.log("Accounts:", accounts.map((a) => a.address));
 
   const OmniToken = await ethers.getContractFactory("OmniTokenV1");
-	const omnitoken = await upgrades.deployProxy(OmniToken, ["Hello, OMN Token Ver 1"])
-  // const greeter = await Greeter.deploy("Hello, Hardhat!");
+	const omnitoken = await upgrades.deployProxy(OmniToken, ["Hello, OMN Token Ver 1"]);
 
   await omnitoken.deployed();
 	// verify the Address

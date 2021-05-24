@@ -26,7 +26,7 @@ contract OmniTokenV1 is Initializable, Claimable, Blacklistable, CirculatingSupp
 
 	function initialize(string memory _greeting) initializer() public {
 		__Ownable_init();
-		__ERC20_init_unchained('OMNI App', 'OMNI');
+		__ERC20_init_unchained('OMNI App', 'OMN');
 		__Pausable_init_unchained();
 		__ERC20Permit_init('OMNI App');
 
