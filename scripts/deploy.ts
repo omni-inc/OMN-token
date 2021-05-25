@@ -6,7 +6,6 @@
 import { run, ethers, upgrades } from 'hardhat';
 import  { expect } from "chai";
 import "@nomiclabs/hardhat-ethers";
-import { Console } from 'console';
 
 const main = async () => {
   // Hardhat always runs the compile task when running scripts with its command
@@ -23,19 +22,25 @@ const main = async () => {
 
   // console.log("Accounts:", accounts.map((a) => a.address));
 
-  const OmniToken = await ethers.getContractFactory("OmniTokenV1");
+  	const OmniToken = await ethers.getContractFactory("OmniTokenV1");
 	const omnitoken = await upgrades.deployProxy(OmniToken, ["Hello, OMN Token Ver 1"]);
 
-  await omnitoken.deployed();
+	await omnitoken.deployed();
 	// verify the Address
-  console.log("Omni Token deployed to:", omnitoken.address);
+	console.log("Omni Token deployed to:", omnitoken.address);
 	// Verify the balance of the Owner
 	console.log("Balance of the Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "must be 638 million!!! in wei");
 	console.log("Total Supply: ", (await omnitoken.totalSupply()).toString(), "must be 638 million!!! in wei");
 	// Try to mint one additional Token
 	console.log("============= Try to Mint Any Additional Token (Expect Revert) =================");
 	try {
-		await omnitoken.mint(1);
+		const estimatetx = await omnitoken.mint(1, {gasLimit: 1500000});
+		console.log("Gas Estimate: ", estimatetx, (await estimatetx.gasPrice).toString(), (await estimatetx.gasLimit).toString(), estimatetx.status);
+		if (estimatetx.gasLimit == null ) {
+			estimatetx.gasLimit = await ethers.provider.estimateGas(estimatetx);
+		};
+		const receipt = await estimatetx.wait();
+		console.log("Receipt Error: ", receipt);
 	} catch (error) {
 		console.log("Type Error: ", JSON.stringify(error.name));
 		console.log("Code Error: ", JSON.stringify(error.code));
