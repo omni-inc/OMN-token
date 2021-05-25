@@ -131,7 +131,7 @@ describe("ERC20 Full Test", async () => {
 		});
 
 		describe('Verify Balance Of / IncreaseAllowance / TransferFrom', async () => {
-			it("3.4.- Execute a Approve / TransferFrom workflow and Verify the changes in Owner Account, and Receipt Account", async () => {
+			it("3.4.- Execute a IncreaseAllowance / TransferFrom workflow and Verify the changes in Owner Account, and Receipt Account", async () => {
 				await omnitoken.increaseAllowance(await accounts[1].getAddress(), '8888889000000000000000000');
 				console.log("Verify Allowance Accounts[0] to Accounts[1]:", (await omnitoken.allowance(await accounts[0].getAddress(), await accounts[1].getAddress())).toString());
 				expect((await omnitoken.allowance(await accounts[0].getAddress(), await accounts[1].getAddress())).toString()).to.be.equal('8888889000000000000000000');
@@ -141,19 +141,48 @@ describe("ERC20 Full Test", async () => {
 				console.log("Balance After of Receipt: ", (await omnitoken.balanceOf(await accounts[1].getAddress())).toString(), "=====> must be 8888889000000000000000000");
 				expect(((await omnitoken.balanceOf(await accounts[1].getAddress())).toString())).to.be.equal('8888889000000000000000000');
 			});
-			// it("3.5.- Try Transfer a Value more than available in the Accounts, and Receive Revert", async () => {
-			// 	console.log("Balance After of Receipt: ", (await omnitoken.balanceOf(await accounts[1].getAddress())).toString(), "=====> must be 8888889000000000000000000");
-			// 	expect(((await omnitoken.balanceOf(await accounts[1].getAddress())).toString())).to.be.equal('8888889000000000000000000');
-			// 	console.log("We Expect Revert the Transaction:");
-			// 	expect((omnitoken.connect(accounts[1]).transfer(await accounts[0].getAddress(), '38888889000000000000000000'))).to.be.revertedWith("ERC20: transfer amount exceeds balance");
-			// });
-			// it("3.6.- Send again the owner the Tokens", async () => {
-			// 	await omnitoken.connect(accounts[1]).transfer(await accounts[0].getAddress(), '8888889000000000000000000');
-			// 	console.log("Balance After of Account Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "=====> must be 638888889000000000000000000");
-			// 	expect(((await omnitoken.balanceOf(await accounts[0].getAddress())).toString())).to.be.equal('638888889000000000000000000');
-			// 	console.log("Balance After of Receipt: ", (await omnitoken.balanceOf(await accounts[1].getAddress())).toString(), "=====> must be 0");
-			// 	expect(((await omnitoken.balanceOf(await accounts[1].getAddress())).toString())).to.be.equal('0');
-			// });
+			it("3.5.- Execute a IncreaseAllowance / TransferFrom more than Approval and Receive Revert ", async () => {
+				console.log("Balance After of Receipt: ", (await omnitoken.balanceOf(await accounts[1].getAddress())).toString(), "=====> must be 8888889000000000000000000");
+				expect(((await omnitoken.balanceOf(await accounts[1].getAddress())).toString())).to.be.equal('8888889000000000000000000');
+				await omnitoken.increaseAllowance(await accounts[1].getAddress(), '8888889000000000000000000');
+				expect((await omnitoken.allowance(await accounts[0].getAddress(), await accounts[1].getAddress())).toString()).to.be.equal('8888889000000000000000000');
+				console.log("Verify Allowance Accounts[0] to Accounts[1]:", (await omnitoken.allowance(await accounts[0].getAddress(), await accounts[1].getAddress())).toString());
+				console.log("We Expect Revert the Transaction:");
+				expect(omnitoken.connect(accounts[1]).transferFrom(await accounts[0].getAddress(), await accounts[1].getAddress(), '18888889000000000000000000')).to.be.revertedWith("ERC20: transfer amount exceeds allowance");
+			});
+			it("3.6.- Execute a DecreaseAllowance / TransferFrom more than Approval and Receive Revert", async () => {
+				console.log("Balance Before of Receipt: ", (await omnitoken.balanceOf(await accounts[1].getAddress())).toString(), "=====> must be 8888889000000000000000000");
+				expect(((await omnitoken.balanceOf(await accounts[1].getAddress())).toString())).to.be.equal('8888889000000000000000000');
+				await omnitoken.decreaseAllowance(await accounts[1].getAddress(), '8000000000000000000000000');
+				console.log("Verify Allowance Accounts[0] to Accounts[1]:", (await omnitoken.allowance(await accounts[0].getAddress(), await accounts[1].getAddress())).toString());
+				expect((await omnitoken.allowance(await accounts[0].getAddress(), await accounts[1].getAddress())).toString()).to.be.equal('888889000000000000000000');
+				await omnitoken.connect(accounts[1]).transferFrom(await accounts[0].getAddress(), await accounts[1].getAddress(), '888889000000000000000000');
+				console.log("Balance After of Account Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "=====> must be 629111111000000000000000000");
+				expect(((await omnitoken.balanceOf(await accounts[0].getAddress())).toString())).to.be.equal('629111111000000000000000000');
+				console.log("Balance After of Receipt: ", (await omnitoken.balanceOf(await accounts[1].getAddress())).toString(), "=====> must be 9777778000000000000000000");
+				expect(((await omnitoken.balanceOf(await accounts[1].getAddress())).toString())).to.be.equal('9777778000000000000000000');
+			});
+			it("3.7.- Execute a IncreaseAllowance / TransferFrom and send to the Owner all Token by Steps", async () => {
+				console.log("Balance Before of Account Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "=====> must be 629111111000000000000000000");
+				console.log("Balance Before of Receipt: ", (await omnitoken.balanceOf(await accounts[1].getAddress())).toString(), "=====> must be 9777778000000000000000000");
+				expect(((await omnitoken.balanceOf(await accounts[0].getAddress())).toString())).to.be.equal('629111111000000000000000000');
+				expect(((await omnitoken.balanceOf(await accounts[1].getAddress())).toString())).to.be.equal('9777778000000000000000000');
+				await omnitoken.connect(accounts[1]).increaseAllowance(await accounts[0].getAddress(), '9000000000000000000000000');
+				console.log("Verify Allowance Accounts[1] to Accounts[0]:", (await omnitoken.allowance(await accounts[1].getAddress(), await accounts[0].getAddress())).toString());
+				expect((await omnitoken.allowance(await accounts[1].getAddress(), await accounts[0].getAddress())).toString()).to.be.equal('9000000000000000000000000');
+				console.log("We Expect Revert the Transaction: Try to send total balance of Receipt (Accounts[1])");
+				expect(omnitoken.transferFrom(await accounts[1].getAddress(), await accounts[0].getAddress(), '9777778000000000000000000')).to.be.revertedWith("ERC20: transfer amount exceeds allowance");
+				await omnitoken.transferFrom(await accounts[1].getAddress(), await accounts[0].getAddress(), '9000000000000000000000000');
+				console.log("Verify Allowance After first Tx Accounts[1] to Accounts[0]:", (await omnitoken.allowance(await accounts[1].getAddress(), await accounts[0].getAddress())).toString());
+				await omnitoken.connect(accounts[1]).increaseAllowance(await accounts[0].getAddress(), '777778000000000000000000');
+				console.log("Verify Allowance Before second Tx Accounts[1] to Accounts[0]:", (await omnitoken.allowance(await accounts[1].getAddress(), await accounts[0].getAddress())).toString());
+				await omnitoken.transferFrom(await accounts[1].getAddress(), await accounts[0].getAddress(), '777778000000000000000000');
+				console.log("Verify Allowance After second Tx Accounts[1] to Accounts[0]:", (await omnitoken.allowance(await accounts[1].getAddress(), await accounts[0].getAddress())).toString());
+				console.log("Balance After of Account Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "=====> must be 638888889000000000000000000");
+				expect(((await omnitoken.balanceOf(await accounts[0].getAddress())).toString())).to.be.equal('638888889000000000000000000');
+				console.log("Balance After of Receipt: ", (await omnitoken.balanceOf(await accounts[1].getAddress())).toString(), "=====> must be 0");
+				expect(((await omnitoken.balanceOf(await accounts[1].getAddress())).toString())).to.be.equal('0');
+			});
 		});
 	});
 
