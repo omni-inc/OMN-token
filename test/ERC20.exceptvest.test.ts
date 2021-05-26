@@ -393,4 +393,23 @@ describe("ERC20 Full Test", async () => {
 		});
 	});
 
+	//   ** Function / Methods Claim Token and Native Coins */
+	//   ** 6. Test Circulating Supply Method's of Smart Contract : How it is working - Test Case */
+	//   ** t1. Sending Native Coin and Claim with the Methods */
+	//   ** t2. Sending Token ERC20 and Clain with the Methods */
+
+	it("6. Should the right value of the Circulating Supply for add, drop any wallets in the Array for OMNI Wallets", async () => {
+		const OmniToken = await ethers.getContractFactory("OmniTokenV1");
+		const omnitoken = await upgrades.deployProxy(OmniToken, ["Hello, OMN Token Ver 1"]);
+
+		await omnitoken.deployed();
+		// verify the Address
+		console.log("OMNI Token deployed to:", omnitoken.address);
+		// Verify the balance of the Owner
+		console.log("Balance of the Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "must be 638 million!!! in wei");
+		expect((await omnitoken.balanceOf(await accounts[0].getAddress())).toString()).to.be.equal('638888889000000000000000000');
+		console.log("Total Supply: ", (await omnitoken.totalSupply()).toString(), "must be 638 million!!! in wei");
+		expect(((await omnitoken.totalSupply()).toString())).to.be.equal('638888889000000000000000000');
+	});
+
 });
