@@ -26,7 +26,7 @@ describe("ERC20 Full Test", async () => {
 
 		await omnitoken.deployed();
 		// verify the Address
-		console.log("Omni Token deployed to:", omnitoken.address);
+		console.log("OMNI Token deployed to:", omnitoken.address);
 		// Verify the balance of the Owner
 		console.log("Balance of the Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "must be 638 million!!! in wei");
 		expect((await omnitoken.balanceOf(await accounts[0].getAddress())).toString()).to.be.equal('638888889000000000000000000');
@@ -61,7 +61,7 @@ describe("ERC20 Full Test", async () => {
 
 		await omnitoken.deployed();
 		// verify the Address
-		console.log("Omni Token deployed to:", omnitoken.address);
+		console.log("OMNI Token deployed to:", omnitoken.address);
 		// Verify the balance of the Owner
 		console.log("Balance of the Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "must be 638 million!!! in wei");
 		expect((await omnitoken.balanceOf(await accounts[0].getAddress())).toString()).to.be.equal('638888889000000000000000000');
@@ -100,7 +100,7 @@ describe("ERC20 Full Test", async () => {
 
 		await omnitoken.deployed();
 		// verify the Address
-		console.log("Omni Token deployed to:", omnitoken.address);
+		console.log("OMNI Token deployed to:", omnitoken.address);
 		// Verify the balance of the Owner
 		console.log("Balance of the Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "must be 638 million!!! in wei");
 		expect((await omnitoken.balanceOf(await accounts[0].getAddress())).toString()).to.be.equal('638888889000000000000000000');
@@ -200,7 +200,7 @@ describe("ERC20 Full Test", async () => {
 
 		await omnitoken.deployed();
 		// verify the Address
-		console.log("Omni Token deployed to:", omnitoken.address);
+		console.log("OMNI Token deployed to:", omnitoken.address);
 		// Verify the balance of the Owner
 		console.log("Balance of the Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "must be 638 million!!! in wei");
 		expect((await omnitoken.balanceOf(await accounts[0].getAddress())).toString()).to.be.equal('638888889000000000000000000');
@@ -256,7 +256,7 @@ describe("ERC20 Full Test", async () => {
 				expect(((await omnitoken.balanceOf(await accounts[8].getAddress())).toString())).to.be.equal('30000000000000000000000000');
 			});
 
-			it("4.3.- IncreaseAllowance / Transfer / TransferFrom only the Blacklisted Wallet", async () => {
+			it("4.4.- IncreaseAllowance / Transfer / TransferFrom only the Blacklisted Wallet", async () => {
 				// Accounts[6]
 				await omnitoken.increaseAllowance(await accounts[6].getAddress(), '8888889000000000000000000');
 				console.log("Verify Allowance Accounts[0] to Accounts[6]:", (await omnitoken.allowance(await accounts[0].getAddress(), await accounts[6].getAddress())).toString());
@@ -278,6 +278,118 @@ describe("ERC20 Full Test", async () => {
 				console.log("Balance After of Receipt: ", (await omnitoken.balanceOf(await accounts[10].getAddress())).toString(), "=====> must be 0");
 				expect(((await omnitoken.balanceOf(await accounts[10].getAddress())).toString())).to.be.equal('0');
 			});
+		});
+	});
+
+	//   ** Function / Methods Circulating Supply */
+	//   ** 5. Test Circulating Supply Method's of Smart Contract : How it is working - Test Case */
+	//   ** t1. Include Multiples Wallet in the OMNI Wallets Array */
+	//   ** t2. Getting List of All OMNI Wallets Array */
+	//   ** t3. Exclude Multiples Wallets in the OMNI Wallets Array */
+	//   ** t4. Verify in all cases the right value of the Circulating Supply */
+
+
+	it("5. Should the right value of the Circulating Supply for add, drop any wallets in the Array for OMNI Wallets", async () => {
+		const OmniToken = await ethers.getContractFactory("OmniTokenV1");
+		const omnitoken = await upgrades.deployProxy(OmniToken, ["Hello, OMN Token Ver 1"]);
+
+		await omnitoken.deployed();
+		// verify the Address
+		console.log("OMNI Token deployed to:", omnitoken.address);
+		// Verify the balance of the Owner
+		console.log("Balance of the Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "must be 638 million!!! in wei");
+		expect((await omnitoken.balanceOf(await accounts[0].getAddress())).toString()).to.be.equal('638888889000000000000000000');
+		console.log("Total Supply: ", (await omnitoken.totalSupply()).toString(), "must be 638 million!!! in wei");
+		expect(((await omnitoken.totalSupply()).toString())).to.be.equal('638888889000000000000000000');
+		await expect(omnitoken.transfer((await accounts[19].getAddress()).toString(),'888889000000000000000000')).to.emit(omnitoken, 'Transfer').withArgs(await accounts[0].getAddress(), await accounts[19].getAddress(), '888889000000000000000000');
+
+		describe("Add Wallet to the blacklist and getting the list, and drop someone, and update the list", async () => {
+			it("5.1.- Sending Token to Different Wallets and Verify the Circulating Supply with zero OMNI Wallets", async () => {
+				console.log("Verify the Circulating Supply with Start:", (await omnitoken.circulatingSupply()).toString());
+				expect((await omnitoken.circulatingSupply()).toString()).to.equal('888889000000000000000000');
+				console.log("Verify Owner Address Balance with Start: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString());
+				expect((await omnitoken.balanceOf(await accounts[0].getAddress())).toString()).to.equal('638000000000000000000000000');
+				console.log("Execute multiples Transfer for all odd Account from 4 to 18")
+				for (let i=4; i <= 18; i+=2) {
+					await expect(omnitoken.transfer(await accounts[i].getAddress(),'1000000000000000000000000')).to.emit(omnitoken, 'Transfer').withArgs(await accounts[0].getAddress(), await accounts[i].getAddress(), '1000000000000000000000000');
+					console.log("Account ", i, "Receipt Address for Verify Circulating: ", await accounts[i].getAddress());
+				}
+				console.log("Circulating Supply After Sending Tokens to Several Accounts: ", (await omnitoken.circulatingSupply()).toString());
+				expect((await omnitoken.circulatingSupply()).toString()).to.equal('8888889000000000000000000');
+				console.log("Verify Owner Address Balance After: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString());
+				expect((await omnitoken.balanceOf(await accounts[0].getAddress())).toString()).to.equal('630000000000000000000000000');
+			})
+
+			it("5.2.- Add several list of Accounts in the OMNI Wallets Array: ", async () => {
+				console.log("Verify only the Owner can add wallet to the OMNI Wallets Array: ");
+				await expect(omnitoken.connect(accounts[1]).addOmniWallet(await accounts[0].getAddress())).to.be.revertedWith("ERC20: is not the Owner");
+				console.log("Add OMNI Wallets array, Accounts 4, 8, 12 and 16:");
+				for (let i=4; i <= 16; i+=4) {
+					await expect(omnitoken.addOmniWallet(await accounts[i].getAddress())).to.emit(omnitoken, 'inOmniWallet').withArgs(await accounts[i].getAddress());
+					console.log("Account ", i, "OMNI Wallets Address", await accounts[i].getAddress());
+				}
+				const address:string[] = await omnitoken.getOmniWallets()
+				console.log("List of Address OMNI Wallets: ");
+				for (let i=0; i < address.length ; i++) {
+					console.log("Address OMNI Wallets: ", address[i], "Status :", await omnitoken.isOmniWallet(address[i]));
+				}
+			});
+
+			it("5.3.- Verify the Circulating Supply After add Money the OMNI Wallets  ", async () => {
+				console.log("Transfer Token for Several Wallet and Very:");
+				console.log("Circulating Supply After Sending Several Accounts: ", (await omnitoken.circulatingSupply()).toString());
+				expect((await omnitoken.circulatingSupply()).toString()).to.equal('4888889000000000000000000');
+				console.log("Verify Owner Address Balance After: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString());
+				expect((await omnitoken.balanceOf(await accounts[0].getAddress())).toString()).to.equal('630000000000000000000000000');
+			});
+
+			it("5.4.- Drop some address from OMNI Wallets, and verify the changes", async () => {
+				console.log("Drop accounts from positions 4, 8, 12 and 16 address:");
+				for (let i=4; i <= 16; i+=4) {
+					await expect(omnitoken.dropOmniWallet(await accounts[i].getAddress())).to.emit(omnitoken, 'outOmniWallet').withArgs(await accounts[i].getAddress());
+					console.log("Account ", i, "OMNI Wallets Address ", await accounts[i].getAddress());
+				}
+				const address:string[] = await omnitoken.getOmniWallets()
+				console.log("List of Address OMNI Wallets: ");
+				for (let i=0; i < address.length ; i++) {
+					console.log("Address OMNI Wallets: ", address[i], "Status :",  await omnitoken.isOmniWallet(address[i]));
+				}
+			});
+
+			it("5.5.- Verify the Circulating Supply After Drop all OMNI Wallets  ", async () => {
+				console.log("Circulating Supply After drop All OMNI Wallets: ", (await omnitoken.circulatingSupply()).toString());
+				expect((await omnitoken.circulatingSupply()).toString()).to.equal('8888889000000000000000000');
+				console.log("Verify Owner Address Balance After: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString());
+				expect((await omnitoken.balanceOf(await accounts[0].getAddress())).toString()).to.equal('630000000000000000000000000');
+			});
+
+			it("5.6.- Sending token another Count not included in OMNI Wallets: ", async () => {
+				await expect(omnitoken.connect(accounts[1]).addOmniWallet(await accounts[0].getAddress())).to.be.revertedWith("ERC20: is not the Owner");
+				console.log("Transfer Token to Accounts 2, 6, 10, 14 and 18:");
+				for (let i=2; i <= 18; i+=4) {
+					await expect(omnitoken.transfer(await accounts[i].getAddress(),'1000000000000000000000000')).to.emit(omnitoken, 'Transfer').withArgs(await accounts[0].getAddress(), await accounts[i].getAddress(), '1000000000000000000000000');
+					console.log("Account ", i, "Receipt Address for Verify Circulating: ", await accounts[i].getAddress());
+					console.log("Balance Receipt Address for Verify Circulating: ", (await omnitoken.balanceOf(await accounts[i].getAddress())).toString());
+				}
+				console.log("Circulating Supply After drop All OMNI Wallets: ", (await omnitoken.circulatingSupply()).toString());
+				expect((await omnitoken.circulatingSupply()).toString()).to.equal('13888889000000000000000000');
+				console.log("Verify Owner Address Balance After: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString());
+				expect((await omnitoken.balanceOf(await accounts[0].getAddress())).toString()).to.equal('625000000000000000000000000');
+			});
+
+			it("5.7.- Verify the Circulating Supply if include the accounts 2, 6, 10, 14 and 18 in the OMNI Wallets Array: ", async () => {
+				await expect(omnitoken.connect(accounts[1]).addOmniWallet(await accounts[0].getAddress())).to.be.revertedWith("ERC20: is not the Owner");
+				console.log("Add OMNI Wallets array the Accounts 2, 6, 10, 14 and 18:");
+				for (let i=2; i <= 18; i+=4) {
+					await expect(omnitoken.addOmniWallet(await accounts[i].getAddress())).to.emit(omnitoken, 'inOmniWallet').withArgs(await accounts[i].getAddress());
+					console.log("Account ", i, "OMNI Wallets Address", await accounts[i].getAddress());
+				}
+				console.log("Circulating Supply After drop All OMNI Wallets: ", (await omnitoken.circulatingSupply()).toString());
+				expect((await omnitoken.circulatingSupply()).toString()).to.equal('4888889000000000000000000');
+				console.log("Verify Owner Address Balance After: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString());
+				expect((await omnitoken.balanceOf(await accounts[0].getAddress())).toString()).to.equal('625000000000000000000000000');
+			});
+
 		});
 	});
 

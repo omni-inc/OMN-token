@@ -68,26 +68,6 @@ contract OmniTokenV1 is Initializable, Claimable, Blacklistable, CirculatingSupp
 		return _maxTotalSupply;
 	}
 
-	function canTransfer(address sender, uint256 amount) public view returns (bool) {
-        // Control is scheduled wallet
-        if (!frozenWallets[sender].scheduled) {
-            return true;
-        }
-
-        uint256 balance = balanceOf(sender);
-        uint256 restAmount = getRestAmount(sender);
-
-        if (balance > frozenWallets[sender].totalAmount && balance.sub(frozenWallets[sender].totalAmount) >= amount) {
-            return true;
-        }
-
-        if (!isStarted(frozenWallets[sender].startDay) || balance.sub(amount) < restAmount) {
-            return false;
-        }
-
-        return true;
-	}
-
 	function transferMany(address[] calldata recipients, uint256[] calldata amounts)
         external
 	    onlyOwner()
@@ -114,9 +94,9 @@ contract OmniTokenV1 is Initializable, Claimable, Blacklistable, CirculatingSupp
 
 	function circulatingSupply() public view returns (uint256) {
 		uint256 index = omni_wallets.length;
-		uint256 result = totalSupply();
+		uint256 result = totalSupply().sub(balanceOf(owner()));
 		for (uint256 i=0; i < index ; i++ ) {
-			if (omni_wallets[i] != address(0)) {
+			if ((omni_wallets[i] != address(0)) && (result != uint256(0))) {
 				result -= balanceOf(omni_wallets[i]);
 			}
 		}
@@ -134,7 +114,8 @@ contract OmniTokenV1 is Initializable, Claimable, Blacklistable, CirculatingSupp
     /**
      * @dev Destroys `amount` tokens from `account`, deducting from the caller's
      * allowance.
-     *
+     * @param account Address where the caller's allowance to burn the tokens
+	 * @param amount Amount tokens to burn
      * See {ERC20-_burn} and {ERC20-allowance}.
      *
      * Requirements:
@@ -151,12 +132,40 @@ contract OmniTokenV1 is Initializable, Claimable, Blacklistable, CirculatingSupp
 
 	/**
      * @dev Destroys `amount` tokens from the caller.
-     *
+     * @param amount Amount token to burn
      * See {ERC20-_burn}.
      */
     function burn(uint256 amount) public virtual {
         _burn(_msgSender(), amount);
     }
+
+	// @override
+	function _beforeTokenTransfer(address sender, address recipient, uint256 amount) internal virtual override notBlacklisted(sender) {
+		require(!isBlacklisted(recipient), "ERC20 OMN: recipient account is blacklisted");
+		require(!paused(), "ERC20Pausable: token transfer/mint/burn while paused");
+        require(canTransfer(sender, amount), "ERC20 OMN: Wait for vesting day!");
+        super._beforeTokenTransfer(sender, recipient, amount);
+    }
+
+	function canTransfer(address sender, uint256 amount) public view returns (bool) {
+        // Control is scheduled wallet
+        if (!frozenWallets[sender].scheduled) {
+            return true;
+        }
+
+        uint256 balance = balanceOf(sender);
+        uint256 restAmount = getRestAmount(sender);
+
+        if (balance > frozenWallets[sender].totalAmount && balance.sub(frozenWallets[sender].totalAmount) >= amount) {
+            return true;
+        }
+
+        if (!isStarted(frozenWallets[sender].startDay) || balance.sub(amount) < restAmount) {
+            return false;
+        }
+
+        return true;
+	}
 
 	/**
      * @dev Creates `amount` new tokens for `to`.
@@ -171,13 +180,5 @@ contract OmniTokenV1 is Initializable, Claimable, Blacklistable, CirculatingSupp
     function mint( uint256 _amount) public onlyOwner() {
 		require(getMaxTotalSupply() >= totalSupply().add(_amount), "ERC20: Can't Mint, it exceeds the maximum supply ");
         _mint(owner(), _amount);
-    }
-
-		// @override
-	function _beforeTokenTransfer(address sender, address recipient, uint256 amount) internal virtual override notBlacklisted(sender) {
-		require(!isBlacklisted(recipient), "ERC20 OMN: recipient account is blacklisted");
-		require(!paused(), "ERC20Pausable: token transfer/mint/burn while paused");
-        require(canTransfer(sender, amount), "ERC20 OMN: Wait for vesting day!");
-        super._beforeTokenTransfer(sender, recipient, amount);
     }
 }

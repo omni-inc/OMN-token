@@ -20,7 +20,7 @@ contract CirculatingSupply is OwnableUpgradeable {
     address[] internal omni_wallets;
 
     event inOmniWallet(address indexed _account);
-    event unOmniWallet(address indexed _account);
+    event outOmniWallet(address indexed _account);
 
 	/**
      * @dev Throws if argument account is Zero
@@ -28,7 +28,7 @@ contract CirculatingSupply is OwnableUpgradeable {
      */
     modifier notZero(address _account) {
         require(
-            _account == address(0),
+            _account != address(0),
             "ERC20 OMN: Not Add Zero Address"
         );
 		require(
@@ -38,7 +38,14 @@ contract CirculatingSupply is OwnableUpgradeable {
         _;
     }
 
-	function isOmniWallet(address _account) public view notZero (_account) returns (bool) {
+	/**
+     * @dev function to verify if the address exist in OmniWallet or not
+     * @param _account The address to check
+     */
+	function isOmniWallet(address _account) public view onlyOwner() returns (bool) {
+		if (_account == address(0)) {
+			return false;
+		}
 		uint256 index = omni_wallets.length;
 		for (uint256 i=0; i < index ; i++ ) {
 			if (_account == omni_wallets[i]) {
@@ -47,22 +54,38 @@ contract CirculatingSupply is OwnableUpgradeable {
 		return false;
 	}
 
+	/**
+     * @dev Include the wallet in the wallets address of OMNI Foundation
+     * @param _account The address to include
+     */
 	function addOmniWallet(address _account) public notZero(_account) returns (bool) {
-		uint256 index = omni_wallets.length;
-		omni_wallets[index.sub(uint256(1))] = _account;
+		omni_wallets.push(_account);
 		emit inOmniWallet(_account);
 		return true;
 	}
 
+	/**
+     * @dev Exclude the wallet in the wallets address of OMNI Foundation
+     * @param _account The address to exclude
+     */
 	function dropOmniWallet(address _account) public notZero(_account) returns (bool) {
 		uint256 index = omni_wallets.length;
+		bool flag = false;
 		for (uint256 i=0; i < index ; i++ ) {
 			if (_account == omni_wallets[i]) {
 				omni_wallets[i] = address(0);
+				flag = true;
 			}
 		}
-		emit unOmniWallet(_account);
-		return true;
+		emit outOmniWallet(_account);
+		return flag;
+	}
+
+	/**
+     * @dev Getting the all wallets address of OMNI Foundation
+     */
+	function getOmniWallets() public view onlyOwner() returns (address[] memory) {
+		return omni_wallets;
 	}
 
 }

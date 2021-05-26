@@ -41,6 +41,7 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     "getBlacklist()": FunctionFragment;
     "getDays(uint256)": FunctionFragment;
     "getMaxTotalSupply()": FunctionFragment;
+    "getOmniWallets()": FunctionFragment;
     "getReleaseTime()": FunctionFragment;
     "getRestAmount(address)": FunctionFragment;
     "getTimestamp()": FunctionFragment;
@@ -131,6 +132,10 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getMaxTotalSupply",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getOmniWallets",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -272,6 +277,10 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getOmniWallets",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getReleaseTime",
     data: BytesLike
   ): Result;
@@ -349,7 +358,7 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     "addBlacklisted(address)": EventFragment;
     "dropBlacklisted(address)": EventFragment;
     "inOmniWallet(address)": EventFragment;
-    "unOmniWallet(address)": EventFragment;
+    "outOmniWallet(address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
@@ -360,7 +369,7 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "addBlacklisted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "dropBlacklisted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "inOmniWallet"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "unOmniWallet"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "outOmniWallet"): EventFragment;
 }
 
 export class OmniTokenV1 extends Contract {
@@ -615,6 +624,10 @@ export class OmniTokenV1 extends Contract {
     getMaxTotalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     "getMaxTotalSupply()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getOmniWallets(overrides?: CallOverrides): Promise<[string[]]>;
+
+    "getOmniWallets()"(overrides?: CallOverrides): Promise<[string[]]>;
 
     getReleaseTime(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -1062,6 +1075,10 @@ export class OmniTokenV1 extends Contract {
   getMaxTotalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
   "getMaxTotalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getOmniWallets(overrides?: CallOverrides): Promise<string[]>;
+
+  "getOmniWallets()"(overrides?: CallOverrides): Promise<string[]>;
 
   getReleaseTime(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1511,6 +1528,10 @@ export class OmniTokenV1 extends Contract {
 
     "getMaxTotalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getOmniWallets(overrides?: CallOverrides): Promise<string[]>;
+
+    "getOmniWallets()"(overrides?: CallOverrides): Promise<string[]>;
+
     getReleaseTime(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getReleaseTime()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1786,7 +1807,7 @@ export class OmniTokenV1 extends Contract {
       _account: string | null
     ): TypedEventFilter<[string], { _account: string }>;
 
-    unOmniWallet(
+    outOmniWallet(
       _account: string | null
     ): TypedEventFilter<[string], { _account: string }>;
   };
@@ -1961,6 +1982,10 @@ export class OmniTokenV1 extends Contract {
     getMaxTotalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getMaxTotalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getOmniWallets(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getOmniWallets()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     getReleaseTime(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2382,6 +2407,12 @@ export class OmniTokenV1 extends Contract {
     getMaxTotalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "getMaxTotalSupply()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getOmniWallets(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getOmniWallets()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

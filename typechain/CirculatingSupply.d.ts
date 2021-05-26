@@ -23,6 +23,7 @@ interface CirculatingSupplyInterface extends ethers.utils.Interface {
   functions: {
     "addOmniWallet(address)": FunctionFragment;
     "dropOmniWallet(address)": FunctionFragment;
+    "getOmniWallets()": FunctionFragment;
     "isOmniWallet(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
@@ -36,6 +37,10 @@ interface CirculatingSupplyInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "dropOmniWallet",
     values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getOmniWallets",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "isOmniWallet",
@@ -60,6 +65,10 @@ interface CirculatingSupplyInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getOmniWallets",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "isOmniWallet",
     data: BytesLike
   ): Result;
@@ -76,12 +85,12 @@ interface CirculatingSupplyInterface extends ethers.utils.Interface {
   events: {
     "OwnershipTransferred(address,address)": EventFragment;
     "inOmniWallet(address)": EventFragment;
-    "unOmniWallet(address)": EventFragment;
+    "outOmniWallet(address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "inOmniWallet"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "unOmniWallet"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "outOmniWallet"): EventFragment;
 }
 
 export class CirculatingSupply extends Contract {
@@ -148,6 +157,10 @@ export class CirculatingSupply extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    getOmniWallets(overrides?: CallOverrides): Promise<[string[]]>;
+
+    "getOmniWallets()"(overrides?: CallOverrides): Promise<[string[]]>;
+
     isOmniWallet(
       _account: string,
       overrides?: CallOverrides
@@ -201,6 +214,10 @@ export class CirculatingSupply extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  getOmniWallets(overrides?: CallOverrides): Promise<string[]>;
+
+  "getOmniWallets()"(overrides?: CallOverrides): Promise<string[]>;
+
   isOmniWallet(_account: string, overrides?: CallOverrides): Promise<boolean>;
 
   "isOmniWallet(address)"(
@@ -251,6 +268,10 @@ export class CirculatingSupply extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    getOmniWallets(overrides?: CallOverrides): Promise<string[]>;
+
+    "getOmniWallets()"(overrides?: CallOverrides): Promise<string[]>;
+
     isOmniWallet(_account: string, overrides?: CallOverrides): Promise<boolean>;
 
     "isOmniWallet(address)"(
@@ -290,7 +311,7 @@ export class CirculatingSupply extends Contract {
       _account: string | null
     ): TypedEventFilter<[string], { _account: string }>;
 
-    unOmniWallet(
+    outOmniWallet(
       _account: string | null
     ): TypedEventFilter<[string], { _account: string }>;
   };
@@ -315,6 +336,10 @@ export class CirculatingSupply extends Contract {
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    getOmniWallets(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getOmniWallets()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     isOmniWallet(
       _account: string,
@@ -368,6 +393,12 @@ export class CirculatingSupply extends Contract {
     "dropOmniWallet(address)"(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    getOmniWallets(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getOmniWallets()"(
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     isOmniWallet(
