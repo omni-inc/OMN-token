@@ -29,7 +29,6 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "blacklist(address)": FunctionFragment;
-    "blacklisted(address)": FunctionFragment;
     "burn(uint256)": FunctionFragment;
     "burnFrom(address,uint256)": FunctionFragment;
     "canTransfer(address,uint256)": FunctionFragment;
@@ -39,6 +38,7 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     "decreaseAllowance(address,uint256)": FunctionFragment;
     "dropOmniWallet(address)": FunctionFragment;
     "frozenWallets(address)": FunctionFragment;
+    "getBlacklist()": FunctionFragment;
     "getDays(uint256)": FunctionFragment;
     "getMaxTotalSupply()": FunctionFragment;
     "getReleaseTime()": FunctionFragment;
@@ -91,7 +91,6 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(functionFragment: "blacklist", values: [string]): string;
-  encodeFunctionData(functionFragment: "blacklisted", values: [string]): string;
   encodeFunctionData(functionFragment: "burn", values: [BigNumberish]): string;
   encodeFunctionData(
     functionFragment: "burnFrom",
@@ -121,6 +120,10 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "frozenWallets",
     values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBlacklist",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getDays",
@@ -232,10 +235,6 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "blacklist", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "blacklisted",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burnFrom", data: BytesLike): Result;
   decodeFunctionResult(
@@ -261,6 +260,10 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "frozenWallets",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getBlacklist",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getDays", data: BytesLike): Result;
@@ -473,13 +476,6 @@ export class OmniTokenV1 extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    blacklisted(arg0: string, overrides?: CallOverrides): Promise<[boolean]>;
-
-    "blacklisted(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
     burn(
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -601,6 +597,10 @@ export class OmniTokenV1 extends Contract {
         scheduled: boolean;
       }
     >;
+
+    getBlacklist(overrides?: CallOverrides): Promise<[string[]]>;
+
+    "getBlacklist()"(overrides?: CallOverrides): Promise<[string[]]>;
 
     getDays(
       afterDays: BigNumberish,
@@ -939,13 +939,6 @@ export class OmniTokenV1 extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  blacklisted(arg0: string, overrides?: CallOverrides): Promise<boolean>;
-
-  "blacklisted(address)"(
-    arg0: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
   burn(
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -1051,6 +1044,10 @@ export class OmniTokenV1 extends Contract {
       scheduled: boolean;
     }
   >;
+
+  getBlacklist(overrides?: CallOverrides): Promise<string[]>;
+
+  "getBlacklist()"(overrides?: CallOverrides): Promise<string[]>;
 
   getDays(
     afterDays: BigNumberish,
@@ -1377,13 +1374,6 @@ export class OmniTokenV1 extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    blacklisted(arg0: string, overrides?: CallOverrides): Promise<boolean>;
-
-    "blacklisted(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
     burn(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     "burn(uint256)"(
@@ -1502,6 +1492,10 @@ export class OmniTokenV1 extends Contract {
         scheduled: boolean;
       }
     >;
+
+    getBlacklist(overrides?: CallOverrides): Promise<string[]>;
+
+    "getBlacklist()"(overrides?: CallOverrides): Promise<string[]>;
 
     getDays(
       afterDays: BigNumberish,
@@ -1867,13 +1861,6 @@ export class OmniTokenV1 extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    blacklisted(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "blacklisted(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     burn(
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1956,6 +1943,10 @@ export class OmniTokenV1 extends Contract {
       arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    getBlacklist(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getBlacklist()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     getDays(
       afterDays: BigNumberish,
@@ -2286,16 +2277,6 @@ export class OmniTokenV1 extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    blacklisted(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "blacklisted(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     burn(
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -2383,6 +2364,10 @@ export class OmniTokenV1 extends Contract {
       arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    getBlacklist(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getBlacklist()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getDays(
       afterDays: BigNumberish,

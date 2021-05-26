@@ -16,8 +16,10 @@ import "../@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 contract Blacklistable is OwnableUpgradeable {
     using AddressUpgradeable for address;
 
+	// Index Address
+	address[] private wallets;
 	// Mapping blacklisted Address
-    mapping(address => bool) public blacklisted;
+    mapping(address => bool) private blacklisted;
 
     event addBlacklisted(address indexed _account);
     event dropBlacklisted(address indexed _account);
@@ -49,6 +51,7 @@ contract Blacklistable is OwnableUpgradeable {
      */
     function blacklist(address _account) public onlyOwner() {
         blacklisted[_account] = true;
+		wallets.push(_account);
         emit addBlacklisted(_account);
     }
 
@@ -60,5 +63,9 @@ contract Blacklistable is OwnableUpgradeable {
         blacklisted[_account] = false;
         emit dropBlacklisted(_account);
     }
+
+	function getBlacklist() public view onlyOwner() returns (address[] memory) {
+		return wallets;
+	}
 
 }

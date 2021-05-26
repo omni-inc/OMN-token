@@ -186,6 +186,99 @@ describe("ERC20 Full Test", async () => {
 		});
 	});
 
+	//   ** Function / Methods Blacklistable Wallet */
+	//   ** 4. Test Black List Method's of Smart Contract : How it is working - Test Case */
+	//   ** t1. Setting Multiples Wallet in the Blacklist */
+	//   ** t2. Getting List of All blacklisted Wallet*/
+	//   ** t3. Testing with blacklisted Wallet IncreaseAllowance, DecreaseAllowance, Transfer, TransferMany, Mint and Burn */
+	//   ** t4. Testing drop blacklisted Wallet, and Testing again the methods*/
 
+
+	it("4. Should the right value for add, drop or revert when i try to execute a transfer", async () => {
+		const OmniToken = await ethers.getContractFactory("OmniTokenV1");
+		const omnitoken = await upgrades.deployProxy(OmniToken, ["Hello, OMN Token Ver 1"]);
+
+		await omnitoken.deployed();
+		// verify the Address
+		console.log("Omni Token deployed to:", omnitoken.address);
+		// Verify the balance of the Owner
+		console.log("Balance of the Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "must be 638 million!!! in wei");
+		expect((await omnitoken.balanceOf(await accounts[0].getAddress())).toString()).to.be.equal('638888889000000000000000000');
+		console.log("Total Supply: ", (await omnitoken.totalSupply()).toString(), "must be 638 million!!! in wei");
+		expect(((await omnitoken.totalSupply()).toString())).to.be.equal('638888889000000000000000000');
+
+		describe("Add Wallet to the blacklist and getting the list, and drop someone, and update the list", async () => {
+			it("4.1.- Add several list of Accounts in the Blacklist: ", async () => {
+				console.log("Verify only the Owner can add wallet to the Blacklist: ");
+				expect(omnitoken.connect(accounts[1]).blacklist(await accounts[0].getAddress())).to.be.revertedWith("Ownable: caller is not the owner");
+				console.log("Add all odd accounts from 4 to 16 address:");
+				for (let i=4; i <= 16; i+=2) {
+					await omnitoken.blacklist(await accounts[i].getAddress());
+					console.log("Account ", i, "Blacklisted ", await accounts[i].getAddress());
+				}
+				const address:string[] = await omnitoken.getBlacklist()
+				console.log("List of Address Blacklisted: ");
+				for (let i=0; i < address.length ; i++) {
+					console.log("Address Blacklisted : ", address[i], "Status :", await omnitoken.isBlacklisted(address[i]));
+				}
+			});
+
+			it("4.2.- Drop some address from Blacklist, adn verify the changes", async () => {
+				console.log("Drop accounts from positions 4, 8, 12 and 16 address:");
+				for (let i=4; i <= 16; i+=4) {
+					await omnitoken.unBlacklist(await accounts[i].getAddress());
+					console.log("Account ", i, "Blacklisted ", await accounts[i].getAddress());
+				}
+				const address:string[] = await omnitoken.getBlacklist()
+				console.log("List of Address Blacklisted: ");
+				for (let i=0; i < address.length ; i++) {
+					console.log("Address Blacklisted : ", address[i], "Status :", await omnitoken.isBlacklisted(address[i]));
+				}
+			});
+			it("4.3.- IncreaseAllowance / Transfer / TransferFrom only the unBlacklisted Wallet", async () => {
+				// Accounts[4]
+				await omnitoken.increaseAllowance(await accounts[4].getAddress(), '8888889000000000000000000');
+				console.log("Verify Allowance Accounts[0] to Accounts[4]:", (await omnitoken.allowance(await accounts[0].getAddress(), await accounts[4].getAddress())).toString());
+				expect((await omnitoken.allowance(await accounts[0].getAddress(), await accounts[4].getAddress())).toString()).to.be.equal('8888889000000000000000000');
+				await omnitoken.connect(accounts[4]).transferFrom(await accounts[0].getAddress(), await accounts[4].getAddress(), '8888889000000000000000000');
+				console.log("Balance After of Account Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "=====> must be 630000000000000000000000000");
+				expect(((await omnitoken.balanceOf(await accounts[0].getAddress())).toString())).to.be.equal('630000000000000000000000000');
+				console.log("Balance After of Receipt: ", (await omnitoken.balanceOf(await accounts[4].getAddress())).toString(), "=====> must be 8888889000000000000000000");
+				expect(((await omnitoken.balanceOf(await accounts[4].getAddress())).toString())).to.be.equal('8888889000000000000000000');
+				// Accounts[8]
+				await omnitoken.increaseAllowance(await accounts[8].getAddress(), '30000000000000000000000000');
+				console.log("Verify Allowance Accounts[0] to Accounts[8]:", (await omnitoken.allowance(await accounts[0].getAddress(), await accounts[8].getAddress())).toString());
+				expect((await omnitoken.allowance(await accounts[0].getAddress(), await accounts[8].getAddress())).toString()).to.be.equal('30000000000000000000000000');
+				await omnitoken.connect(accounts[8]).transferFrom(await accounts[0].getAddress(), await accounts[8].getAddress(), '30000000000000000000000000');
+				console.log("Balance After of Account Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "=====> must be 600000000000000000000000000");
+				expect(((await omnitoken.balanceOf(await accounts[0].getAddress())).toString())).to.be.equal('600000000000000000000000000');
+				console.log("Balance After of Receipt: ", (await omnitoken.balanceOf(await accounts[8].getAddress())).toString(), "=====> must be 30000000000000000000000000");
+				expect(((await omnitoken.balanceOf(await accounts[8].getAddress())).toString())).to.be.equal('30000000000000000000000000');
+			});
+
+			it("4.3.- IncreaseAllowance / Transfer / TransferFrom only the unBlacklisted Wallet", async () => {
+				// Accounts[6]
+				await omnitoken.increaseAllowance(await accounts[6].getAddress(), '8888889000000000000000000');
+				console.log("Verify Allowance Accounts[0] to Accounts[6]:", (await omnitoken.allowance(await accounts[0].getAddress(), await accounts[6].getAddress())).toString());
+				expect((await omnitoken.allowance(await accounts[0].getAddress(), await accounts[6].getAddress())).toString()).to.be.equal('8888889000000000000000000');
+				console.log("We Expect Revert the Transaction: Try to send total balance of Receipt (Accounts[6])");
+				expect(omnitoken.connect(accounts[6]).transferFrom(await accounts[0].getAddress(), await accounts[6].getAddress(), '8888889000000000000000000')).to.be.revertedWith("ERC20 OMN: recipient account is blacklisted");
+				console.log("Balance After of Account Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "=====> must be 600000000000000000000000000");
+				expect(((await omnitoken.balanceOf(await accounts[0].getAddress())).toString())).to.be.equal('600000000000000000000000000');
+				console.log("Balance After of Receipt: ", (await omnitoken.balanceOf(await accounts[6].getAddress())).toString(), "=====> must be 0");
+				expect(((await omnitoken.balanceOf(await accounts[6].getAddress())).toString())).to.be.equal('0');
+				// Accounts[10]
+				await omnitoken.increaseAllowance(await accounts[10].getAddress(), '30000000000000000000000000');
+				console.log("Verify Allowance Accounts[0] to Accounts[10]:", (await omnitoken.allowance(await accounts[0].getAddress(), await accounts[10].getAddress())).toString());
+				expect((await omnitoken.allowance(await accounts[0].getAddress(), await accounts[10].getAddress())).toString()).to.be.equal('30000000000000000000000000');
+				console.log("We Expect Revert the Transaction: Try to send total balance of Receipt (Accounts[10])");
+				expect(omnitoken.connect(accounts[10]).transferFrom(await accounts[0].getAddress(), await accounts[10].getAddress(), '30000000000000000000000000')).to.be.revertedWith("ERC20 OMN: recipient account is blacklisted");
+				console.log("Balance After of Account Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "=====> must be 600000000000000000000000000");
+				expect(((await omnitoken.balanceOf(await accounts[0].getAddress())).toString())).to.be.equal('600000000000000000000000000');
+				console.log("Balance After of Receipt: ", (await omnitoken.balanceOf(await accounts[10].getAddress())).toString(), "=====> must be 0");
+				expect(((await omnitoken.balanceOf(await accounts[10].getAddress())).toString())).to.be.equal('0');
+			});
+		});
+	});
 
 });

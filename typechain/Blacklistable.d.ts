@@ -22,7 +22,7 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 interface BlacklistableInterface extends ethers.utils.Interface {
   functions: {
     "blacklist(address)": FunctionFragment;
-    "blacklisted(address)": FunctionFragment;
+    "getBlacklist()": FunctionFragment;
     "isBlacklisted(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
@@ -31,7 +31,10 @@ interface BlacklistableInterface extends ethers.utils.Interface {
   };
 
   encodeFunctionData(functionFragment: "blacklist", values: [string]): string;
-  encodeFunctionData(functionFragment: "blacklisted", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "getBlacklist",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "isBlacklisted",
     values: [string]
@@ -49,7 +52,7 @@ interface BlacklistableInterface extends ethers.utils.Interface {
 
   decodeFunctionResult(functionFragment: "blacklist", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "blacklisted",
+    functionFragment: "getBlacklist",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -135,12 +138,9 @@ export class Blacklistable extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    blacklisted(arg0: string, overrides?: CallOverrides): Promise<[boolean]>;
+    getBlacklist(overrides?: CallOverrides): Promise<[string[]]>;
 
-    "blacklisted(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
+    "getBlacklist()"(overrides?: CallOverrides): Promise<[string[]]>;
 
     isBlacklisted(
       _account: string,
@@ -195,12 +195,9 @@ export class Blacklistable extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  blacklisted(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+  getBlacklist(overrides?: CallOverrides): Promise<string[]>;
 
-  "blacklisted(address)"(
-    arg0: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
+  "getBlacklist()"(overrides?: CallOverrides): Promise<string[]>;
 
   isBlacklisted(_account: string, overrides?: CallOverrides): Promise<boolean>;
 
@@ -249,12 +246,9 @@ export class Blacklistable extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    blacklisted(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+    getBlacklist(overrides?: CallOverrides): Promise<string[]>;
 
-    "blacklisted(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
+    "getBlacklist()"(overrides?: CallOverrides): Promise<string[]>;
 
     isBlacklisted(
       _account: string,
@@ -321,12 +315,9 @@ export class Blacklistable extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    blacklisted(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+    getBlacklist(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "blacklisted(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    "getBlacklist()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     isBlacklisted(
       _account: string,
@@ -382,15 +373,9 @@ export class Blacklistable extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    blacklisted(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    getBlacklist(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "blacklisted(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    "getBlacklist()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     isBlacklisted(
       _account: string,
