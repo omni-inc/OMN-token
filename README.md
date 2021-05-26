@@ -11,7 +11,7 @@ Before to Start
 #### Start migration
 ---
 ```
-npx hardhat run scripts/deploy.ts --verbose
+npx hardhat run scripts/deploy.ts
 ```
 OR
 ```
