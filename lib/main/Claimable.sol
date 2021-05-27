@@ -31,8 +31,6 @@ contract Claimable is OwnableUpgradeable {
 
 /// @notice Handle receive ether
 	receive() external payable {
-		// [address(this)] += msg.value.mul(1e18);
-		// revert("ERC20 OMN: Sending Ether for Error, revert!!!");
 	}
 
     /**
