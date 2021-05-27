@@ -6,7 +6,6 @@
 pragma solidity ^0.8.2;
 pragma experimental ABIEncoderV2;
 
-import "../lib/@openzeppelin/contracts-upgradeable/token/ERC20/extensions/draft-ERC20PermitUpgradeable.sol";
 import "../lib/@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "../lib/@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 import "../lib/@openzeppelin/contracts-upgradeable/utils/cryptography/SignatureCheckerUpgradeable.sol";
@@ -17,7 +16,7 @@ import "../lib/main/CirculatingSupply.sol";
 import "../lib/main/Vesting.sol";
 import "hardhat/console.sol";
 
-contract OmniTokenV1 is Initializable, Claimable, Blacklistable, CirculatingSupply, Vesting, PausableUpgradeable, ERC20PermitUpgradeable {
+contract OmniTokenV1 is Initializable, Claimable, Blacklistable, CirculatingSupply, Vesting, PausableUpgradeable {
 	using AddressUpgradeable for address;
 	using SafeMathUpgradeable for uint256;
 	using SafeERC20Upgradeable for IERC20Upgradeable;
@@ -39,7 +38,7 @@ contract OmniTokenV1 is Initializable, Claimable, Blacklistable, CirculatingSupp
 		// Allocation #2 Seed Total (9.3913044)% and Start After 30 days Locked the Token
 		vestingTypes.push(VestingType(2188183807439820, 0, 30 days, true)); // 30 Days Locked, 0.218818380743982 Percent daily for 457 days
 		// Allocation #3 Private Total (8.21739132)%, Unlocked 10% when start the vesting, Start with 30 days Locked the Token and After (8.21739132)%
-        vestingTypes.push(VestingType(2272727272727270, 10000000000000000000, 30 days, true)); // 10% Unlocked when start, 30 Days Locked, 0.227272727272727 Percent daily for 396 Days for the 90% Rest
+        vestingTypes.push(VestingType(2272727272727270, 100000000000000000, 30 days, true)); // 10% Unlocked when start, 30 Days Locked, 0.227272727272727 Percent daily for 396 Days for the 90% Rest
 		// Allocation #4 Public (1.3043478)% /#10 Liquidity (3)% and Daily Rate in wei (0), Unlocked the all Token immediatly when Start the Vesting
         vestingTypes.push(VestingType(100000000000000000000, 100000000000000000000, 0, true)); // 0 Days 100 Percent
 		// Allocation #5 OMNI Team Total (10)% and Start After 273 days Locked the Token

@@ -357,6 +357,7 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     "Unpaused(address)": EventFragment;
     "addBlacklisted(address)": EventFragment;
     "dropBlacklisted(address)": EventFragment;
+    "inFrozenWallet(bool,uint32,uint32,address,uint256,uint256,uint256)": EventFragment;
     "inOmniWallet(address)": EventFragment;
     "outOmniWallet(address)": EventFragment;
   };
@@ -368,6 +369,7 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "addBlacklisted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "dropBlacklisted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "inFrozenWallet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "inOmniWallet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "outOmniWallet"): EventFragment;
 }
@@ -565,22 +567,14 @@ export class OmniTokenV1 extends Contract {
       arg0: string,
       overrides?: CallOverrides
     ): Promise<
-      [
-        string,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        boolean
-      ] & {
+      [boolean, number, number, string, BigNumber, BigNumber, BigNumber] & {
+        scheduled: boolean;
+        startDay: number;
+        afterDays: number;
         wallet: string;
         totalAmount: BigNumber;
         dailyAmount: BigNumber;
         initialAmount: BigNumber;
-        startDay: BigNumber;
-        afterDays: BigNumber;
-        scheduled: boolean;
       }
     >;
 
@@ -588,22 +582,14 @@ export class OmniTokenV1 extends Contract {
       arg0: string,
       overrides?: CallOverrides
     ): Promise<
-      [
-        string,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        boolean
-      ] & {
+      [boolean, number, number, string, BigNumber, BigNumber, BigNumber] & {
+        scheduled: boolean;
+        startDay: number;
+        afterDays: number;
         wallet: string;
         totalAmount: BigNumber;
         dailyAmount: BigNumber;
         initialAmount: BigNumber;
-        startDay: BigNumber;
-        afterDays: BigNumber;
-        scheduled: boolean;
       }
     >;
 
@@ -1032,14 +1018,14 @@ export class OmniTokenV1 extends Contract {
     arg0: string,
     overrides?: CallOverrides
   ): Promise<
-    [string, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, boolean] & {
+    [boolean, number, number, string, BigNumber, BigNumber, BigNumber] & {
+      scheduled: boolean;
+      startDay: number;
+      afterDays: number;
       wallet: string;
       totalAmount: BigNumber;
       dailyAmount: BigNumber;
       initialAmount: BigNumber;
-      startDay: BigNumber;
-      afterDays: BigNumber;
-      scheduled: boolean;
     }
   >;
 
@@ -1047,14 +1033,14 @@ export class OmniTokenV1 extends Contract {
     arg0: string,
     overrides?: CallOverrides
   ): Promise<
-    [string, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, boolean] & {
+    [boolean, number, number, string, BigNumber, BigNumber, BigNumber] & {
+      scheduled: boolean;
+      startDay: number;
+      afterDays: number;
       wallet: string;
       totalAmount: BigNumber;
       dailyAmount: BigNumber;
       initialAmount: BigNumber;
-      startDay: BigNumber;
-      afterDays: BigNumber;
-      scheduled: boolean;
     }
   >;
 
@@ -1468,22 +1454,14 @@ export class OmniTokenV1 extends Contract {
       arg0: string,
       overrides?: CallOverrides
     ): Promise<
-      [
-        string,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        boolean
-      ] & {
+      [boolean, number, number, string, BigNumber, BigNumber, BigNumber] & {
+        scheduled: boolean;
+        startDay: number;
+        afterDays: number;
         wallet: string;
         totalAmount: BigNumber;
         dailyAmount: BigNumber;
         initialAmount: BigNumber;
-        startDay: BigNumber;
-        afterDays: BigNumber;
-        scheduled: boolean;
       }
     >;
 
@@ -1491,22 +1469,14 @@ export class OmniTokenV1 extends Contract {
       arg0: string,
       overrides?: CallOverrides
     ): Promise<
-      [
-        string,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        boolean
-      ] & {
+      [boolean, number, number, string, BigNumber, BigNumber, BigNumber] & {
+        scheduled: boolean;
+        startDay: number;
+        afterDays: number;
         wallet: string;
         totalAmount: BigNumber;
         dailyAmount: BigNumber;
         initialAmount: BigNumber;
-        startDay: BigNumber;
-        afterDays: BigNumber;
-        scheduled: boolean;
       }
     >;
 
@@ -1802,6 +1772,27 @@ export class OmniTokenV1 extends Contract {
     dropBlacklisted(
       _account: string | null
     ): TypedEventFilter<[string], { _account: string }>;
+
+    inFrozenWallet(
+      scheduled: null,
+      startDay: null,
+      afterDays: null,
+      wallet: string | null,
+      totalAmount: BigNumberish | null,
+      dailyAmount: null,
+      initialAmount: null
+    ): TypedEventFilter<
+      [boolean, number, number, string, BigNumber, BigNumber, BigNumber],
+      {
+        scheduled: boolean;
+        startDay: number;
+        afterDays: number;
+        wallet: string;
+        totalAmount: BigNumber;
+        dailyAmount: BigNumber;
+        initialAmount: BigNumber;
+      }
+    >;
 
     inOmniWallet(
       _account: string | null

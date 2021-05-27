@@ -5,6 +5,7 @@
 
 pragma solidity 0.8.2;
 
+import "../@openzeppelin/contracts-upgradeable/token/ERC20/extensions/draft-ERC20PermitUpgradeable.sol";
 import "../@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol";
 import "../@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "../@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
@@ -14,25 +15,26 @@ import "hardhat/console.sol";
 import "./Math.sol";
 
 struct FrozenWallet {
+	bool scheduled;
+	uint32 startDay;
+    uint32 afterDays;
     address wallet;
     uint256 totalAmount;
     uint256 dailyAmount;
     uint256 initialAmount;
-    uint256 startDay;
-    uint256 afterDays;
-    bool scheduled;
-}
-// TODO: need to change for Daily Rate
-struct VestingType {
-    uint256 dailyRate; //Daily Rate
-    uint256 initialRate;
-    uint256 afterDays;
-    bool vesting;
 }
 
-contract Vesting is OwnableUpgradeable, Math {
+struct VestingType {
+    uint256 dailyRate;
+    uint256 initialRate;
+    uint256 afterDays;
+	bool vesting;
+}
+
+contract Vesting is OwnableUpgradeable, Math, ERC20PermitUpgradeable {
 	using AddressUpgradeable for address;
 	using SafeMathUpgradeable for uint256;
+	using SafeMathUpgradeable for uint32;
 	using SafeERC20Upgradeable for IERC20Upgradeable;
 
 	// Mapping of FrozenWallet
@@ -40,6 +42,17 @@ contract Vesting is OwnableUpgradeable, Math {
 	mapping (address => FrozenWallet) public frozenWallets;
 	// Array of Struc Vesting Types
     VestingType[] public vestingTypes;
+
+	// Event
+	event inFrozenWallet(
+		bool scheduled,
+		uint32 startDay,
+		uint32 afterDays,
+		address indexed wallet,
+		uint256 indexed totalAmount,
+		uint256 dailyAmount,
+		uint256 initialAmount
+	);
 
 	function getReleaseTime() public pure returns (uint256) {
         return 1623752855; // "Tuesday, 15 June 2021 10:27:35 GMT"
@@ -69,22 +82,32 @@ contract Vesting is OwnableUpgradeable, Math {
         uint256 releaseTime = getReleaseTime();
 
         if (!frozenWallets[wallet].scheduled) {
-            IERC20Upgradeable(address(this)).safeTransfer(wallet, totalAmount);
+            super._transfer(owner(), wallet, totalAmount);
         }
 
         // Create frozen wallets
         FrozenWallet memory frozenWallet = FrozenWallet(
+			true,
+			uint32(releaseTime.add(afterDays)),
+            uint32(afterDays),
             wallet,
             totalAmount,
             dailyAmount,
-            initialAmount,
-            releaseTime.add(afterDays),
-            afterDays,
-            true
+            initialAmount
         );
 
         // Add wallet to frozen wallets
         frozenWallets[wallet] = frozenWallet;
+
+		// emit Event add Frozen Wallet
+		emit inFrozenWallet(
+			true,
+			uint32(releaseTime.add(afterDays)),
+            uint32(afterDays),
+			wallet,
+            totalAmount,
+            dailyAmount,
+            initialAmount);
     }
 
     function getTimestamp() external view returns (uint256) {
