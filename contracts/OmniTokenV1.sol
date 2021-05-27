@@ -32,7 +32,6 @@ contract OmniTokenV1 is Initializable, Claimable, Blacklistable, CirculatingSupp
 
 		// Mint Total Supply
 		mint(getMaxTotalSupply());
-		uint256 improvenment;
 		console.log("Deploying Vesting Types");
 		// Begininng Deploy of Allocation in the ERC20
 		// Allocation #1 Early Backers Total (6.9565217)% and Start After 30 days Locked the Token
