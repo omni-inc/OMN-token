@@ -18,6 +18,8 @@ contract Claimable is OwnableUpgradeable {
 	using AddressUpgradeable for address;
 	using SafeMathUpgradeable for uint256;
 	using SafeERC20Upgradeable for IERC20Upgradeable;
+	// Internal Balance
+	mapping(address => uint256) _balance;
     /**
      * Throws if a given address is equal to address(0)
      */
@@ -26,6 +28,12 @@ contract Claimable is OwnableUpgradeable {
         /* solcov ignore next */
         _;
     }
+
+/// @notice Handle receive ether
+	receive() external payable {
+		// [address(this)] += msg.value.mul(1e18);
+		// revert("ERC20 OMN: Sending Ether for Error, revert!!!");
+	}
 
     /**
      * @dev Withdraws the erc20 tokens or native coins from this contract.

@@ -1,5 +1,5 @@
 import { run, ethers, upgrades } from 'hardhat';
-import { Signer } from "ethers";
+import { providers, Signer } from "ethers";
 import  { expect, assert } from "chai";
 
 describe("ERC20 Full Test", async () => {
@@ -400,16 +400,48 @@ describe("ERC20 Full Test", async () => {
 
 	it("6. Should the right value of the Circulating Supply for add, drop any wallets in the Array for OMNI Wallets", async () => {
 		const OmniToken = await ethers.getContractFactory("OmniTokenV1");
+		const Erc20Token = await ethers.getContractFactory("ERC20Token");
 		const omnitoken = await upgrades.deployProxy(OmniToken, ["Hello, OMN Token Ver 1"]);
+		const erc20Token = await upgrades.deployProxy(Erc20Token);
 
 		await omnitoken.deployed();
+		await erc20Token.deployed();
 		// verify the Address
 		console.log("OMNI Token deployed to:", omnitoken.address);
+		console.log("ERC20 Token deployed to:", erc20Token.address);
 		// Verify the balance of the Owner
 		console.log("Balance of the Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "must be 638 million!!! in wei");
 		expect((await omnitoken.balanceOf(await accounts[0].getAddress())).toString()).to.be.equal('638888889000000000000000000');
 		console.log("Total Supply: ", (await omnitoken.totalSupply()).toString(), "must be 638 million!!! in wei");
 		expect(((await omnitoken.totalSupply()).toString())).to.be.equal('638888889000000000000000000');
+		describe("Sending Native Token and ERC20 Token and after Claim with the Methods", async () => {
+			it("6.1.-  Sending Native Token and After Claim with the Method", async () => {
+				console.log("Verify the Balance before send ETH: ", (await ethers.provider.getBalance(omnitoken.address)).toString());
+				const value = ethers.utils.parseEther('1000.0');
+				const value2 = ethers.utils.parseEther('10000.0');
+				await accounts[3].sendTransaction({to: await accounts[0].getAddress(), value: value});
+				console.log("Verify Balance of ETH Accounts[0] before claim : ", (await ethers.provider.getBalance(await accounts[0].getAddress())).toString());
+				await accounts[0].sendTransaction({to: omnitoken.address, value: value2});
+				//await expect(accounts[0].sendTransaction({to: omnitoken.address, value: 10})).to.be.revertedWith("ERC20 OMN: Sending Ether for Error, revert!!!");
+				console.log("Verify the Balance After send ETH: ", (await ethers.provider.getBalance(omnitoken.address)).toString());
+				const address = await accounts[15].getAddress();
+				console.log("Verify Balance of ETH Accounts[15] before claim: ", (await ethers.provider.getBalance(address)).toString());
+				await omnitoken.claimValues('0x0000000000000000000000000000000000000000', address);
+				console.log("Verify Balance of ETH Accounts[15] After claim: ", (await ethers.provider.getBalance(address)).toString());
+				console.log("Verify Balance of ETH Accounts[0] After claim : ", (await ethers.provider.getBalance(await accounts[0].getAddress())).toString());
+
+			});
+
+			it("6.2- Sending ERC20 token and After Claim with Method", async () => {
+				await erc20Token.mintToWallet(omnitoken.address,'9000000000000000000');
+				console.log("Balance ERC20 Token of Smart Contract OMNI before Claim: ", (await erc20Token.balanceOf(omnitoken.address)).toString());
+				const address = await accounts[15].getAddress();
+				console.log("Balance ERC20 Token of Accounts[15] before Claim: ", (await erc20Token.balanceOf(address)).toString());
+				await omnitoken.claimValues(erc20Token.address, address);
+				console.log("Balance ERC20 Token of Accounts[15] After Claim: ", (await erc20Token.balanceOf(address)).toString());
+				console.log("Balance ERC20 Token of Smart Contract OMNI After Claim: ", (await erc20Token.balanceOf(omnitoken.address)).toString());
+			})
+		});
 	});
 
 });

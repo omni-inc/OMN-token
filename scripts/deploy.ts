@@ -23,11 +23,15 @@ const main = async () => {
   // console.log("Accounts:", accounts.map((a) => a.address));
 
   	const OmniToken = await ethers.getContractFactory("OmniTokenV1");
+	const Erc20Token = await ethers.getContractFactory("ERC20Token");
 	const omnitoken = await upgrades.deployProxy(OmniToken, ["Hello, OMN Token Ver 1"]);
+	const erc20Token = await upgrades.deployProxy(Erc20Token);
 
 	await omnitoken.deployed();
+	await erc20Token.deployed();
 	// verify the Address
 	console.log("Omni Token deployed to:", omnitoken.address);
+	console.log("ERC20 Token deployed to:", erc20Token.address);
 	// Verify the balance of the Owner
 	console.log("Balance of the Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "must be 638 million!!! in wei");
 	console.log("Total Supply: ", (await omnitoken.totalSupply()).toString(), "must be 638 million!!! in wei");

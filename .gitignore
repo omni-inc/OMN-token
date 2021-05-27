@@ -108,6 +108,9 @@ dist
 # TernJS port file
 .tern-port
 
+# MythX Files
+bin/
+
 #Hardhat files
 cache/
 artifacts/
