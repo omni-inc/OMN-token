@@ -55,8 +55,8 @@ contract Vesting is OwnableUpgradeable, Math {
         for(uint256 i = 0; i < addressesLength; i++) {
             address _address = addresses[i];
             uint256 totalAmount = totalAmounts[i];
-            uint256 dailyAmount = mulDiv(totalAmounts[i], vestingType.dailyRate, 100000000000000000000);
-            uint256 initialAmount = mulDiv(totalAmounts[i], vestingType.initialRate, 100000000000000000000);
+            uint256 dailyAmount = mulDiv(totalAmounts[i], vestingType.dailyRate, 1000000000000000000);
+            uint256 initialAmount = mulDiv(totalAmounts[i], vestingType.initialRate, 1000000000000000000);
             uint256 afterDay = vestingType.afterDays;
 
             addFrozenWallet(_address, totalAmount, dailyAmount, initialAmount, afterDay);

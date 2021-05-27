@@ -2,7 +2,7 @@ import { run, ethers, upgrades } from 'hardhat';
 import { providers, Signer } from "ethers";
 import  { expect, assert } from "chai";
 
-describe("ERC20 Full Test", async () => {
+describe("ERC20 Full Test except Vesting", async () => {
 
 	let accounts: Signer[]
 
