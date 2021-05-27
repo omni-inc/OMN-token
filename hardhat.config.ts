@@ -81,7 +81,7 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 		hardhat: {
 			gasPrice: 135000000000,
 			accounts: {
-				count: 700
+				count: 1400
 			}
 		}
 	},
