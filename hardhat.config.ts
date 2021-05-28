@@ -78,10 +78,16 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 				mnemonic:process.env.MNEMONIC
 			}
 		},
+		localhost: {
+			url: "http://127.0.0.1:8545",
+			gasPrice: 85000000000,
+			blockGasLimit: 149000000
+		},
 		hardhat: {
-			gasPrice: 135000000000,
+			gasPrice: 85000000000,
+			blockGasLimit: 149000000,
 			accounts: {
-				count: 1400
+				count: 1500
 			}
 		}
 	},
@@ -105,7 +111,7 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 	},
 	gasReporter: {
 		currency: 'USD',
-		gasPrice: 135,
+		gasPrice: 85,
 		coinmarketcap: process.env.COINMARKETCAP_API_KEY,
 		maxMethodDiff: 10,
 	},
