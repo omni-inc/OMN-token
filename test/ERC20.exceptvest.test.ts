@@ -210,10 +210,10 @@ describe("ERC20 Full Test except Vesting", async () => {
 		describe("Add Wallet to the blacklist and getting the list, and drop someone, and update the list", async () => {
 			it("4.1.- Add several list of Accounts in the Blacklist: ", async () => {
 				console.log("Verify only the Owner can add wallet to the Blacklist: ");
-				await expect(omnitoken.connect(accounts[1]).blacklist(await accounts[0].getAddress())).to.be.revertedWith("Ownable: caller is not the owner");
+				await expect(omnitoken.connect(accounts[1]).addBlacklist(await accounts[0].getAddress())).to.be.revertedWith("Ownable: caller is not the owner");
 				console.log("Add all odd accounts from 4 to 16 address:");
 				for (let i=4; i <= 16; i+=2) {
-					await expect(omnitoken.blacklist(await accounts[i].getAddress())).to.emit(omnitoken, 'addBlacklisted').withArgs(await accounts[i].getAddress());
+					await expect(omnitoken.addBlacklist(await accounts[i].getAddress())).to.emit(omnitoken, 'inBlacklisted').withArgs(await accounts[i].getAddress());
 					console.log("Account ", i, "Blacklisted ", await accounts[i].getAddress());
 				}
 				const address:string[] = await omnitoken.getBlacklist()
@@ -226,7 +226,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 			it("4.2.- Drop some address from Blacklist, adn verify the changes", async () => {
 				console.log("Drop accounts from positions 4, 8, 12 and 16 address:");
 				for (let i=4; i <= 16; i+=4) {
-					await expect(omnitoken.unBlacklist(await accounts[i].getAddress())).to.emit(omnitoken, 'dropBlacklisted').withArgs(await accounts[i].getAddress());
+					await expect(omnitoken.dropBlacklist(await accounts[i].getAddress())).to.emit(omnitoken, 'outBlacklisted').withArgs(await accounts[i].getAddress());
 					console.log("Account ", i, "Blacklisted ", await accounts[i].getAddress());
 				}
 				const address:string[] = await omnitoken.getBlacklist()
@@ -418,7 +418,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 			it("6.1.-  Sending Native Token and After Claim with the Method", async () => {
 				console.log("Verify the Balance before send ETH: ", (await ethers.provider.getBalance(omnitoken.address)).toString());
 				const value = ethers.utils.parseEther('1000.0');
-				const value2 = ethers.utils.parseEther('10000.0');
+				const value2 = ethers.utils.parseEther('1000.0');
 				await accounts[3].sendTransaction({to: await accounts[0].getAddress(), value: value});
 				console.log("Verify Balance of ETH Accounts[0] before claim : ", (await ethers.provider.getBalance(await accounts[0].getAddress())).toString());
 				await accounts[0].sendTransaction({to: omnitoken.address, value: value2});

@@ -21,8 +21,8 @@ contract Blacklistable is OwnableUpgradeable {
 	// Mapping blacklisted Address
     mapping(address => bool) private blacklisted;
 
-    event addBlacklisted(address indexed _account);
-    event dropBlacklisted(address indexed _account);
+    event inBlacklisted(address indexed _account);
+    event outBlacklisted(address indexed _account);
 
 
     /**
@@ -49,19 +49,19 @@ contract Blacklistable is OwnableUpgradeable {
      * @dev Adds account to blacklist
      * @param _account The address to blacklist
      */
-    function blacklist(address _account) public onlyOwner() {
+    function addBlacklist(address _account) public onlyOwner() {
         blacklisted[_account] = true;
 		wallets.push(_account);
-        emit addBlacklisted(_account);
+        emit inBlacklisted(_account);
     }
 
     /**
      * @dev Removes account from blacklist
      * @param _account The address to remove from the blacklist
      */
-    function unBlacklist(address _account) public onlyOwner() {
+    function dropBlacklist(address _account) public onlyOwner() {
         blacklisted[_account] = false;
-        emit dropBlacklisted(_account);
+        emit outBlacklisted(_account);
     }
 
 	function getBlacklist() public view onlyOwner() returns (address[] memory) {

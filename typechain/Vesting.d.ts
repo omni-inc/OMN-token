@@ -24,12 +24,13 @@ interface VestingInterface extends ethers.utils.Interface {
   functions: {
     "DOMAIN_SEPARATOR()": FunctionFragment;
     "addAllocations(address[],uint256[],uint256)": FunctionFragment;
+    "addBlacklist(address)": FunctionFragment;
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
-    "blacklist(address)": FunctionFragment;
     "decimals()": FunctionFragment;
     "decreaseAllowance(address,uint256)": FunctionFragment;
+    "dropBlacklist(address)": FunctionFragment;
     "frozenWallets(address)": FunctionFragment;
     "getBlacklist()": FunctionFragment;
     "getDays(uint256)": FunctionFragment;
@@ -52,7 +53,6 @@ interface VestingInterface extends ethers.utils.Interface {
     "transfer(address,uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
-    "unBlacklist(address)": FunctionFragment;
     "vestingTypes(uint256)": FunctionFragment;
   };
 
@@ -65,6 +65,10 @@ interface VestingInterface extends ethers.utils.Interface {
     values: [string[], BigNumberish[], BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "addBlacklist",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "allowance",
     values: [string, string]
   ): string;
@@ -73,11 +77,14 @@ interface VestingInterface extends ethers.utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
-  encodeFunctionData(functionFragment: "blacklist", values: [string]): string;
   encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "decreaseAllowance",
     values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "dropBlacklist",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "frozenWallets",
@@ -160,7 +167,6 @@ interface VestingInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
-  encodeFunctionData(functionFragment: "unBlacklist", values: [string]): string;
   encodeFunctionData(
     functionFragment: "vestingTypes",
     values: [BigNumberish]
@@ -174,13 +180,20 @@ interface VestingInterface extends ethers.utils.Interface {
     functionFragment: "addAllocations",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "addBlacklist",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "blacklist", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "decreaseAllowance",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "dropBlacklist",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -242,10 +255,6 @@ interface VestingInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "unBlacklist",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "vestingTypes",
     data: BytesLike
   ): Result;
@@ -256,9 +265,9 @@ interface VestingInterface extends ethers.utils.Interface {
     "Paused(address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
     "Unpaused(address)": EventFragment;
-    "addBlacklisted(address)": EventFragment;
-    "dropBlacklisted(address)": EventFragment;
+    "inBlacklisted(address)": EventFragment;
     "inFrozenWallet(bool,uint32,uint32,address,uint256,uint256,uint256)": EventFragment;
+    "outBlacklisted(address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
@@ -266,9 +275,9 @@ interface VestingInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "addBlacklisted"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "dropBlacklisted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "inBlacklisted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "inFrozenWallet"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "outBlacklisted"): EventFragment;
 }
 
 export class Vesting extends Contract {
@@ -333,6 +342,16 @@ export class Vesting extends Contract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    addBlacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "addBlacklist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     allowance(
       owner: string,
       spender: string,
@@ -364,16 +383,6 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    blacklist(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "blacklist(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     decimals(overrides?: CallOverrides): Promise<[number]>;
 
     "decimals()"(overrides?: CallOverrides): Promise<[number]>;
@@ -387,6 +396,16 @@ export class Vesting extends Contract {
     "decreaseAllowance(address,uint256)"(
       spender: string,
       subtractedValue: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    dropBlacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "dropBlacklist(address)"(
+      _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -601,16 +620,6 @@ export class Vesting extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    unBlacklist(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "unBlacklist(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     vestingTypes(
       arg0: BigNumberish,
       overrides?: CallOverrides
@@ -654,6 +663,16 @@ export class Vesting extends Contract {
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  addBlacklist(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "addBlacklist(address)"(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   allowance(
     owner: string,
     spender: string,
@@ -685,16 +704,6 @@ export class Vesting extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  blacklist(
-    _account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "blacklist(address)"(
-    _account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   decimals(overrides?: CallOverrides): Promise<number>;
 
   "decimals()"(overrides?: CallOverrides): Promise<number>;
@@ -708,6 +717,16 @@ export class Vesting extends Contract {
   "decreaseAllowance(address,uint256)"(
     spender: string,
     subtractedValue: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  dropBlacklist(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "dropBlacklist(address)"(
+    _account: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -916,16 +935,6 @@ export class Vesting extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  unBlacklist(
-    _account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "unBlacklist(address)"(
-    _account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   vestingTypes(
     arg0: BigNumberish,
     overrides?: CallOverrides
@@ -969,6 +978,13 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    addBlacklist(_account: string, overrides?: CallOverrides): Promise<void>;
+
+    "addBlacklist(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     allowance(
       owner: string,
       spender: string,
@@ -1000,13 +1016,6 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    blacklist(_account: string, overrides?: CallOverrides): Promise<void>;
-
-    "blacklist(address)"(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     decimals(overrides?: CallOverrides): Promise<number>;
 
     "decimals()"(overrides?: CallOverrides): Promise<number>;
@@ -1022,6 +1031,13 @@ export class Vesting extends Contract {
       subtractedValue: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    dropBlacklist(_account: string, overrides?: CallOverrides): Promise<void>;
+
+    "dropBlacklist(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     frozenWallets(
       arg0: string,
@@ -1230,13 +1246,6 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    unBlacklist(_account: string, overrides?: CallOverrides): Promise<void>;
-
-    "unBlacklist(address)"(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     vestingTypes(
       arg0: BigNumberish,
       overrides?: CallOverrides
@@ -1293,11 +1302,7 @@ export class Vesting extends Contract {
 
     Unpaused(account: null): TypedEventFilter<[string], { account: string }>;
 
-    addBlacklisted(
-      _account: string | null
-    ): TypedEventFilter<[string], { _account: string }>;
-
-    dropBlacklisted(
+    inBlacklisted(
       _account: string | null
     ): TypedEventFilter<[string], { _account: string }>;
 
@@ -1321,6 +1326,10 @@ export class Vesting extends Contract {
         initialAmount: BigNumber;
       }
     >;
+
+    outBlacklisted(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
   };
 
   estimateGas: {
@@ -1340,6 +1349,16 @@ export class Vesting extends Contract {
       totalAmounts: BigNumberish[],
       vestingTypeIndex: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    addBlacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "addBlacklist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     allowance(
@@ -1373,16 +1392,6 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    blacklist(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "blacklist(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     decimals(overrides?: CallOverrides): Promise<BigNumber>;
 
     "decimals()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1396,6 +1405,16 @@ export class Vesting extends Contract {
     "decreaseAllowance(address,uint256)"(
       spender: string,
       subtractedValue: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    dropBlacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "dropBlacklist(address)"(
+      _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1587,16 +1606,6 @@ export class Vesting extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    unBlacklist(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "unBlacklist(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     vestingTypes(
       arg0: BigNumberish,
       overrides?: CallOverrides
@@ -1627,6 +1636,16 @@ export class Vesting extends Contract {
       totalAmounts: BigNumberish[],
       vestingTypeIndex: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    addBlacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "addBlacklist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     allowance(
@@ -1663,16 +1682,6 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    blacklist(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "blacklist(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "decimals()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -1686,6 +1695,16 @@ export class Vesting extends Contract {
     "decreaseAllowance(address,uint256)"(
       spender: string,
       subtractedValue: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    dropBlacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "dropBlacklist(address)"(
+      _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1882,16 +1901,6 @@ export class Vesting extends Contract {
 
     "transferOwnership(address)"(
       newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    unBlacklist(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "unBlacklist(address)"(
-      _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

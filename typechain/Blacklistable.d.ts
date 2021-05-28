@@ -21,16 +21,23 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface BlacklistableInterface extends ethers.utils.Interface {
   functions: {
-    "blacklist(address)": FunctionFragment;
+    "addBlacklist(address)": FunctionFragment;
+    "dropBlacklist(address)": FunctionFragment;
     "getBlacklist()": FunctionFragment;
     "isBlacklisted(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
-    "unBlacklist(address)": FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: "blacklist", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "addBlacklist",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "dropBlacklist",
+    values: [string]
+  ): string;
   encodeFunctionData(
     functionFragment: "getBlacklist",
     values?: undefined
@@ -48,9 +55,15 @@ interface BlacklistableInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
-  encodeFunctionData(functionFragment: "unBlacklist", values: [string]): string;
 
-  decodeFunctionResult(functionFragment: "blacklist", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "addBlacklist",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "dropBlacklist",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "getBlacklist",
     data: BytesLike
@@ -68,20 +81,16 @@ interface BlacklistableInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "unBlacklist",
-    data: BytesLike
-  ): Result;
 
   events: {
     "OwnershipTransferred(address,address)": EventFragment;
-    "addBlacklisted(address)": EventFragment;
-    "dropBlacklisted(address)": EventFragment;
+    "inBlacklisted(address)": EventFragment;
+    "outBlacklisted(address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "addBlacklisted"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "dropBlacklisted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "inBlacklisted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "outBlacklisted"): EventFragment;
 }
 
 export class Blacklistable extends Contract {
@@ -128,12 +137,22 @@ export class Blacklistable extends Contract {
   interface: BlacklistableInterface;
 
   functions: {
-    blacklist(
+    addBlacklist(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "blacklist(address)"(
+    "addBlacklist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    dropBlacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "dropBlacklist(address)"(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -173,24 +192,24 @@ export class Blacklistable extends Contract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    unBlacklist(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "unBlacklist(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
   };
 
-  blacklist(
+  addBlacklist(
     _account: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "blacklist(address)"(
+  "addBlacklist(address)"(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  dropBlacklist(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "dropBlacklist(address)"(
     _account: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -228,20 +247,17 @@ export class Blacklistable extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  unBlacklist(
-    _account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "unBlacklist(address)"(
-    _account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   callStatic: {
-    blacklist(_account: string, overrides?: CallOverrides): Promise<void>;
+    addBlacklist(_account: string, overrides?: CallOverrides): Promise<void>;
 
-    "blacklist(address)"(
+    "addBlacklist(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    dropBlacklist(_account: string, overrides?: CallOverrides): Promise<void>;
+
+    "dropBlacklist(address)"(
       _account: string,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -277,13 +293,6 @@ export class Blacklistable extends Contract {
       newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    unBlacklist(_account: string, overrides?: CallOverrides): Promise<void>;
-
-    "unBlacklist(address)"(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
   };
 
   filters: {
@@ -295,22 +304,32 @@ export class Blacklistable extends Contract {
       { previousOwner: string; newOwner: string }
     >;
 
-    addBlacklisted(
+    inBlacklisted(
       _account: string | null
     ): TypedEventFilter<[string], { _account: string }>;
 
-    dropBlacklisted(
+    outBlacklisted(
       _account: string | null
     ): TypedEventFilter<[string], { _account: string }>;
   };
 
   estimateGas: {
-    blacklist(
+    addBlacklist(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "blacklist(address)"(
+    "addBlacklist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    dropBlacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "dropBlacklist(address)"(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -350,25 +369,25 @@ export class Blacklistable extends Contract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
-
-    unBlacklist(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "unBlacklist(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    blacklist(
+    addBlacklist(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "blacklist(address)"(
+    "addBlacklist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    dropBlacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "dropBlacklist(address)"(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -406,16 +425,6 @@ export class Blacklistable extends Contract {
 
     "transferOwnership(address)"(
       newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    unBlacklist(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "unBlacklist(address)"(
-      _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

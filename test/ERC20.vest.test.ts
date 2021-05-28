@@ -85,8 +85,28 @@ describe("ERC20 Only Vesting Test", async () => {
 		}
 		console.log("Addresses 13: ", addresses13);
 		console.log("Amount 13: ", (amount13).toString());
+		const address:string = addresses1[35];
+		const amount:BigNumber =  amount1[35];
 		describe("Start to Load the All Wallets in the allocation to corresponding such vesting process", async () => {
-			it("1.1- Call the addLocation Method for Allocation #1 and upload all Wallets of the Vesting Process in the Smart Contract", async () => {
+			it("1.1- Call the AddAllocation Method, and Include a Address Zero, in the Wallets Array, Revert Transaction", async () => {
+				// Revert Because include a Zero Address in Array
+				addresses1[35] = '0x0000000000000000000000000000000000000000';
+				await expect(omnitoken.addAllocations(addresses1, amount1, 0)).to.be.revertedWith("ERC20: transfer to the zero address")
+			});
+			it("1.2- Call the AddAllocation Method, and Include a Address Zero, in the Wallets Array, Revert Transaction", async () => {
+				// Revert Because include a Blacklisted Address in Array
+				addresses1[35] = address;
+				await expect(omnitoken.addBlacklist(address)).to.emit(omnitoken, 'inBlacklisted').withArgs(address);
+				await expect(omnitoken.addAllocations(addresses1, amount1, 0)).to.be.revertedWith("ERC20 OMN: recipient account is blacklisted");
+				await expect(omnitoken.dropBlacklist(address)).to.emit(omnitoken, 'outBlacklisted').withArgs(address);
+			});
+			it("1.3- Call the AddAllocation Method, and Include a Address Zero, in the Wallets Array, Revert Transaction", async () => {
+				// Revert Because include a Zero TotalAmount in Array
+				amount1[35] = ethers.utils.parseEther(String(0));
+				await expect(omnitoken.addAllocations(addresses1, amount1, 0)).to.be.revertedWith("ERC20 OMN: total amount token is zero");
+				amount1[35] = amount;
+			});
+			it("1.4- Call the AddAllocation Method for Allocation #1 and upload all Wallets of the Vesting Process in the Smart Contract", async () => {
 				// Allocation #1
 				const receipt = await omnitoken.addAllocations(addresses1, amount1, 0);
 				// await receipt.wait();
@@ -95,7 +115,7 @@ describe("ERC20 Only Vesting Test", async () => {
 					console.log("Wallet ",i ," : ", addresses1[i], "Amount: ", (amount1[i]).toString(), "Balances: ",(await omnitoken.balanceOf(addresses1[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses1[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses1[i])).toString());
 				}
 			});
-			it("1.2- Call the addLocation Method for Allocation #2 and upload all Wallets of the Vesting Process in the Smart Contract", async () => {
+			it("1.5- Call the AddAllocation Method for Allocation #2 and upload all Wallets of the Vesting Process in the Smart Contract", async () => {
 				// Allocation #2
 				const receipt = await omnitoken.addAllocations(addresses2, amount2, 1);
 				// await receipt.wait();
@@ -104,7 +124,7 @@ describe("ERC20 Only Vesting Test", async () => {
 					console.log("Wallet ",i ," : ", addresses2[i], "Amount: ", amount2[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses2[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses2[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses2[i])).toString());
 				}
 			});
-			it("1.3- Call the addLocation Method for Allocation #3 and upload all Wallets of the Vesting Process in the Smart Contract", async () => {
+			it("1.6- Call the AddAllocation Method for Allocation #3 and upload all Wallets of the Vesting Process in the Smart Contract", async () => {
 				// Allocation #3
 				const receipt = await omnitoken.addAllocations(addresses3, amount3, 2);
 				// await receipt.wait();
@@ -113,7 +133,7 @@ describe("ERC20 Only Vesting Test", async () => {
 					console.log("Wallet ",i ," : ", addresses3[i], "Amount: ", amount3[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses3[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses3[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses3[i])).toString());
 				}
 			});
-			it("1.4- Call the addLocation Method for Allocation #4 and upload all Wallets of the Vesting Process in the Smart Contract", async () => {
+			it("1.7- Call the AddAllocation Method for Allocation #4 and upload all Wallets of the Vesting Process in the Smart Contract", async () => {
 				// Allocation #4
 				const receipt = await omnitoken.addAllocations(addresses4, amount4, 3);
 				// await receipt.wait();
@@ -122,7 +142,7 @@ describe("ERC20 Only Vesting Test", async () => {
 					console.log("Wallet ",i ," : ", addresses4[i], "Amount: ", amount4[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses4[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses4[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses4[i])).toString());
 				}
 			});
-			it("1.5- Call the addLocation Method for Allocation #5 and upload all Wallets of the Vesting Process in the Smart Contract", async () => {
+			it("1.8- Call the AddAllocation Method for Allocation #5 and upload all Wallets of the Vesting Process in the Smart Contract", async () => {
 				// Allocation #5
 				const receipt = await omnitoken.addAllocations(addresses5, amount5, 4);
 				// await receipt.wait();
@@ -131,7 +151,7 @@ describe("ERC20 Only Vesting Test", async () => {
 					console.log("Wallet ",i ," : ", addresses5[i], "Amount: ", amount5[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses5[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses5[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses5[i])).toString());
 				}
 			});
-			it("1.6- Call the addLocation Method for Allocation #6 and upload all Wallets of the Vesting Process in the Smart Contract", async () => {
+			it("1.9- Call the AddAllocation Method for Allocation #6 and upload all Wallets of the Vesting Process in the Smart Contract", async () => {
 				// Allocation #6
 				const receipt = await omnitoken.addAllocations(addresses6, amount6, 5);
 				// await receipt.wait();
@@ -140,7 +160,7 @@ describe("ERC20 Only Vesting Test", async () => {
 					console.log("Wallet ",i ," : ", addresses6[i], "Amount: ", amount6[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses6[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses6[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses6[i])).toString());
 				}
 			});
-			it("1.7- Call the addLocation Method for Allocation #7 and upload all Wallets of the Vesting Process in the Smart Contract", async () => {
+			it("1.10- Call the AddAllocation Method for Allocation #7 and upload all Wallets of the Vesting Process in the Smart Contract", async () => {
 				// Allocation #7
 				const receipt = await omnitoken.addAllocations(addresses7, amount7, 6);
 				// await receipt.wait();
@@ -149,7 +169,7 @@ describe("ERC20 Only Vesting Test", async () => {
 					console.log("Wallet ",i ," : ", addresses7[i], "Amount: ", amount7[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses7[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses7[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses7[i])).toString());
 				}
 			});
-			it("1.8- Call the addLocation Method for Allocation #8 and upload all Wallets of the Vesting Process in the Smart Contract", async () => {
+			it("1.11- Call the AddAllocation Method for Allocation #8 and upload all Wallets of the Vesting Process in the Smart Contract", async () => {
 				// Allocation #8
 				const receipt = await omnitoken.addAllocations(addresses8, amount8, 7);
 				// await receipt.wait();
@@ -158,7 +178,7 @@ describe("ERC20 Only Vesting Test", async () => {
 					console.log("Wallet ",i ," : ", addresses8[i], "Amount: ", amount8[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses8[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses8[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses8[i])).toString());
 				}
 			});
-			it("1.9- Call the addLocation Method for Allocation #9 and upload all Wallets of the Vesting Process in the Smart Contract", async () => {
+			it("1.12- Call the AddAllocation Method for Allocation #9 and upload all Wallets of the Vesting Process in the Smart Contract", async () => {
 				// Allocation #9
 				const receipt = await omnitoken.addAllocations(addresses9, amount9, 8);
 				// await receipt.wait();
@@ -167,7 +187,7 @@ describe("ERC20 Only Vesting Test", async () => {
 					console.log("Wallet ",i ," : ", addresses9[i], "Amount: ", amount9[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses9[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses9[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses9[i])).toString());
 				}
 			});
-			it("1.10- Call the addLocation Method for Allocation #10 and upload all Wallets of the Vesting Process in the Smart Contract", async () => {
+			it("1.13- Call the AddAllocation Method for Allocation #10 and upload all Wallets of the Vesting Process in the Smart Contract", async () => {
 				// Allocation #10
 				const receipt = await omnitoken.addAllocations(addresses10, amount10, 3);
 				// await receipt.wait();
@@ -176,7 +196,7 @@ describe("ERC20 Only Vesting Test", async () => {
 					console.log("Wallet ",i ," : ", addresses10[i], "Amount: ", amount10[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses10[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses10[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses10[i])).toString());
 				}
 			});
-			it("1.11- Call the addLocation Method for Allocation #11 and upload all Wallets of the Vesting Process in the Smart Contract", async () => {
+			it("1.14- Call the AddAllocation Method for Allocation #11 and upload all Wallets of the Vesting Process in the Smart Contract", async () => {
 				// Allocation #11
 				const receipt = await omnitoken.addAllocations(addresses11, amount11, 9);
 				// await receipt.wait();
@@ -185,7 +205,7 @@ describe("ERC20 Only Vesting Test", async () => {
 					console.log("Wallet ",i ," : ", addresses11[i], "Amount: ", amount11[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses11[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses11[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses11[i])).toString());
 				}
 			});
-			it("1.12- Call the addLocation Method for Allocation #12 and upload all Wallets of the Vesting Process in the Smart Contract", async () => {
+			it("1.15- Call the AddAllocation Method for Allocation #12 and upload all Wallets of the Vesting Process in the Smart Contract", async () => {
 				// Allocation #12
 				const receipt = await omnitoken.addAllocations(addresses12, amount12, 10);
 				// await receipt.wait();
@@ -194,7 +214,7 @@ describe("ERC20 Only Vesting Test", async () => {
 					console.log("Wallet ",i ," : ", addresses12[i], "Amount: ", amount12[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses12[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses12[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses12[i])).toString());
 				}
 			});
-			it("1.13- Call the addLocation Method for Allocation #13 and upload all Wallets of the Vesting Process in the Smart Contract", async () => {
+			it("1.16- Call the AddAllocation Method for Allocation #13 and upload all Wallets of the Vesting Process in the Smart Contract", async () => {
 				// Allocation #13
 				const receipt = await omnitoken.addAllocations(addresses13, amount13, 11);
 				// await receipt.wait();
