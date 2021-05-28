@@ -27,19 +27,23 @@ interface VestingInterface extends ethers.utils.Interface {
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
+    "blacklist(address)": FunctionFragment;
     "decimals()": FunctionFragment;
     "decreaseAllowance(address,uint256)": FunctionFragment;
     "frozenWallets(address)": FunctionFragment;
+    "getBlacklist()": FunctionFragment;
     "getDays(uint256)": FunctionFragment;
     "getReleaseTime()": FunctionFragment;
     "getRestAmount(address)": FunctionFragment;
     "getTimestamp()": FunctionFragment;
     "getTransferableAmount(address)": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
+    "isBlacklisted(address)": FunctionFragment;
     "isStarted(uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "nonces(address)": FunctionFragment;
     "owner()": FunctionFragment;
+    "paused()": FunctionFragment;
     "permit(address,address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "rsvToSig(bytes32,bytes32,uint8)": FunctionFragment;
@@ -48,6 +52,7 @@ interface VestingInterface extends ethers.utils.Interface {
     "transfer(address,uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
+    "unBlacklist(address)": FunctionFragment;
     "vestingTypes(uint256)": FunctionFragment;
   };
 
@@ -68,6 +73,7 @@ interface VestingInterface extends ethers.utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
+  encodeFunctionData(functionFragment: "blacklist", values: [string]): string;
   encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "decreaseAllowance",
@@ -76,6 +82,10 @@ interface VestingInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "frozenWallets",
     values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBlacklist",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getDays",
@@ -102,12 +112,17 @@ interface VestingInterface extends ethers.utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "isBlacklisted",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "isStarted",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "nonces", values: [string]): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(functionFragment: "paused", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "permit",
     values: [
@@ -145,6 +160,7 @@ interface VestingInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
+  encodeFunctionData(functionFragment: "unBlacklist", values: [string]): string;
   encodeFunctionData(
     functionFragment: "vestingTypes",
     values: [BigNumberish]
@@ -161,6 +177,7 @@ interface VestingInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "blacklist", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "decreaseAllowance",
@@ -168,6 +185,10 @@ interface VestingInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "frozenWallets",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getBlacklist",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getDays", data: BytesLike): Result;
@@ -191,10 +212,15 @@ interface VestingInterface extends ethers.utils.Interface {
     functionFragment: "increaseAllowance",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "isBlacklisted",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "isStarted", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "permit", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
@@ -216,6 +242,10 @@ interface VestingInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "unBlacklist",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "vestingTypes",
     data: BytesLike
   ): Result;
@@ -223,13 +253,21 @@ interface VestingInterface extends ethers.utils.Interface {
   events: {
     "Approval(address,address,uint256)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
+    "Paused(address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
+    "Unpaused(address)": EventFragment;
+    "addBlacklisted(address)": EventFragment;
+    "dropBlacklisted(address)": EventFragment;
     "inFrozenWallet(bool,uint32,uint32,address,uint256,uint256,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "addBlacklisted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "dropBlacklisted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "inFrozenWallet"): EventFragment;
 }
 
@@ -326,6 +364,16 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    blacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "blacklist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     decimals(overrides?: CallOverrides): Promise<[number]>;
 
     "decimals()"(overrides?: CallOverrides): Promise<[number]>;
@@ -371,6 +419,10 @@ export class Vesting extends Contract {
         initialAmount: BigNumber;
       }
     >;
+
+    getBlacklist(overrides?: CallOverrides): Promise<[string[]]>;
+
+    "getBlacklist()"(overrides?: CallOverrides): Promise<[string[]]>;
 
     getDays(
       afterDays: BigNumberish,
@@ -422,6 +474,16 @@ export class Vesting extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    isBlacklisted(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    "isBlacklisted(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
     isStarted(
       startDay: BigNumberish,
       overrides?: CallOverrides
@@ -446,6 +508,10 @@ export class Vesting extends Contract {
     owner(overrides?: CallOverrides): Promise<[string]>;
 
     "owner()"(overrides?: CallOverrides): Promise<[string]>;
+
+    paused(overrides?: CallOverrides): Promise<[boolean]>;
+
+    "paused()"(overrides?: CallOverrides): Promise<[boolean]>;
 
     permit(
       owner: string,
@@ -535,6 +601,16 @@ export class Vesting extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    unBlacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "unBlacklist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     vestingTypes(
       arg0: BigNumberish,
       overrides?: CallOverrides
@@ -609,6 +685,16 @@ export class Vesting extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  blacklist(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "blacklist(address)"(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   decimals(overrides?: CallOverrides): Promise<number>;
 
   "decimals()"(overrides?: CallOverrides): Promise<number>;
@@ -654,6 +740,10 @@ export class Vesting extends Contract {
       initialAmount: BigNumber;
     }
   >;
+
+  getBlacklist(overrides?: CallOverrides): Promise<string[]>;
+
+  "getBlacklist()"(overrides?: CallOverrides): Promise<string[]>;
 
   getDays(
     afterDays: BigNumberish,
@@ -702,6 +792,13 @@ export class Vesting extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  isBlacklisted(_account: string, overrides?: CallOverrides): Promise<boolean>;
+
+  "isBlacklisted(address)"(
+    _account: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   isStarted(
     startDay: BigNumberish,
     overrides?: CallOverrides
@@ -726,6 +823,10 @@ export class Vesting extends Contract {
   owner(overrides?: CallOverrides): Promise<string>;
 
   "owner()"(overrides?: CallOverrides): Promise<string>;
+
+  paused(overrides?: CallOverrides): Promise<boolean>;
+
+  "paused()"(overrides?: CallOverrides): Promise<boolean>;
 
   permit(
     owner: string,
@@ -815,6 +916,16 @@ export class Vesting extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  unBlacklist(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "unBlacklist(address)"(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   vestingTypes(
     arg0: BigNumberish,
     overrides?: CallOverrides
@@ -889,6 +1000,13 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    blacklist(_account: string, overrides?: CallOverrides): Promise<void>;
+
+    "blacklist(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     decimals(overrides?: CallOverrides): Promise<number>;
 
     "decimals()"(overrides?: CallOverrides): Promise<number>;
@@ -934,6 +1052,10 @@ export class Vesting extends Contract {
         initialAmount: BigNumber;
       }
     >;
+
+    getBlacklist(overrides?: CallOverrides): Promise<string[]>;
+
+    "getBlacklist()"(overrides?: CallOverrides): Promise<string[]>;
 
     getDays(
       afterDays: BigNumberish,
@@ -985,6 +1107,16 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    isBlacklisted(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "isBlacklisted(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     isStarted(
       startDay: BigNumberish,
       overrides?: CallOverrides
@@ -1009,6 +1141,10 @@ export class Vesting extends Contract {
     owner(overrides?: CallOverrides): Promise<string>;
 
     "owner()"(overrides?: CallOverrides): Promise<string>;
+
+    paused(overrides?: CallOverrides): Promise<boolean>;
+
+    "paused()"(overrides?: CallOverrides): Promise<boolean>;
 
     permit(
       owner: string,
@@ -1094,6 +1230,13 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    unBlacklist(_account: string, overrides?: CallOverrides): Promise<void>;
+
+    "unBlacklist(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     vestingTypes(
       arg0: BigNumberish,
       overrides?: CallOverrides
@@ -1137,6 +1280,8 @@ export class Vesting extends Contract {
       { previousOwner: string; newOwner: string }
     >;
 
+    Paused(account: null): TypedEventFilter<[string], { account: string }>;
+
     Transfer(
       from: string | null,
       to: string | null,
@@ -1145,6 +1290,16 @@ export class Vesting extends Contract {
       [string, string, BigNumber],
       { from: string; to: string; value: BigNumber }
     >;
+
+    Unpaused(account: null): TypedEventFilter<[string], { account: string }>;
+
+    addBlacklisted(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
+
+    dropBlacklisted(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
 
     inFrozenWallet(
       scheduled: null,
@@ -1218,6 +1373,16 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    blacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "blacklist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     decimals(overrides?: CallOverrides): Promise<BigNumber>;
 
     "decimals()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1240,6 +1405,10 @@ export class Vesting extends Contract {
       arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    getBlacklist(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getBlacklist()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     getDays(
       afterDays: BigNumberish,
@@ -1291,6 +1460,16 @@ export class Vesting extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    isBlacklisted(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "isBlacklisted(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     isStarted(
       startDay: BigNumberish,
       overrides?: CallOverrides
@@ -1315,6 +1494,10 @@ export class Vesting extends Contract {
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     "owner()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    paused(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "paused()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     permit(
       owner: string,
@@ -1404,6 +1587,16 @@ export class Vesting extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    unBlacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "unBlacklist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     vestingTypes(
       arg0: BigNumberish,
       overrides?: CallOverrides
@@ -1470,6 +1663,16 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    blacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "blacklist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "decimals()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -1495,6 +1698,10 @@ export class Vesting extends Contract {
       arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    getBlacklist(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getBlacklist()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getDays(
       afterDays: BigNumberish,
@@ -1548,6 +1755,16 @@ export class Vesting extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    isBlacklisted(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "isBlacklisted(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     isStarted(
       startDay: BigNumberish,
       overrides?: CallOverrides
@@ -1575,6 +1792,10 @@ export class Vesting extends Contract {
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "owner()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "paused()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     permit(
       owner: string,
@@ -1661,6 +1882,16 @@ export class Vesting extends Contract {
 
     "transferOwnership(address)"(
       newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    unBlacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "unBlacklist(address)"(
+      _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

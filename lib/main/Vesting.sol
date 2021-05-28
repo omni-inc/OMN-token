@@ -6,11 +6,13 @@
 pragma solidity 0.8.2;
 
 import "../@openzeppelin/contracts-upgradeable/token/ERC20/extensions/draft-ERC20PermitUpgradeable.sol";
+import "../@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "../@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol";
 import "../@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "../@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 import "../@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import "../@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
+import "../main/Blacklistable.sol";
 import "hardhat/console.sol";
 import "./Math.sol";
 
@@ -31,7 +33,7 @@ struct VestingType {
 	bool vesting;
 }
 
-contract Vesting is OwnableUpgradeable, Math, ERC20PermitUpgradeable {
+contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable, ERC20PermitUpgradeable {
 	using AddressUpgradeable for address;
 	using SafeMathUpgradeable for uint256;
 	using SafeMathUpgradeable for uint32;
@@ -58,32 +60,44 @@ contract Vesting is OwnableUpgradeable, Math, ERC20PermitUpgradeable {
         return 1623752855; // "Tuesday, 15 June 2021 10:27:35 GMT"
     }
 
-    function addAllocations(address[] memory addresses, uint256[] memory totalAmounts, uint256 vestingTypeIndex) external payable onlyOwner() returns (bool) {
+    function addAllocations(address[] memory addresses, uint256[] memory totalAmounts, uint256 vestingTypeIndex) external payable onlyOwner() whenNotPaused() returns (bool) {
         require(addresses.length == totalAmounts.length, "Address and totalAmounts length must be same");
         require(vestingTypes[vestingTypeIndex].vesting, "Vesting type isn't found");
 
         VestingType memory vestingType = vestingTypes[vestingTypeIndex];
         uint256 addressesLength = addresses.length;
+		uint256 total = 0;
 
-        for(uint256 i = 0; i < addressesLength; i++) {
-            address _address = addresses[i];
-            uint256 totalAmount = totalAmounts[i];
-            uint256 dailyAmount = mulDiv(totalAmounts[i], vestingType.dailyRate, 1000000000000000000);
-            uint256 initialAmount = mulDiv(totalAmounts[i], vestingType.initialRate, 1000000000000000000);
+		for(uint256 i = 0; i < addressesLength; i++) {
+			address _address = addresses[i];
+			require(_address != address(0), "ERC20: transfer to the zero address");
+			require(!isBlacklisted(_address), "ERC20 OMN: recipient account is blacklisted");
+			require(totalAmounts[i] != uint(0), "ERC20 OMN: total amount token is zero");
+			total = total.add(totalAmounts[i]);
+		}
+
+	    _balances[msg.sender] = _balances[msg.sender].sub(total, "ERC20: transfer amount exceeds balance");
+
+        for(uint256 j = 0; j < addressesLength; j++) {
+            address _address = addresses[j];
+            uint256 totalAmount = totalAmounts[j];
+            uint256 dailyAmount = mulDiv(totalAmounts[j], vestingType.dailyRate, 1000000000000000000);
+            uint256 initialAmount = mulDiv(totalAmounts[j], vestingType.initialRate, 1000000000000000000);
             uint256 afterDay = vestingType.afterDays;
 
+			// Transfer Token to the Wallet
+            _balances[_address] = _balances[_address].add(totalAmount);
+            emit Transfer(msg.sender, _address, totalAmount);
+
+			// Frozen Wallet
             addFrozenWallet(_address, totalAmount, dailyAmount, initialAmount, afterDay);
         }
 
         return true;
     }
 
-	function addFrozenWallet(address wallet, uint256 totalAmount, uint256 dailyAmount, uint256 initialAmount, uint256 afterDays) internal {
+	function addFrozenWallet(address wallet, uint256 totalAmount, uint256 dailyAmount, uint256 initialAmount, uint256 afterDays) internal whenNotPaused() {
         uint256 releaseTime = getReleaseTime();
-
-        if (!frozenWallets[wallet].scheduled) {
-            super._transfer(owner(), wallet, totalAmount);
-        }
 
         // Create frozen wallets
         FrozenWallet memory frozenWallet = FrozenWallet(
