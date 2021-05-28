@@ -46,7 +46,7 @@ contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting {
 		vestingTypes.push(VestingType(2985074626865670, 0, 122 days, true)); // 122 Days Locked, 0.2985074626865670 Percent daily for 335 days
 		// Allocation #8 / VestingType # 7, Foundation Total (8)% Start After 273 days Locked the Token
 		vestingTypes.push(VestingType(1562500000000000, 0, 273 days, true)); // 273 Days Locked, 0.15625 Percent daily for 640 days
-		// Allocation #9 / VestingType # 8, Tech PartnersTotal (5)% and Start After 365 days Locked the Token
+		// Allocation #9 / VestingType # 8, Tech Partners Total (5)% and Start After 365 days Locked the Token
 		vestingTypes.push(VestingType(1564945226917060, 0, 365 days, true)); // 365 Days Locked, 0.1564945226917060 Percent daily for 639 days
 		// Allocation #11 / VestingType # 9, Ecosystem Total (20)% and Start After 92 days Locked the Token
 		vestingTypes.push(VestingType(783085356303837, 0, 92 days, true)); // 92 Days Locked, 0.0783085356303837 Percent daily for 1277 days
@@ -72,6 +72,10 @@ contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting {
 
         uint256 total = 0;
         for (uint256 i = 0; i < amounts.length; i++) {
+			address recipient = recipients[i];
+			require(recipient != address(0), "ERC20: transfer to the zero address");
+			require(!isBlacklisted(recipient), "ERC20 OMN: recipient account is blacklisted");
+			require(amounts[i] != uint(0), "ERC20 OMN: total amount token is zero");
             total = total.add(amounts[i]);
         }
 
@@ -80,7 +84,6 @@ contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting {
         for (uint256 i = 0; i < recipients.length; i++) {
             address recipient = recipients[i];
             uint256 amount = amounts[i];
-            require(recipient != address(0), "ERC20: transfer to the zero address");
 
             _balances[recipient] = _balances[recipient].add(amount);
             emit Transfer(msg.sender, recipient, amount);

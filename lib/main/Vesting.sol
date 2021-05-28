@@ -60,7 +60,7 @@ contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable
         return 1623752855; // "Tuesday, 15 June 2021 10:27:35 GMT"
     }
 
-    function addAllocations(address[] memory addresses, uint256[] memory totalAmounts, uint256 vestingTypeIndex) external payable onlyOwner() whenNotPaused() returns (bool) {
+    function addAllocations(address[] calldata addresses, uint256[] calldata totalAmounts, uint256 vestingTypeIndex) external payable onlyOwner() whenNotPaused() returns (bool) {
         require(addresses.length == totalAmounts.length, "Address and totalAmounts length must be same");
         require(vestingTypes[vestingTypeIndex].vesting, "Vesting type isn't found");
 

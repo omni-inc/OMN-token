@@ -394,11 +394,11 @@ describe("ERC20 Full Test except Vesting", async () => {
 	});
 
 	//   ** Function / Methods Claim Token and Native Coins */
-	//   ** 6. Test Circulating Supply Method's of Smart Contract : How it is working - Test Case */
+	//   ** 6. Test Claim Method's of Smart Contract : How it is working - Test Case */
 	//   ** t1. Sending Native Coin and Claim with the Methods */
 	//   ** t2. Sending Token ERC20 and Clain with the Methods */
 
-	it("6. Should the right value of the Circulating Supply for add, drop any wallets in the Array for OMNI Wallets", async () => {
+	it("6. Should the right value of the Claim wallets in the Array for OMNI Wallets", async () => {
 		const OmniToken = await ethers.getContractFactory("OmniTokenV1");
 		const Erc20Token = await ethers.getContractFactory("ERC20Token");
 		const omnitoken = await upgrades.deployProxy(OmniToken, ["Hello, OMN Token Ver 1"]);
