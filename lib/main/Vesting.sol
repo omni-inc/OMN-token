@@ -57,7 +57,7 @@ contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable
 	);
 
 	function getReleaseTime() public pure returns (uint256) {
-        return 1623752855; // "Tuesday, 15 June 2021 10:27:35 GMT"
+        return 1622548800; // "Tuesday, 1 June 2021 12:00:00 GMT"
     }
 
     function addAllocations(address[] calldata addresses, uint256[] calldata totalAmounts, uint256 vestingTypeIndex) external payable onlyOwner() whenNotPaused() returns (bool) {
@@ -138,8 +138,6 @@ contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable
 
         uint256 diff = block.timestamp.sub(time);
         uint256 dias = diff.div(24 hours); // adapt this formula for days, not for month
-		console.log("Calculate Diff: ", diff);
-		console.log("Calculate Days: ", dias);
         return dias;
     }
 
