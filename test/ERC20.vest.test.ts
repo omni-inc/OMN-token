@@ -573,7 +573,7 @@ describe("ERC20 Only Vesting Test", async () => {
 			});
 
 			// ** Verify Allocation Initial Rate of #9
-			it("1.21.- Verify Daily Rate and Initial Iteration of Allocation #9 ===========================================", async () => {
+			it("1.23.- Verify Daily Rate and Initial Iteration of Allocation #9 ===========================================", async () => {
 				// 365 Days - 1 seconds after TGE
 				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(92,'d').subtract(1, 'seconds').format('X'))]);
 				await network.provider.send("evm_mine", []);
