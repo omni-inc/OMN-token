@@ -152,6 +152,12 @@ contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable
     }
 
     function getTransferableAmount(address sender) public view returns (uint256) {
+		uint256 releaseTime = getReleaseTime();
+
+		if (block.timestamp < releaseTime) {
+            return 0;
+        }
+
         uint256 dias = getDays(frozenWallets[sender].afterDays);
         uint256 dailyTransferableAmount = frozenWallets[sender].dailyAmount.mul(dias);
         uint256 transferableAmount = dailyTransferableAmount.add(frozenWallets[sender].initialAmount);
