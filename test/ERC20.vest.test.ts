@@ -594,58 +594,206 @@ describe("ERC20 Only Vesting Test", async () => {
 				}
 			});
 
-			// // ** Verify Allocation #1 y #2 Wallets day by day and Total Amount Unlocked Tokens
-			// it("1.25.- Verify Daily Rate and Total Amount of Allocation #2 ================================================", async () => {
-			// 	console.log("Verify TimeStamp:", Math.floor((await ethers.provider.getBlock("latest")).timestamp));
-			// 	// 486(457+30) Days - 1 seconds after TGE
-			// 	await network.provider.send("evm_setNextBlockTimestamp", [1664625599]);
-			// 	await network.provider.send("evm_mine", []);
-			// 	console.log("Verify TimeStamp:", Math.floor((await ethers.provider.getBlock("latest")).timestamp));
-			// 	console.log("List of Wallet of Allocation #2, Balances, TransferableAmount, RestAmount 486(457+30) Days - 1 seconds  After to Start: ");
-			// 	for (let i=0 ; i<10; i++) {
-			// 		console.log("Wallet ",i ," : ", addresses2[i], "Amount: ", amount2[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses2[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses2[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses2[i])).toString());
-			// 	}
-			// 	// 487(457+31) Days - 1 seconds after TGE
-			// 	await network.provider.send("evm_setNextBlockTimestamp", [1664711999]);
-			// 	await network.provider.send("evm_mine", []);
-			// 	console.log("Verify TimeStamp:", Math.floor((await ethers.provider.getBlock("latest")).timestamp));
-			// 	console.log("List of Wallet of Allocation #2, Balances, TransferableAmount, RestAmount 487(457+31) Days - 1 seconds After to Start: ");
-			// 	for (let i=0 ; i<10; i++) {
-			// 		console.log("Wallet ",i ," : ", addresses2[i], "Amount: ", amount2[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses2[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses2[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses2[i])).toString());
-			// 	}
-			// 	// 487(457+31) Days after TGE
-			// 	await network.provider.send("evm_setNextBlockTimestamp", [1664712000]);
-			// 	await network.provider.send("evm_mine", []);
-			// 	console.log("Verify TimeStamp:", Math.floor((await ethers.provider.getBlock("latest")).timestamp));
-			// 	console.log("List of Wallet of Allocation #2, Balances, TransferableAmount, RestAmount 487(457+31) Days After to Start: ");
-			// 	for (let i=0 ; i<10; i++) {
-			// 		console.log("Wallet ",i ," : ", addresses2[i], "Amount: ", amount2[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses2[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses2[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses2[i])).toString());
-			// 	}
-			// 	// 549(518+30) Days - 1 seconds after TGE
-			// 	await network.provider.send("evm_setNextBlockTimestamp", [1669895999]);
-			// 	await network.provider.send("evm_mine", []);
-			// 	console.log("Verify TimeStamp:", Math.floor((await ethers.provider.getBlock("latest")).timestamp));
-			// 	console.log("List of Wallet of Allocation #1, Balances, TransferableAmount, RestAmount 549(518+30) Days - 1 seconds  After to Start: ");
-			// 	for (let i=0 ; i<10; i++) {
-			// 		console.log("Wallet ",i ," : ", addresses1[i], "Amount: ", amount1[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses1[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses1[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses1[i])).toString());
-			// 	}
-			// 	// 549(518+31) Days - 1 seconds after TGE
-			// 	await network.provider.send("evm_setNextBlockTimestamp", [1669982399]);
-			// 	await network.provider.send("evm_mine", []);
-			// 	console.log("Verify TimeStamp:", Math.floor((await ethers.provider.getBlock("latest")).timestamp));
-			// 	console.log("List of Wallet of Allocation #1, Balances, TransferableAmount, RestAmount 549(518+31) Days - 1 seconds After to Start: ");
-			// 	for (let i=0 ; i<10; i++) {
-			// 		console.log("Wallet ",i ," : ", addresses1[i], "Amount: ", amount1[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses1[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses1[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses1[i])).toString());
-			// 	}
-			// 	// 549(518+31) Days after TGE
-			// 	await network.provider.send("evm_setNextBlockTimestamp", [1669982400]);
-			// 	await network.provider.send("evm_mine", []);
-			// 	console.log("Verify TimeStamp:", Math.floor((await ethers.provider.getBlock("latest")).timestamp));
-			// 	console.log("List of Wallet of Allocation #1, Balances, TransferableAmount, RestAmount 549(518+31) Days After to Start: ");
-			// 	for (let i=0 ; i<10; i++) {
-			// 		console.log("Wallet ",i ," : ", addresses1[i], "Amount: ", amount1[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses1[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses1[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses1[i])).toString());
-			// 	}
-			// });
+			// ** Verify Allocation Final Rate of #3 and #6
+			it("1.24.- Verify Daily Rate and Final Iteration of Allocation #3, #6 ===========================================", async () => {
+				// 30+396 Days - 1 seconds after TGE
+				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(60,'d').subtract(1, 's').format('X'))]);
+				await network.provider.send("evm_mine", []);
+				let time = Math.floor((await ethers.provider.getBlock("latest")).timestamp);
+				console.log("Verify TimeStamp: ", time," Full Date: ", moment(time*1000).utc().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+				console.log("List of Wallet of Allocation #3, Balances, TransferableAmount, RestAmount 396 Days - 1 seconds After to Unlocked: ");
+				for (let i=0 ; i<10; i++) {
+					console.log("Wallet ",i ," : ", addresses3[i], "Amount: ", amount3[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses3[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses3[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses3[i])).toString());
+				}
+				console.log("List of Wallet of Allocation #6 Balances, TransferableAmount, RestAmount 396 Days - 1 seconds After to Unlocked: ");
+				for (let i=0 ; i<10; i++) {
+					console.log("Wallet ",i ," : ", addresses6[i], "Amount: ", amount6[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses6[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses6[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses6[i])).toString());
+				}
+				// 30+396 Days after TGE
+				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(1,'s').format('X'))]);
+				await network.provider.send("evm_mine", []);
+				time = Math.floor((await ethers.provider.getBlock("latest")).timestamp);
+				console.log("Verify TimeStamp: ", time," Full Date: ", moment(time*1000).utc().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+				console.log("List of Wallet of Allocation #3, Balances, TransferableAmount, RestAmount 365 Days After to Unlocked: ");
+				for (let i=0 ; i<10; i++) {
+					console.log("Wallet ",i ," : ", addresses3[i], "Amount: ", amount3[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses3[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses3[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses3[i])).toString());
+				}
+				console.log("List of Wallet of Allocation #6, Balances, TransferableAmount, RestAmount 365 Days After to Unlocked: ");
+				for (let i=0 ; i<10; i++) {
+					console.log("Wallet ",i ," : ", addresses6[i], "Amount: ", amount6[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses6[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses6[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses6[i])).toString());
+				}
+			});
+
+			// ** Verify Allocation Final Rate of #7
+			it("1.25.- Verify Daily Rate and Final Iteration of Allocation #7 ===========================================", async () => {
+				// 30+457 Days - 1 seconds after TGE
+				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(31,'d').subtract(1, 's').format('X'))]);
+				await network.provider.send("evm_mine", []);
+				let time = Math.floor((await ethers.provider.getBlock("latest")).timestamp);
+				console.log("Verify TimeStamp: ", time," Full Date: ", moment(time*1000).utc().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+				console.log("List of Wallet of Allocation #7, Balances, TransferableAmount, RestAmount 457 Days - 1 seconds After to Unlocked: ");
+				for (let i=0 ; i<10; i++) {
+					console.log("Wallet ",i ," : ", addresses7[i], "Amount: ", amount7[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses7[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses7[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses7[i])).toString());
+				}
+				// 30+457 Days after TGE
+				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(1,'s').format('X'))]);
+				await network.provider.send("evm_mine", []);
+				time = Math.floor((await ethers.provider.getBlock("latest")).timestamp);
+				console.log("Verify TimeStamp: ", time," Full Date: ", moment(time*1000).utc().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+				console.log("List of Wallet of Allocation #7, Balances, TransferableAmount, RestAmount 457 Days After to Unlocked: ");
+				for (let i=0 ; i<10; i++) {
+					console.log("Wallet ",i ," : ", addresses7[i], "Amount: ", amount7[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses7[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses7[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses7[i])).toString());
+				}
+			});
+
+			// ** Verify Allocation Final Rate of #2
+			it("1.25.- Verify Daily Rate and Final Iteration of Allocation #2 ===========================================", async () => {
+				// 30+457 Days - 1 seconds after TGE
+				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(31,'d').subtract(1, 's').format('X'))]);
+				await network.provider.send("evm_mine", []);
+				let time = Math.floor((await ethers.provider.getBlock("latest")).timestamp);
+				console.log("Verify TimeStamp: ", time," Full Date: ", moment(time*1000).utc().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+				console.log("List of Wallet of Allocation #2, Balances, TransferableAmount, RestAmount 457 Days - 1 seconds After to Unlocked: ");
+				for (let i=0 ; i<10; i++) {
+					console.log("Wallet ",i ," : ", addresses2[i], "Amount: ", amount2[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses2[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses2[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses2[i])).toString());
+				}
+				// 30+457 Days after TGE
+				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(1,'s').format('X'))]);
+				await network.provider.send("evm_mine", []);
+				time = Math.floor((await ethers.provider.getBlock("latest")).timestamp);
+				console.log("Verify TimeStamp: ", time," Full Date: ", moment(time*1000).utc().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+				console.log("List of Wallet of Allocation #2, Balances, TransferableAmount, RestAmount 457 Days After to Unlocked: ");
+				for (let i=0 ; i<10; i++) {
+					console.log("Wallet ",i ," : ", addresses2[i], "Amount: ", amount2[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses2[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses2[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses2[i])).toString());
+				}
+			});
+
+			// ** Verify Allocation Final Rate of #1 and #5
+			it("1.26.- Verify Daily Rate and Final Iteration of Allocation #1, #5 ===========================================", async () => {
+				// 30+518 Days - 1 seconds after TGE
+				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(60,'d').subtract(1, 's').format('X'))]);
+				await network.provider.send("evm_mine", []);
+				let time = Math.floor((await ethers.provider.getBlock("latest")).timestamp);
+				console.log("Verify TimeStamp: ", time," Full Date: ", moment(time*1000).utc().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+				console.log("List of Wallet of Allocation #1, Balances, TransferableAmount, RestAmount 518 Days - 1 seconds After to Unlocked: ");
+				for (let i=0 ; i<10; i++) {
+					console.log("Wallet ",i ," : ", addresses1[i], "Amount: ", amount1[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses1[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses1[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses1[i])).toString());
+				}
+				console.log("List of Wallet of Allocation #5, Balances, TransferableAmount, RestAmount 275 Days - 1 seconds After to Unlocked: ");
+				for (let i=0 ; i<10; i++) {
+					console.log("Wallet ",i ," : ", addresses5[i], "Amount: ", amount5[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses5[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses5[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses5[i])).toString());
+				}
+				// 30+457 Days after TGE
+				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(1,'s').format('X'))]);
+				await network.provider.send("evm_mine", []);
+				time = Math.floor((await ethers.provider.getBlock("latest")).timestamp);
+				console.log("Verify TimeStamp: ", time," Full Date: ", moment(time*1000).utc().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+				console.log("List of Wallet of Allocation #1, Balances, TransferableAmount, RestAmount 518 Days After to Unlocked: ");
+				for (let i=0 ; i<10; i++) {
+					console.log("Wallet ",i ," : ", addresses1[i], "Amount: ", amount1[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses1[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses1[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses1[i])).toString());
+				}
+				console.log("List of Wallet of Allocation #5, Balances, TransferableAmount, RestAmount 275 Days After to Unlocked: ");
+				for (let i=0 ; i<10; i++) {
+					console.log("Wallet ",i ," : ", addresses5[i], "Amount: ", amount5[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses5[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses5[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses5[i])).toString());
+				}
+			});
+
+			// ** Verify Allocation Final Rate of #8
+			it("1.27.- Verify Daily Rate and Final Iteration of Allocation #8 ===========================================", async () => {
+				// 273+640 Days - 1 seconds after TGE
+				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(365,'d').subtract(1, 's').format('X'))]);
+				await network.provider.send("evm_mine", []);
+				let time = Math.floor((await ethers.provider.getBlock("latest")).timestamp);
+				console.log("Verify TimeStamp: ", time," Full Date: ", moment(time*1000).utc().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+				console.log("List of Wallet of Allocation #8, Balances, TransferableAmount, RestAmount 640 Days - 1 seconds After to Unlocked: ");
+				for (let i=0 ; i<10; i++) {
+					console.log("Wallet ",i ," : ", addresses8[i], "Amount: ", amount8[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses8[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses8[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses8[i])).toString());
+				}
+				// 273+640 Days after TGE
+				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(1,'s').format('X'))]);
+				await network.provider.send("evm_mine", []);
+				time = Math.floor((await ethers.provider.getBlock("latest")).timestamp);
+				console.log("Verify TimeStamp: ", time," Full Date: ", moment(time*1000).utc().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+				console.log("List of Wallet of Allocation #8, Balances, TransferableAmount, RestAmount 640 Days After to Unlocked: ");
+				for (let i=0 ; i<10; i++) {
+					console.log("Wallet ",i ," : ", addresses8[i], "Amount: ", amount8[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses8[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses8[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses8[i])).toString());
+				}
+			});
+
+			// ** Verify Allocation Final Rate of #9
+			it("1.28.- Verify Daily Rate and Final Iteration of Allocation #9 ===========================================", async () => {
+				// 365+639 Days - 1 seconds after TGE
+				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(91,'d').subtract(1, 's').format('X'))]);
+				await network.provider.send("evm_mine", []);
+				let time = Math.floor((await ethers.provider.getBlock("latest")).timestamp);
+				console.log("Verify TimeStamp: ", time," Full Date: ", moment(time*1000).utc().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+				console.log("List of Wallet of Allocation #9, Balances, TransferableAmount, RestAmount 639 Days - 1 seconds After to Unlocked: ");
+				for (let i=0 ; i<10; i++) {
+					console.log("Wallet ",i ," : ", addresses9[i], "Amount: ", amount9[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses9[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses9[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses9[i])).toString());
+				}
+				// 365+639 Days after TGE
+				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(1,'s').format('X'))]);
+				await network.provider.send("evm_mine", []);
+				time = Math.floor((await ethers.provider.getBlock("latest")).timestamp);
+				console.log("Verify TimeStamp: ", time," Full Date: ", moment(time*1000).utc().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+				console.log("List of Wallet of Allocation #9, Balances, TransferableAmount, RestAmount 639 Days After to Unlocked: ");
+				for (let i=0 ; i<10; i++) {
+					console.log("Wallet ",i ," : ", addresses9[i], "Amount: ", amount9[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses9[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses9[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses9[i])).toString());
+				}
+			});
+
+			// ** Verify Allocation Final Rate of #13
+			it("1.28.- Verify Daily Rate and Final Iteration of Allocation #13 ===========================================", async () => {
+				// 273+1006 Days - 1 seconds after TGE
+				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(275,'d').subtract(1, 's').format('X'))]);
+				await network.provider.send("evm_mine", []);
+				let time = Math.floor((await ethers.provider.getBlock("latest")).timestamp);
+				console.log("Verify TimeStamp: ", time," Full Date: ", moment(time*1000).utc().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+				console.log("List of Wallet of Allocation #13, Balances, TransferableAmount, RestAmount 1006 Days - 1 seconds After to Unlocked: ");
+				for (let i=0 ; i<10; i++) {
+					console.log("Wallet ",i ," : ", addresses13[i], "Amount: ", amount13[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses13[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses13[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses13[i])).toString());
+				}
+				// 273+1006 Days after TGE
+				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(1,'s').format('X'))]);
+				await network.provider.send("evm_mine", []);
+				time = Math.floor((await ethers.provider.getBlock("latest")).timestamp);
+				console.log("Verify TimeStamp: ", time," Full Date: ", moment(time*1000).utc().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+				console.log("List of Wallet of Allocation #13, Balances, TransferableAmount, RestAmount 1006 Days After to Unlocked: ");
+				for (let i=0 ; i<10; i++) {
+					console.log("Wallet ",i ," : ", addresses13[i], "Amount: ", amount13[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses13[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses13[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses13[i])).toString());
+				}
+			});
+
+			// ** Verify Allocation Final Rate of #11, #12
+			it("1.29.- Verify Daily Rate and Final Iteration of Allocation #11, #12 ===========================================", async () => {
+				// 183+1186 Days - 1 seconds after TGE
+				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(90,'d').subtract(1, 's').format('X'))]);
+				await network.provider.send("evm_mine", []);
+				let time = Math.floor((await ethers.provider.getBlock("latest")).timestamp);
+				console.log("Verify TimeStamp: ", time," Full Date: ", moment(time*1000).utc().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+				console.log("List of Wallet of Allocation #11, Balances, TransferableAmount, RestAmount 1277 Days - 1 seconds After to Unlocked: ");
+				for (let i=0 ; i<10; i++) {
+					console.log("Wallet ",i ," : ", addresses11[i], "Amount: ", amount11[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses11[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses11[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses11[i])).toString());
+				}
+				console.log("List of Wallet of Allocation #12, Balances, TransferableAmount, RestAmount 1186 Days - 1 seconds After to Unlocked: ");
+				for (let i=0 ; i<10; i++) {
+					console.log("Wallet ",i ," : ", addresses12[i], "Amount: ", amount12[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses12[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses12[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses12[i])).toString());
+				}
+				// 183+1186 Days after TGE
+				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(1,'s').format('X'))]);
+				await network.provider.send("evm_mine", []);
+				time = Math.floor((await ethers.provider.getBlock("latest")).timestamp);
+				console.log("Verify TimeStamp: ", time," Full Date: ", moment(time*1000).utc().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+				console.log("List of Wallet of Allocation #11, Balances, TransferableAmount, RestAmount 1277 Days After to Unlocked: ");
+				for (let i=0 ; i<10; i++) {
+					console.log("Wallet ",i ," : ", addresses11[i], "Amount: ", amount11[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses11[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses11[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses11[i])).toString());
+				}
+				console.log("List of Wallet of Allocation #12, Balances, TransferableAmount, RestAmount 1186 Days After to Unlocked: ");
+				for (let i=0 ; i<10; i++) {
+					console.log("Wallet ",i ," : ", addresses12[i], "Amount: ", amount12[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses12[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses12[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses12[i])).toString());
+				}
+			});
+
 		});
 
 	});
