@@ -59,9 +59,21 @@ contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting {
 		console.log("Deploying a OMN Token: ", _greeting);
 	}
 
+	/**
+     * @dev This Method permit getting Maximun total Supply .
+     * See {ERC20-_burn}.
+     */
 	function getMaxTotalSupply() public pure returns (uint256) {
 		return _maxTotalSupply;
 	}
+
+	/**
+     * @dev Implementation / Instance of TransferMany of Parsiq Token.
+	 * @dev This method permitr to habdle AirDrop process with a reduce cost of gas in at least 30%
+     * @param recipients Array of Address to receive the Tokens in AirDrop process
+	 * @param amounts Array of Amounts of token to receive
+     * See {https://github.com/parsiq/parsiq-bsc-token/blob/main/contracts/ParsiqToken.sol}.
+     */
 
 	function transferMany(address[] calldata recipients, uint256[] calldata amounts)
         external
@@ -90,6 +102,9 @@ contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting {
         }
     }
 
+	/**
+     * @dev Circulating Supply Method for Calculated based on Wallets of OMNI Foundation
+     */
 	function circulatingSupply() public view returns (uint256) {
 		uint256 index = omni_wallets.length;
 		uint256 result = totalSupply().sub(balanceOf(owner()));
@@ -101,6 +116,11 @@ contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting {
 		return result;
 	}
 
+	/**
+     * @dev Implementation / Instance of paused methods() in the ERC20.
+     * @param status Setting the status boolean (True for paused, or False for unpaused)
+     * See {ERC20Pausable}.
+     */
     function pause(bool status) public onlyOwner() {
         if (status) {
             _pause();
@@ -137,7 +157,13 @@ contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting {
         _burn(_msgSender(), amount);
     }
 
-	// @override
+	/**
+     * @dev Override the Hook of Open Zeppelin for checking before execute the method transfer/transferFrom/mint/burn.
+	 * @param sender Addres of Sender of the token
+	 * @param recipient Address of Receptor of the token
+     * @param amount Amount token to transfer/transferFrom/mint/burn
+     * See {ERC20 Upgradeable}.
+     */
 	function _beforeTokenTransfer(address sender, address recipient, uint256 amount) internal virtual override notBlacklisted(sender) {
 		require(!isBlacklisted(recipient), "ERC20 OMN: recipient account is blacklisted");
 		require(!paused(), "ERC20Pausable: token transfer/mint/burn while paused");
@@ -145,6 +171,11 @@ contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting {
         super._beforeTokenTransfer(sender, recipient, amount);
     }
 
+	/**
+     * @dev Override the Hook of Open Zeppelin for checking before execute the method transfer/transferFrom/mint/burn.
+	 * @param sender Addres of Sender of the token
+     * @param amount Amount token to transfer/transferFrom/mint/burn, Verify that in hook _beforeTokenTransfer
+     */
 	function canTransfer(address sender, uint256 amount) public view returns (bool) {
         // Control is scheduled wallet
         if (!frozenWallets[sender].scheduled) {
@@ -167,6 +198,7 @@ contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting {
 
 	/**
      * @dev Creates `amount` new tokens for `to`.
+	 * @param _amount Amount Token to mint
      *
      * See {ERC20-_mint}.
      *

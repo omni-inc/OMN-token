@@ -10,8 +10,8 @@ import "../@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "../@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 
 /**
- * @title Blacklistable Token
- * @dev Allows update the wallets by Owner
+ * @title Circulating Supply Methods
+ * @dev Allows update the wallets of OMNI Foundation by Owner
  */
 contract CirculatingSupply is OwnableUpgradeable {
 	using AddressUpgradeable for address;

@@ -11,7 +11,7 @@ import "../@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.so
 import "../@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 
 /**
- * @title Claimable
+ * @title Claimable Methods
  * @dev Implementation of the claiming utils that can be useful for withdrawing accidentally sent tokens that are not used in bridge operations.
  */
 contract Claimable is OwnableUpgradeable {

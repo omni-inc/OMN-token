@@ -9,10 +9,9 @@ import "../@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol";
 import "../@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 /**
- * @title Blacklistable Token
+ * @title Blacklistable Methods
  * @dev Allows accounts to be blacklisted by Owner
  */
-
 contract Blacklistable is OwnableUpgradeable {
     using AddressUpgradeable for address;
 
@@ -64,6 +63,9 @@ contract Blacklistable is OwnableUpgradeable {
         emit outBlacklisted(_account);
     }
 
+    /**
+     * @dev Getting the List of Address Blacklisted
+     */
 	function getBlacklist() public view onlyOwner() returns (address[] memory) {
 		return wallets;
 	}

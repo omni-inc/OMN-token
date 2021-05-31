@@ -33,6 +33,10 @@ struct VestingType {
 	bool vesting;
 }
 
+/**
+ * @title Vesting Methods
+ * @dev All Method to permit handle the Vesting Process of OMN token
+ */
 contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable, ERC20PermitUpgradeable {
 	using AddressUpgradeable for address;
 	using SafeMathUpgradeable for uint256;
@@ -56,10 +60,20 @@ contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable
 		uint256 initialAmount
 	);
 
+    /**
+     * @dev Method to permit to get the Exactly Unix Epoch of Token Generate Event
+     */
 	function getReleaseTime() public pure returns (uint256) {
         return 1622548800; // "Tuesday, 1 June 2021 12:00:00 GMT"
     }
 
+    /**
+     * @dev Method to permit Upload all wallets in all allocation, based on Vesting Process
+	 * @dev this method was merge with transferMany method for reduce the cost in gass around 30%
+	 * @param addresses Array of Wallets will be Frozen with Locked and Unlocked Token Based on the Predefined Allocation
+	 * @param totalAmounts Array of Amount coprresponding with each wallets, will be Locked and Unlocked Based on the Predefined Allocation
+	 * @param vestingTypeIndex Index corresponding to the List of Wallets to be Upload in the Smart Contract ERC20 of OMNI Foundation
+     */
     function addAllocations(address[] calldata addresses, uint256[] calldata totalAmounts, uint256 vestingTypeIndex) external payable onlyOwner() whenNotPaused() returns (bool) {
         require(addresses.length == totalAmounts.length, "Address and totalAmounts length must be same");
         require(vestingTypes[vestingTypeIndex].vesting, "Vesting type isn't found");
@@ -96,6 +110,14 @@ contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable
         return true;
     }
 
+    /**
+     * @dev Auxiliar Method to permit Upload all wallets in all allocation, based on Vesting Process
+	 * @param wallet Wallet will be Frozen based on correspondig Allocation
+	 * @param totalAmount Total Amount of Stake holder based on Investment and the Allocation to participate
+	 * @param dailyAmount Daily Amount of Stake holder based on Investment and the Allocation to participate
+	 * @param initialAmount Daily Amount of Stake holder based on Investment and the Allocation to participate
+	 * @param afterDays Period of Days after to start Unlocked Token based on the Allocation to participate
+     */
 	function addFrozenWallet(address wallet, uint256 totalAmount, uint256 dailyAmount, uint256 initialAmount, uint256 afterDays) internal whenNotPaused() {
         uint256 releaseTime = getReleaseTime();
 
@@ -124,10 +146,17 @@ contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable
             initialAmount);
     }
 
+    /**
+     * @dev Method to permit to get the Last Exactly Unix Epoch of Blockchain timestamp
+     */
     function getTimestamp() external view returns (uint256) {
         return block.timestamp;
     }
 
+    /**
+     * @dev Auxiliar Method to permit get the number of days elapsed time from the TGE to the current moment
+	 * @param afterDays Period of Days after to start Unlocked Token based on the Allocation to participate
+	 */
     function getDays(uint256 afterDays) public view returns (uint256) {
         uint256 releaseTime = getReleaseTime();
         uint256 time = releaseTime.add(afterDays);
@@ -141,6 +170,9 @@ contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable
         return dias;
     }
 
+	/**
+     * @dev Auxiliar Method to permit to verify if the vesting processs start or not
+	 */
     function isStarted(uint256 startDay) public view returns (bool) {
         uint256 releaseTime = getReleaseTime();
 
@@ -151,6 +183,11 @@ contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable
         return true;
     }
 
+
+    /**
+     * @dev Auxiliar Method to permit get of token can be transferable based on Allocation of the Frozen Wallet
+	 * @param sender Wallets of Stakeholders to verify amount of Token are Unlocked based on Allocation
+	 */
     function getTransferableAmount(address sender) public view returns (uint256) {
 		uint256 releaseTime = getReleaseTime();
 
@@ -169,6 +206,10 @@ contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable
         return transferableAmount;
     }
 
+    /**
+     * @dev Auxiliar Method to permit get of token can't be transferable based on Allocation of the Frozen Wallet
+	 * @param sender Wallets of Stakeholders to verify amount of Token are locked based on Allocation
+	 */
 	function getRestAmount(address sender) public view returns (uint256) {
         uint256 transferableAmount = getTransferableAmount(sender);
         uint256 restAmount = frozenWallets[sender].totalAmount.sub(transferableAmount);

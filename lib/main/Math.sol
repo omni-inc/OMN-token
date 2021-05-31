@@ -7,7 +7,10 @@ pragma solidity 0.8.2;
 
 import "../@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 
-
+/**
+ * @title Math Library
+ * @dev Allows handle 512-bit multiply, RoundingUp
+ */
 contract Math {
 	using SafeMathUpgradeable for uint256;
 
