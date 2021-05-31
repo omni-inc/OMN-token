@@ -68,7 +68,7 @@ contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable
     }
 
     /**
-     * @dev Method to permit Upload all wallets in all allocation, based on Vesting Process
+     * @dev Principal Method to permit Upload all wallets in all allocation, based on Vesting Process
 	 * @dev this method was merge with transferMany method for reduce the cost in gass around 30%
 	 * @param addresses Array of Wallets will be Frozen with Locked and Unlocked Token Based on the Predefined Allocation
 	 * @param totalAmounts Array of Amount coprresponding with each wallets, will be Locked and Unlocked Based on the Predefined Allocation
@@ -111,7 +111,7 @@ contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable
     }
 
     /**
-     * @dev Auxiliar Method to permit Upload all wallets in all allocation, based on Vesting Process
+     * @dev Auxiliary Method to permit Upload all wallets in all allocation, based on Vesting Process
 	 * @param wallet Wallet will be Frozen based on correspondig Allocation
 	 * @param totalAmount Total Amount of Stake holder based on Investment and the Allocation to participate
 	 * @param dailyAmount Daily Amount of Stake holder based on Investment and the Allocation to participate
@@ -147,14 +147,14 @@ contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable
     }
 
     /**
-     * @dev Method to permit to get the Last Exactly Unix Epoch of Blockchain timestamp
+     * @dev Auxiliary Method to permit to get the Last Exactly Unix Epoch of Blockchain timestamp
      */
     function getTimestamp() external view returns (uint256) {
         return block.timestamp;
     }
 
     /**
-     * @dev Auxiliar Method to permit get the number of days elapsed time from the TGE to the current moment
+     * @dev Auxiliary Method to permit get the number of days elapsed time from the TGE to the current moment
 	 * @param afterDays Period of Days after to start Unlocked Token based on the Allocation to participate
 	 */
     function getDays(uint256 afterDays) public view returns (uint256) {
@@ -171,7 +171,7 @@ contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable
     }
 
 	/**
-     * @dev Auxiliar Method to permit to verify if the vesting processs start or not
+     * @dev Auxiliary Method to permit to verify if the vesting processs start or not
 	 */
     function isStarted(uint256 startDay) public view returns (bool) {
         uint256 releaseTime = getReleaseTime();
@@ -185,7 +185,7 @@ contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable
 
 
     /**
-     * @dev Auxiliar Method to permit get of token can be transferable based on Allocation of the Frozen Wallet
+     * @dev Auxiliary Method to permit get of token can be transferable based on Allocation of the Frozen Wallet
 	 * @param sender Wallets of Stakeholders to verify amount of Token are Unlocked based on Allocation
 	 */
     function getTransferableAmount(address sender) public view returns (uint256) {
@@ -207,7 +207,7 @@ contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable
     }
 
     /**
-     * @dev Auxiliar Method to permit get of token can't be transferable based on Allocation of the Frozen Wallet
+     * @dev Auxiliary Method to permit get of token can't be transferable based on Allocation of the Frozen Wallet
 	 * @param sender Wallets of Stakeholders to verify amount of Token are locked based on Allocation
 	 */
 	function getRestAmount(address sender) public view returns (uint256) {
