@@ -19,7 +19,7 @@ contract Blacklistable is OwnableUpgradeable {
 	address[] private wallets;
 	// Mapping blacklisted Address
     mapping(address => bool) private blacklisted;
-
+	// Events when add or drop a wallets in the blacklisted mapping
     event inBlacklisted(address indexed _account);
     event outBlacklisted(address indexed _account);
 
