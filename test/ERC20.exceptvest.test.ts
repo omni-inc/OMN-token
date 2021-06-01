@@ -1,6 +1,7 @@
 import { run, ethers, upgrades } from 'hardhat';
-import { providers, Signer } from "ethers";
+import { BigNumber, Signer } from "ethers";
 import  { expect, assert } from "chai";
+import moment from 'moment';
 
 describe("ERC20 Full Test except Vesting", async () => {
 
@@ -441,6 +442,89 @@ describe("ERC20 Full Test except Vesting", async () => {
 				console.log("Balance ERC20 Token of Accounts[15] After Claim: ", (await erc20Token.balanceOf(address)).toString());
 				console.log("Balance ERC20 Token of Smart Contract OMNI After Claim: ", (await erc20Token.balanceOf(omnitoken.address)).toString());
 			})
+		});
+	});
+
+	//   ** Function / Method TransferMany for AirDrops */
+	//   ** 7. Test TransferMany Methods of Smart Contract : How it is working - Test Case */
+	//   ** t1. Sending Arrays of Address and Amount to the TransferMany Methods */
+	//   ** t2. Verify the Balance of All Wallets */
+
+
+
+	it("7.- Sending to TransferMany Methods, and Verify the Tokens into the Wallets", async () => {
+		const OmniToken = await ethers.getContractFactory("OmniTokenV1");
+		const omnitoken = await upgrades.deployProxy(OmniToken, ["Hello, OMN Token Ver 1"]);
+
+		await omnitoken.deployed();
+		// verify the Address
+		console.log("OMNI Token deployed to:", omnitoken.address);
+		// Verify the balance of the Owner
+		// TGE TimeStamp
+		const TGE = moment((await omnitoken.getReleaseTime())*1000).utc();
+		console.log("TimeStamp TGE: ", parseInt(TGE.format('X')), " Full Date Token Generate Event: ", TGE.format("dddd, MMMM Do YYYY, h:mm:ss a"));
+		console.log("Balance of the Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "must be 638 million!!! in wei");
+		expect((await omnitoken.balanceOf(await accounts[0].getAddress())).toString()).to.be.equal('638888889000000000000000000');
+		console.log("Total Supply: ", (await omnitoken.totalSupply()).toString(), "must be 638 million!!! in wei");
+		expect(((await omnitoken.totalSupply()).toString())).to.be.equal('638888889000000000000000000');
+		// Define the Array for address and vesting process
+		let addresses1:string[] = [];
+		let addresses2:string[] = [];
+		let amount1:BigNumber[] = [];
+		let amount2:BigNumber[] = [];
+		for (let i=10; i < 310; i++) {
+			addresses1.push((await accounts[i].getAddress()).toString());
+			addresses2.push((await accounts[i+300].getAddress()).toString());
+			amount1.push(ethers.utils.parseEther(String(i+1005000)));
+			amount2.push(ethers.utils.parseEther(String(i+700200)));
+		}
+		const index:number = 75
+		const address:string = addresses1[index];
+		const amount:BigNumber =  amount1[index];
+		describe("Start to Load the Array of Wallets and Amount and Verify the balance after", async () => {
+			beforeEach(async () => {
+				const tiempo = Math.floor((await ethers.provider.getBlock("latest")).timestamp);
+				console.log("Verify TimeStamp: ", tiempo," Full Date: ", moment(tiempo*1000).utc().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+			})
+
+			it("7.1.- Call the TransferMany Method, and Include a Address Zero, in the Wallets Array, Revert Transaction", async () => {
+				// Revert Because include a Zero Address in Array
+				addresses1[index] = '0x0000000000000000000000000000000000000000';
+				await expect(omnitoken.transferMany(addresses1, amount1)).to.be.revertedWith("ERC20: transfer to the zero address")
+			});
+			it("7.2.- Call the TransferMany Method, and Include a Blacklisted Address in the Wallets Array, Revert Transaction", async () => {
+				// Revert Because include a Blacklisted Address in Array
+				addresses1[index] = address;
+				await expect(omnitoken.addBlacklist(address)).to.emit(omnitoken, 'inBlacklisted').withArgs(address);
+				await expect(omnitoken.transferMany(addresses1, amount1)).to.be.revertedWith("ERC20 OMN: recipient account is blacklisted");
+				await expect(omnitoken.dropBlacklist(address)).to.emit(omnitoken, 'outBlacklisted').withArgs(address);
+			});
+			it("7.3.- Call the TransferMany Method, and Include a Zero TotalAmount, in the Amount Array, Revert Transaction", async () => {
+				// Revert Because include a Zero TotalAmount in Array
+				amount1[index] = ethers.utils.parseEther(String(0));
+				await expect(omnitoken.transferMany(addresses1, amount1)).to.be.revertedWith("ERC20 OMN: total amount token is zero");
+				amount1[index] = amount;
+			});
+			it("7.4.- Call the TransferMany Method for Test Array #1 and Verify have the right Values", async () => {
+				// Test Array #1
+				const receipt = await omnitoken.transferMany(addresses1, amount1);
+				// await receipt.wait();
+				// console.log("List of Wallet of Allocation #1, Balances, TransferableAmount, RestAmount Before TGE: ");
+				for (let i=0 ; i<300; i++) {
+					// console.log("Wallet ",i ," : ", addresses1[i], "Amount: ", (amount1[i]).toString(), "Balances: ",(await omnitoken.balanceOf(addresses1[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses1[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses1[i])).toString());
+					expect((await omnitoken.balanceOf(addresses1[i])).toString()).to.equal((amount1[i]).toString());
+				}
+			});
+			it("7.5.- Call the TransferMany Method for Test Array #2 and Verify have the right Values", async () => {
+				// Test Array #2
+				const receipt = await omnitoken.transferMany(addresses2, amount2);
+				// await receipt.wait();
+				// console.log("List of Wallet of Allocation #1, Balances, TransferableAmount, RestAmount Before TGE: ");
+				for (let i=0 ; i<300; i++) {
+					// console.log("Wallet ",i ," : ", addresses1[i], "Amount: ", (amount1[i]).toString(), "Balances: ",(await omnitoken.balanceOf(addresses1[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses1[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses1[i])).toString());
+					expect((await omnitoken.balanceOf(addresses2[i])).toString()).to.equal((amount2[i]).toString());
+				}
+			});
 		});
 	});
 
