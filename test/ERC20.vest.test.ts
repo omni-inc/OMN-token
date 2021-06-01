@@ -10,7 +10,7 @@ describe("ERC20 Only Vesting Test", async () => {
 
 	beforeEach(async () => {
 		accounts = await ethers.getSigners();
-		console.log("Accounts:", accounts.map((a) => a.getAddress()));
+		// console.log("Accounts:", accounts.map((a) => a.getAddress()));
 		console.log("Get TimeStamp:", Math.floor((await ethers.provider.getBlock("latest")).timestamp));
 	});
 
@@ -120,7 +120,7 @@ describe("ERC20 Only Vesting Test", async () => {
 				// Allocation #1
 				const receipt = await omnitoken.addAllocations(addresses1, amount1, 0);
 				// await receipt.wait();
-				console.log("List of Wallet of Allocation #1, Balances, TransferableAmount, RestAmount Before TGE: ");
+				// console.log("List of Wallet of Allocation #1, Balances, TransferableAmount, RestAmount Before TGE: ");
 				for (let i=0 ; i<100; i++) {
 					// console.log("Wallet ",i ," : ", addresses1[i], "Amount: ", (amount1[i]).toString(), "Balances: ",(await omnitoken.balanceOf(addresses1[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses1[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses1[i])).toString());
 					expect((await omnitoken.balanceOf(addresses1[i])).toString()).to.equal((amount1[i]).toString());
@@ -132,7 +132,7 @@ describe("ERC20 Only Vesting Test", async () => {
 				// Allocation #2
 				const receipt = await omnitoken.addAllocations(addresses2, amount2, 1);
 				// await receipt.wait();
-				console.log("List of Wallet of Allocation #2, Balances, TransferableAmount, RestAmount Before TGE: ");
+				// console.log("List of Wallet of Allocation #2, Balances, TransferableAmount, RestAmount Before TGE: ");
 				for (let i=0 ; i<100; i++) {
 					// console.log("Wallet ",i ," : ", addresses2[i], "Amount: ", amount2[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses2[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses2[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses2[i])).toString());
 					expect((await omnitoken.balanceOf(addresses2[i])).toString()).to.equal((amount2[i]).toString());
@@ -144,7 +144,7 @@ describe("ERC20 Only Vesting Test", async () => {
 				// Allocation #3
 				const receipt = await omnitoken.addAllocations(addresses3, amount3, 2);
 				// await receipt.wait();
-				console.log("List of Wallet of Allocation #3, Balances, TransferableAmount, RestAmount Before TGE: ");
+				// console.log("List of Wallet of Allocation #3, Balances, TransferableAmount, RestAmount Before TGE: ");
 				for (let i=0 ; i<100; i++) {
 					// console.log("Wallet ",i ," : ", addresses3[i], "Amount: ", amount3[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses3[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses3[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses3[i])).toString());
 					expect((await omnitoken.balanceOf(addresses3[i])).toString()).to.equal((amount3[i]).toString());
@@ -156,7 +156,7 @@ describe("ERC20 Only Vesting Test", async () => {
 				// Allocation #4
 				const receipt = await omnitoken.addAllocations(addresses4, amount4, 3);
 				// await receipt.wait();
-				console.log("List of Wallet of Allocation #4, Balances, TransferableAmount, RestAmount Before TGE: ");
+				// console.log("List of Wallet of Allocation #4, Balances, TransferableAmount, RestAmount Before TGE: ");
 				for (let i=0 ; i<100; i++) {
 					// console.log("Wallet ",i ," : ", addresses4[i], "Amount: ", amount4[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses4[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses4[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses4[i])).toString());
 					expect((await omnitoken.balanceOf(addresses4[i])).toString()).to.equal((amount4[i]).toString());
@@ -168,7 +168,7 @@ describe("ERC20 Only Vesting Test", async () => {
 				// Allocation #5
 				const receipt = await omnitoken.addAllocations(addresses5, amount5, 4);
 				// await receipt.wait();
-				console.log("List of Wallet of Allocation #5, Balances, TransferableAmount, RestAmount Before TGE: ");
+				// console.log("List of Wallet of Allocation #5, Balances, TransferableAmount, RestAmount Before TGE: ");
 				for (let i=0 ; i<100; i++) {
 					// console.log("Wallet ",i ," : ", addresses5[i], "Amount: ", amount5[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses5[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses5[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses5[i])).toString());
 					expect((await omnitoken.balanceOf(addresses5[i])).toString()).to.equal((amount5[i]).toString());
@@ -204,7 +204,7 @@ describe("ERC20 Only Vesting Test", async () => {
 				// Allocation #8
 				const receipt = await omnitoken.addAllocations(addresses8, amount8, 7);
 				// await receipt.wait();
-				console.log("List of Wallet of Allocation #8, Balances, TransferableAmount, RestAmount Before TGE: ");
+				// console.log("List of Wallet of Allocation #8, Balances, TransferableAmount, RestAmount Before TGE: ");
 				for (let i=0 ; i<100; i++) {
 					// console.log("Wallet ",i ," : ", addresses8[i], "Amount: ", amount8[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses8[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses8[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses8[i])).toString());
 					expect((await omnitoken.balanceOf(addresses8[i])).toString()).to.equal((amount8[i]).toString());
@@ -216,7 +216,7 @@ describe("ERC20 Only Vesting Test", async () => {
 				// Allocation #9
 				const receipt = await omnitoken.addAllocations(addresses9, amount9, 8);
 				// await receipt.wait();
-				console.log("List of Wallet of Allocation #9, Balances, TransferableAmount, RestAmount Before TGE: ");
+				// console.log("List of Wallet of Allocation #9, Balances, TransferableAmount, RestAmount Before TGE: ");
 				for (let i=0 ; i<100; i++) {
 					// console.log("Wallet ",i ," : ", addresses9[i], "Amount: ", amount9[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses9[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses9[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses9[i])).toString());
 					expect((await omnitoken.balanceOf(addresses9[i])).toString()).to.equal((amount9[i]).toString());
@@ -228,7 +228,7 @@ describe("ERC20 Only Vesting Test", async () => {
 				// Allocation #10
 				const receipt = await omnitoken.addAllocations(addresses10, amount10, 3);
 				// await receipt.wait();
-				console.log("List of Wallet of Allocation #10, Balances, TransferableAmount, RestAmount Before TGE: ");
+				// console.log("List of Wallet of Allocation #10, Balances, TransferableAmount, RestAmount Before TGE: ");
 				for (let i=0 ; i<100; i++) {
 					// console.log("Wallet ",i ," : ", addresses10[i], "Amount: ", amount10[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses10[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses10[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses10[i])).toString());
 					expect((await omnitoken.balanceOf(addresses10[i])).toString()).to.equal((amount10[i]).toString());
@@ -240,7 +240,7 @@ describe("ERC20 Only Vesting Test", async () => {
 				// Allocation #11
 				const receipt = await omnitoken.addAllocations(addresses11, amount11, 9);
 				// await receipt.wait();
-				console.log("List of Wallet of Allocation #11, Balances, TransferableAmount, RestAmount Before TGE: ");
+				// console.log("List of Wallet of Allocation #11, Balances, TransferableAmount, RestAmount Before TGE: ");
 				for (let i=0 ; i<100; i++) {
 					// console.log("Wallet ",i ," : ", addresses11[i], "Amount: ", amount11[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses11[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses11[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses11[i])).toString());
 					expect((await omnitoken.balanceOf(addresses11[i])).toString()).to.equal((amount11[i]).toString());
@@ -252,7 +252,7 @@ describe("ERC20 Only Vesting Test", async () => {
 				// Allocation #12
 				const receipt = await omnitoken.addAllocations(addresses12, amount12, 10);
 				// await receipt.wait();
-				console.log("List of Wallet of Allocation #12, Balances, TransferableAmount, RestAmount Before TGE: ");
+				// console.log("List of Wallet of Allocation #12, Balances, TransferableAmount, RestAmount Before TGE: ");
 				for (let i=0 ; i<100; i++) {
 					// console.log("Wallet ",i ," : ", addresses12[i], "Amount: ", amount12[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses12[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses12[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses12[i])).toString());
 					expect((await omnitoken.balanceOf(addresses12[i])).toString()).to.equal((amount12[i]).toString());
@@ -264,7 +264,7 @@ describe("ERC20 Only Vesting Test", async () => {
 				// Allocation #13
 				const receipt = await omnitoken.addAllocations(addresses13, amount13, 11);
 				// await receipt.wait();
-				console.log("List of Wallet of Allocation #13, Balances, TransferableAmount, RestAmount Before TGE: ");
+				// console.log("List of Wallet of Allocation #13, Balances, TransferableAmount, RestAmount Before TGE: ");
 				for (let i=0 ; i<100; i++) {
 					// console.log("Wallet ",i ," : ", addresses13[i], "Amount: ", amount13[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses13[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses13[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses13[i])).toString());
 					expect((await omnitoken.balanceOf(addresses13[i])).toString()).to.equal((amount13[i]).toString());
