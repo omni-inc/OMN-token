@@ -57,9 +57,11 @@ interface ClaimableInterface extends ethers.utils.Interface {
 
   events: {
     "OwnershipTransferred(address,address)": EventFragment;
+    "ValueReceived(address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ValueReceived"): EventFragment;
 }
 
 export class Claimable extends Contract {
@@ -214,6 +216,14 @@ export class Claimable extends Contract {
     ): TypedEventFilter<
       [string, string],
       { previousOwner: string; newOwner: string }
+    >;
+
+    ValueReceived(
+      sender: string | null,
+      value: BigNumberish | null
+    ): TypedEventFilter<
+      [string, BigNumber],
+      { sender: string; value: BigNumber }
     >;
   };
 

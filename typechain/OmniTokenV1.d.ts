@@ -364,6 +364,7 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     "Paused(address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
     "Unpaused(address)": EventFragment;
+    "ValueReceived(address,uint256)": EventFragment;
     "inBlacklisted(address)": EventFragment;
     "inFrozenWallet(bool,uint32,uint32,address,uint256,uint256,uint256)": EventFragment;
     "inOmniWallet(address)": EventFragment;
@@ -376,6 +377,7 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ValueReceived"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "inBlacklisted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "inFrozenWallet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "inOmniWallet"): EventFragment;
@@ -1773,6 +1775,14 @@ export class OmniTokenV1 extends Contract {
     >;
 
     Unpaused(account: null): TypedEventFilter<[string], { account: string }>;
+
+    ValueReceived(
+      sender: string | null,
+      value: BigNumberish | null
+    ): TypedEventFilter<
+      [string, BigNumber],
+      { sender: string; value: BigNumber }
+    >;
 
     inBlacklisted(
       _account: string | null

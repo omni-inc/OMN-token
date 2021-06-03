@@ -10,6 +10,7 @@ import "../lib/@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol
 import "../lib/@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 import "../lib/@openzeppelin/contracts-upgradeable/interfaces/IERC1271Upgradeable.sol";
 import "../lib/@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol";
+import "hardhat/console.sol";
 
 contract ERC20Token is OwnableUpgradeable, ERC20Upgradeable {
 
@@ -17,6 +18,7 @@ contract ERC20Token is OwnableUpgradeable, ERC20Upgradeable {
 
     function initialize() initializer public {
         __ERC20_init('ERC20 Token', 'WETH');
+		__Ownable_init();
     }
 
     function mintToWallet(address address_, uint256 amount)
@@ -40,6 +42,6 @@ contract ERC20Token is OwnableUpgradeable, ERC20Upgradeable {
     {
         require(signature.length == 65, "ERC1271: Invalid signature length");
         address signer = messageHash.recover(signature);
-        return signer == OwnableUpgradeable.owner() ? _VALID_SIG : _INVALID_SIG;
+        return signer == OwnableUpgradeable(msg.sender).owner() ? _VALID_SIG : _INVALID_SIG;
     }
 }

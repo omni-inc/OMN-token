@@ -1,3 +1,4 @@
+import { ERC20Token } from './../typechain/ERC20Token.d';
 import { run, ethers, upgrades } from 'hardhat';
 import { BigNumber, Signer } from "ethers";
 import  { expect, assert } from "chai";
@@ -531,10 +532,10 @@ describe("ERC20 Full Test except Vesting", async () => {
 
 	//   ** Function / Method ERC20 Permit for gas less transaction */
 	//   ** 8. Test ERC20 Permit  Methods of Smart Contract : How it is working - Test Case */
-	//   ** t1. Verify PERMIT_TYPEHASH and DOMAIN_SEPARATOR ERC20 Permit Methods */
+	//   ** t1. Verify DOMAIN_SEPARATOR ERC20 Permit Methods */
 	//   ** t2. Verify ERC20 Permit Methods worked with thr right value and revert when is wrong */
 
-	it("8.- Testing TransferMany Methods, and Verify the Tokens into the Wallets", async () => {
+	it("8.- Testing Method ERC20 Permit for gas less transaction and Verify the Approval process and Event", async () => {
 
 		const OmniToken = await ethers.getContractFactory("OmniTokenV1");
 		const Erc20Token = await ethers.getContractFactory("ERC20Token");
@@ -593,13 +594,12 @@ describe("ERC20 Full Test except Vesting", async () => {
 				const { v, r, s } = sign(digest, ownerPrivateKey);
 
 				// Approve it
-				const receipt = await omnitoken.permit(approve.owner, approve.spender, approve.value, deadline, v, r, s)
-				// const filters = omnitoken.filters;
-				// const events = await omnitoken.queryFilter(filters);
-				// console.log('Recipient: ', events);
+				const permitTx = await omnitoken.permit(approve.owner, approve.spender, approve.value, deadline, v, r, s);
+				const recipient = await permitTx.wait();
+				const events = recipient.events;
 
 				// It worked!
-				// assert.equal(event.event, 'Approval');
+				expect(events[0].event).to.be.equal('Approval');
 				expect(await omnitoken.nonces(approve.owner)).to.be.equal(1);
 				expect(await omnitoken.allowance(approve.owner, approve.spender)).to.be.equal(approve.value);
 
@@ -651,11 +651,9 @@ describe("ERC20 Full Test except Vesting", async () => {
 			});
 
 			it('8.3.- ERC20 Permits and emits Approval (replay safe) from Smart Contract Wallet', async () => {
-				const TEST_MESSAGE = ethers.utils.hashMessage('OpenZeppelin');
-				const WRONG_MESSAGE = ethers.utils.hashMessage('Nope');
 				// Create the approval request
 				const approve = {
-				  owner: await owner.getAddress(),
+				  owner: erc20Token.address,
 				  spender: await user.getAddress(),
 				  value: BigNumber.from(100),
 				};
@@ -670,9 +668,23 @@ describe("ERC20 Full Test except Vesting", async () => {
 				const digest = getPermitDigest(name, omnitoken.address, chainId, approve, nonce, deadline);
 
 				// Sign it
-				// NOTE: Using web3.eth.sign will hash the message internally again which
+				// NOTE: Using eth.sign will hash the message internally again which
 				// we do not want, so we're manually signing here
 				const { v, r, s } = sign(digest, ownerPrivateKey);
+
+				// transfer OMN token to smart contract address
+				await omnitoken.transfer(approve.owner, ethers.utils.parseEther(String(5000)));
+				expect((await omnitoken.balanceOf(approve.owner)).toString()).to.be.equal(ethers.utils.parseEther(String(5000)).toString());
+
+				// Approve it
+				const permitTx = await omnitoken.permit(approve.owner, approve.spender, approve.value, deadline, v, r, s);
+				const recipient = await permitTx.wait();
+				const events = recipient.events;
+
+				// It worked!
+				expect(events[0].event).to.be.equal('Approval');
+				expect(await omnitoken.nonces(approve.owner)).to.be.equal(1);
+				expect(await omnitoken.allowance(approve.owner, approve.spender)).to.be.equal(approve.value);
 
 			});
 		});

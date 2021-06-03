@@ -313,7 +313,7 @@ const _abi = [
         type: "bytes",
       },
     ],
-    stateMutability: "view",
+    stateMutability: "pure",
     type: "function",
   },
   {

@@ -20,6 +20,8 @@ contract Claimable is OwnableUpgradeable {
 	using SafeERC20Upgradeable for IERC20Upgradeable;
 	// Internal Balance
 	mapping(address => uint256) _balance;
+	// Event when the Smart Contract receive Amount of Native or ERC20 tokens
+	event ValueReceived(address indexed sender, uint256 indexed value);
     /**
      * Throws if a given address is equal to address(0)
      */
@@ -29,8 +31,10 @@ contract Claimable is OwnableUpgradeable {
         _;
     }
 
-/// @notice Handle receive ether
-	receive() external payable {
+	/// @notice Handle receive ether
+	receive() external payable
+	{
+		emit ValueReceived(_msgSender(), msg.value);
 	}
 
     /**

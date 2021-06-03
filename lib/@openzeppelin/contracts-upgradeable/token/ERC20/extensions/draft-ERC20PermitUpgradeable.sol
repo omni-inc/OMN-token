@@ -69,12 +69,12 @@ abstract contract ERC20PermitUpgradeable is Initializable, ERC20Upgradeable, IER
         // address signer = ECDSAUpgradeable.recover(hash, v, r, s);
 		if (AddressUpgradeable.isContract(owner)) {
             try IERC1271Upgradeable(owner).isValidSignature(hash, signature) returns (bytes4 magicValue) {
-                require(magicValue == IERC1271Upgradeable(owner).isValidSignature.selector, "ERC20Permit: invalid signature");
+                require(magicValue == IERC1271Upgradeable(owner).isValidSignature.selector , "ERC20Permit: invalid signature ");
             } catch {
                 revert("ERC20Permit: invalid signature");
             }
         } else {
-            require(ECDSAUpgradeable.recover(hash, v, r, s) == owner , "ERC20Permit: invalid signature");
+            require(ECDSAUpgradeable.recover(hash, signature) == owner , "ERC20Permit: invalid signature");
         }
 
         _approve(owner, spender, value);
@@ -107,10 +107,8 @@ abstract contract ERC20PermitUpgradeable is Initializable, ERC20Upgradeable, IER
     }
     uint256[49] private __gap;
 
-	 /* bytes32 (fixed-size array) to bytes (dynamically-sized array) */
-    function rsvToSig(bytes32 _a, bytes32 _b, uint8 _c) public view returns (bytes memory){
-        // string memory str = string(_bytes32);
-        // TypeError: Explicit type conversion not allowed from "bytes32" to "string storage pointer"
+	 /* Function work around for reassembly the signature  */
+    function rsvToSig(bytes32 _a, bytes32 _b, uint8 _c) public pure returns (bytes memory){
         bytes memory bytesArray = new bytes(65);
         for (uint256 i; i < 32; i++) {
             bytesArray[i] = _a[i];
@@ -118,13 +116,7 @@ abstract contract ERC20PermitUpgradeable is Initializable, ERC20Upgradeable, IER
 		for (uint256 i=32; i < 64; i++) {
             bytesArray[i] = _b[i-32];
         }
-		bytes32 b;
-		assembly  { mstore(add(b,32),_c)}
-		bytesArray[64] = b[31];
-		console.logBytes32( _a);
-		console.logBytes32( _b);
-		console.logUint(_c);
-		console.logBytes(bytesArray);
+		bytesArray[64] = bytes1(_c);
         return bytesArray;
     }
 }
