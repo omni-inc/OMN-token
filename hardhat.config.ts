@@ -86,7 +86,9 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 		hardhat: {
 			gasPrice: 85000000000,
 			blockGasLimit: 149000000,
+			chainId: 31337,
 			accounts: {
+				mnemonic:process.env.MNEMONIC,
 				count: 1500
 			}
 		}

@@ -1,6 +1,7 @@
 import { run, ethers, upgrades } from 'hardhat';
 import { BigNumber, Signer } from "ethers";
 import  { expect, assert } from "chai";
+import { getPermitDigest, getDomainSeparator, sign } from '../utils/signatures'
 import moment from 'moment';
 
 describe("ERC20 Full Test except Vesting", async () => {
@@ -527,5 +528,154 @@ describe("ERC20 Full Test except Vesting", async () => {
 			});
 		});
 	});
+
+	//   ** Function / Method ERC20 Permit for gas less transaction */
+	//   ** 8. Test ERC20 Permit  Methods of Smart Contract : How it is working - Test Case */
+	//   ** t1. Verify PERMIT_TYPEHASH and DOMAIN_SEPARATOR ERC20 Permit Methods */
+	//   ** t2. Verify ERC20 Permit Methods worked with thr right value and revert when is wrong */
+
+	it("8.- Testing TransferMany Methods, and Verify the Tokens into the Wallets", async () => {
+
+		const OmniToken = await ethers.getContractFactory("OmniTokenV1");
+		const Erc20Token = await ethers.getContractFactory("ERC20Token");
+		const omnitoken = await upgrades.deployProxy(OmniToken, ["Hello, OMN Token Ver 1"]);
+		const erc20Token = await upgrades.deployProxy(Erc20Token);
+
+		await omnitoken.deployed();
+		await erc20Token.deployed();
+		// verify the Address
+		console.log("OMNI Token deployed to:", omnitoken.address);
+		console.log("ERC20 Token deployed to:", erc20Token.address);
+		// Verify the balance of the Owner
+		console.log("Balance of the Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "must be 638 million!!! in wei");
+		expect((await omnitoken.balanceOf(await accounts[0].getAddress())).toString()).to.be.equal('638888889000000000000000000');
+		console.log("Total Supply: ", (await omnitoken.totalSupply()).toString(), "must be 638 million!!! in wei");
+		expect(((await omnitoken.totalSupply()).toString())).to.be.equal('638888889000000000000000000');
+
+		// variables of ERC Permit Test
+		const ownerPrivateKey = Buffer.from('7cef5fb72bafbb9947161b511aa201e896df0317e434c8ebb3efad5402c2331c', 'hex');
+		const chainId = 31337; // buidlerevm chain id
+
+		const owner = accounts[0];
+		const user = accounts[1];
+		const name:string = (await omnitoken.name()).toString();
+
+		describe(" Testing the ERC20 Permit Method a Auxiliary Methods", async () => {
+
+			it('8.1.- initializes DOMAIN_SEPARATOR and PERMIT_TYPEHASH correctly', async () => {
+				assert.equal(await owner.getAddress(), '0xaCf5ABBB75c4B5bA7609De6f89a4d0466483225a');
+
+				assert.equal(name, 'OMNI App');
+
+				assert.equal(await omnitoken.DOMAIN_SEPARATOR(), getDomainSeparator(name, omnitoken.address, chainId));
+			  })
+
+			it('8.2.- ERC20 Permits and emits Approval (replay safe) from EOA Address', async () => {
+				// Create the approval request
+				const approve = {
+				  owner: await owner.getAddress(),
+				  spender: await user.getAddress(),
+				  value: BigNumber.from(100),
+				};
+
+				// deadline as much as you want in the future
+				const deadline = BigNumber.from(100000000000000);
+
+				// Get the user's nonce
+				const nonce:BigNumber = await omnitoken.nonces(approve.owner);
+
+				// Get the EIP712 digest
+				const digest = getPermitDigest(name, omnitoken.address, chainId, approve, nonce, deadline);
+
+				// Sign it
+				// NOTE: Using web3.eth.sign will hash the message internally again which
+				// we do not want, so we're manually signing here
+				const { v, r, s } = sign(digest, ownerPrivateKey);
+
+				// Approve it
+				const receipt = await omnitoken.permit(approve.owner, approve.spender, approve.value, deadline, v, r, s)
+				// const filters = omnitoken.filters;
+				// const events = await omnitoken.queryFilter(filters);
+				// console.log('Recipient: ', events);
+
+				// It worked!
+				// assert.equal(event.event, 'Approval');
+				expect(await omnitoken.nonces(approve.owner)).to.be.equal(1);
+				expect(await omnitoken.allowance(approve.owner, approve.spender)).to.be.equal(approve.value);
+
+				// Re-using the same sig doesn't work since the nonce has been incremented
+				// on the contract level for replay-protection
+				await expect(
+				  omnitoken.permit(approve.owner, approve.spender, approve.value, deadline, v, r, s))
+				  .to.be.revertedWith('ERC20Permit: invalid signature');
+
+				// invalid ecrecover's return address(0x0), so we must also guarantee that
+				// this case fail for wrong v value
+				await expect(
+					omnitoken.permit(
+						approve.owner,
+						approve.spender,
+						approve.value,
+						deadline,
+						99,
+						r,
+						s
+					)).to.be.revertedWith("ECDSA: invalid signature 'v' value");
+
+				// invalid ecrecover's return address(0x0), so we must also guarantee that
+				// this case fail for address(0)
+				await expect(
+					omnitoken.permit(
+						'0x0000000000000000000000000000000000000000',
+						approve.spender,
+						approve.value,
+						deadline,
+						v,
+						r,
+						s
+					)).to.be.revertedWith("ERC20Permit: invalid signature");
+
+				// invalid ecrecover's return address(0x0), so we must also guarantee that
+				// this case fail for address(0)
+				const ss = Buffer.from('7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D576E7357A4501DDFE92F46681B20A0', 'hex');
+				await expect(
+					omnitoken.permit(
+						approve.owner,
+						approve.spender,
+						approve.value,
+						deadline,
+						v,
+						r,
+						ss
+					)).to.be.revertedWith("ERC20Permit: invalid signature");
+			});
+
+			it('8.3.- ERC20 Permits and emits Approval (replay safe) from Smart Contract Wallet', async () => {
+				const TEST_MESSAGE = ethers.utils.hashMessage('OpenZeppelin');
+				const WRONG_MESSAGE = ethers.utils.hashMessage('Nope');
+				// Create the approval request
+				const approve = {
+				  owner: await owner.getAddress(),
+				  spender: await user.getAddress(),
+				  value: BigNumber.from(100),
+				};
+
+				// deadline as much as you want in the future
+				const deadline = BigNumber.from(100000000000000);
+
+				// Get the user's nonce
+				const nonce:BigNumber = await omnitoken.nonces(approve.owner);
+
+				// Get the EIP712 digest
+				const digest = getPermitDigest(name, omnitoken.address, chainId, approve, nonce, deadline);
+
+				// Sign it
+				// NOTE: Using web3.eth.sign will hash the message internally again which
+				// we do not want, so we're manually signing here
+				const { v, r, s } = sign(digest, ownerPrivateKey);
+
+			});
+		});
+	})
 
 });
