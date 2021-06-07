@@ -4,6 +4,7 @@ import { BigNumber, Signer } from "ethers";
 import  { expect, assert } from "chai";
 import { getPermitDigest, getDomainSeparator, sign } from '../utils/signatures'
 import moment from 'moment';
+import 'dotenv/config';
 
 describe("ERC20 Full Test except Vesting", async () => {
 
@@ -554,7 +555,8 @@ describe("ERC20 Full Test except Vesting", async () => {
 		expect(((await omnitoken.totalSupply()).toString())).to.be.equal('638888889000000000000000000');
 
 		// variables of ERC Permit Test
-		const ownerPrivateKey = Buffer.from('7cef5fb72bafbb9947161b511aa201e896df0317e434c8ebb3efad5402c2331c', 'hex');
+		const PRIVATEKEY = `${process.env.PRIVATE_KEY}`
+		const ownerPrivateKey = Buffer.from(PRIVATEKEY, 'hex');
 		const chainId = 31337; // buidlerevm chain id
 
 		const owner = accounts[0];
