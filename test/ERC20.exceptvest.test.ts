@@ -1,5 +1,4 @@
-import { ERC20Token } from './../typechain/ERC20Token.d';
-import { run, ethers, upgrades } from 'hardhat';
+import { ethers, upgrades } from 'hardhat';
 import { BigNumber, Signer } from "ethers";
 import  { expect, assert } from "chai";
 import { getPermitDigest, getDomainSeparator, sign } from '../utils/signatures'
