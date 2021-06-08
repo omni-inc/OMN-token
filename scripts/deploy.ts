@@ -5,8 +5,6 @@
 // Runtime Environment's members available in the global scope.
 import {run, ethers, upgrades} from 'hardhat';
 import "@nomiclabs/hardhat-ethers";
-import "hardhat-etherscan-abi";
-const hre = require('hardhat');
 
 const main = async () => {
   // Hardhat always runs the compile task when running scripts with its command

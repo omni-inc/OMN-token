@@ -5,9 +5,9 @@ import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-waffle";
 import "hardhat-typechain";
 import "@typechain/ethers-v5";
-import "hardhat-etherscan-abi";
 import '@openzeppelin/hardhat-upgrades';
 import 'hardhat-spdx-license-identifier';
+import '@nomiclabs/hardhat-etherscan';
 import 'dotenv/config';
 
 // This is a sample Hardhat task. To learn how to create your own go to
@@ -127,7 +127,7 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 	etherscan: {
 		// Your API key for Etherscan
 		// Obtain one at https://etherscan.io/
-		apiKey: "MG64PFDUSGBAAJA8SQ24ATRKWJPCFRWRZP"
+		apiKey: process.env.ETHERSCAN_API_KEY
 	},
 	spdxLicenseIdentifier: {
 		overwrite: true,
@@ -137,7 +137,7 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 		path: './data/abi',
 		clear: true,
 		flat: true,
-		only: [':OmniTokenV$'],
+		only: [],
 		spacing: 2
 	}
 };
