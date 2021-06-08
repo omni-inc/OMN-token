@@ -507,7 +507,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 				await expect(omnitoken.transferMany(addresses1, amount1)).to.be.revertedWith("ERC20 OMN: total amount token is zero");
 				amount1[index] = amount;
 			});
-			it("7.4.- Call the TransferMany Method for Test Array #1 and Verify have the right Values", async () => {
+			it("7.4.- Call the TransferMany Method for Test Array #1 of one hundred address (100) and Verify have the right Values", async () => {
 				// Test Array #1
 				const receipt = await omnitoken.transferMany(addresses1, amount1);
 				// await receipt.wait();
@@ -517,7 +517,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 					expect((await omnitoken.balanceOf(addresses1[i])).toString()).to.equal((amount1[i]).toString());
 				}
 			});
-			it("7.5.- Call the TransferMany Method for Test Array #2 and Verify have the right Values", async () => {
+			it("7.5.- Call the TransferMany Method for Test Array #2 one hundred address (100) and Verify have the right Values", async () => {
 				// Test Array #2
 				const receipt = await omnitoken.transferMany(addresses2, amount2);
 				// await receipt.wait();

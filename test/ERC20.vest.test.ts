@@ -274,7 +274,7 @@ describe("ERC20 Only Vesting Test", async () => {
 			});
 
 			// ** Verify Allocation #1 Wallets day by day and unlocked Tokens
-			it("1.17.- Verify Daily Rate and Initial Iteration of Allocation #1, #2, #3, #4, #6 and #10 =============================================================", async () => {
+			it("1.17.1.- Verify Daily Rate and Initial Iteration of Allocation #1, #2, #3, #4, #6 and #10 Before to TGE  =============================================================", async () => {
 				console.log("1 seconds Before Token Generate Event: ", parseInt(TGE.subtract(1, 's').format('X')), TGE.format("dddd, MMMM Do YYYY, h:mm:ss a"));
 				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.format('X'))]);
 				await network.provider.send("evm_mine", []);
@@ -334,11 +334,15 @@ describe("ERC20 Only Vesting Test", async () => {
 					expect((await omnitoken.getTransferableAmount(addresses10[i])).toString()).to.equal('0');
 					expect((await omnitoken.getRestAmount(addresses10[i])).toString()).to.equal((amount10[i]).toString());
 				}
+			});
+
+			// ** Verify Allocation #1 Wallets day by day and unlocked Tokens
+			it("1.17.2.- Verify Daily Rate and Initial Iteration of Allocation #1, #2, #3, #4, #6 and #10 Beginning to TGE =============================================================", async () => {
 				// TGE Moment
 				console.log("Date for Token Generate Event: ", parseInt(TGE.add(1, 's').format('X')), TGE.format("dddd, MMMM Do YYYY, h:mm:ss a"));
 				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.format('X'))]);
 				await network.provider.send("evm_mine", []);
-				time = Math.floor((await ethers.provider.getBlock("latest")).timestamp);
+				let time = Math.floor((await ethers.provider.getBlock("latest")).timestamp);
 				console.log("Verify TimeStamp: ", time," Full Date: ", moment(time*1000).utc().format("dddd, MMMM Do YYYY, h:mm:ss a"));
 				console.log("List of Wallet of Allocation #1, Balances, TransferableAmount, RestAmount Beginning to TGE: ");
 				for (let i=0 ; i<5; i++) {
@@ -388,67 +392,6 @@ describe("ERC20 Only Vesting Test", async () => {
 					expect((await omnitoken.getRestAmount(addresses6[i])).toString()).to.equal((amount6[i]).toString());
 				}
 				console.log("List of Wallet of Allocation #10, Balances, TransferableAmount, RestAmount Beginning to TGE: ");
-				for (let i=0 ; i<5; i++) {
-					console.log("Wallet ",i ," : ", addresses10[i], "Amount: ", amount10[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses10[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses10[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses10[i])).toString());
-				}
-				for (let i=0 ; i<100; i++) {
-					expect((await omnitoken.balanceOf(addresses10[i])).toString()).to.equal((amount10[i]).toString());
-					expect((await omnitoken.getTransferableAmount(addresses10[i])).toString()).to.equal((amount10[i]).toString());
-					expect((await omnitoken.getRestAmount(addresses10[i])).toString()).to.equal('0');
-				}
-				// 1 Day after TGE
-				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(1,'d').format('X'))]);
-				await network.provider.send("evm_mine", []);
-				time = Math.floor((await ethers.provider.getBlock("latest")).timestamp);
-				console.log("Verify TimeStamp: ", time," Full Date: ", moment(time*1000).utc().format("dddd, MMMM Do YYYY, h:mm:ss a"));
-				console.log("List of Wallet of Allocation #1, Balances, TransferableAmount, RestAmount 1 Day After to TGE: ");
-				for (let i=0 ; i<5; i++) {
-					console.log("Wallet ",i ," : ", addresses1[i], "Amount: ", amount1[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses1[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses1[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses1[i])).toString());
-				}
-				for (let i=0 ; i<100; i++) {
-					expect((await omnitoken.balanceOf(addresses1[i])).toString()).to.equal((amount1[i]).toString());
-					expect((await omnitoken.getTransferableAmount(addresses1[i])).toString()).to.equal('0');
-					expect((await omnitoken.getRestAmount(addresses1[i])).toString()).to.equal((amount1[i]).toString());
-				}
-				console.log("List of Wallet of Allocation #2, Balances, TransferableAmount, RestAmount 1 Day After to TGE: ");
-				for (let i=0 ; i<5; i++) {
-					console.log("Wallet ",i ," : ", addresses2[i], "Amount: ", amount2[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses2[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses2[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses2[i])).toString());
-				}
-				for (let i=0 ; i<100; i++) {
-					expect((await omnitoken.balanceOf(addresses2[i])).toString()).to.equal((amount2[i]).toString());
-					expect((await omnitoken.getTransferableAmount(addresses2[i])).toString()).to.equal('0');
-					expect((await omnitoken.getRestAmount(addresses2[i])).toString()).to.equal((amount2[i]).toString());
-				}
-				console.log("List of Wallet of Allocation #3, Balances, TransferableAmount, RestAmount 1 Day After to TGE: ");
-				for (let i=0 ; i<5; i++) {
-					console.log("Wallet ",i ," : ", addresses3[i], "Amount: ", amount3[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses3[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses3[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses3[i])).toString());
-				}
-				for (let i=0 ; i<100; i++) {
-					expect((await omnitoken.balanceOf(addresses3[i])).toString()).to.equal((amount3[i]).toString());
-					const ten:BigNumber = BigNumber.from(await omnitoken.balanceOf(addresses3[i])).mul('10').div('100');
-					expect((await omnitoken.getTransferableAmount(addresses3[i])).toString()).to.equal(ten.toString());
-					const diff:BigNumber = BigNumber.from(await omnitoken.balanceOf(addresses3[i])).sub(ten);
-					expect((await omnitoken.getRestAmount(addresses3[i])).toString()).to.equal(diff.toString());
-				}
-				console.log("List of Wallet of Allocation #4, Balances, TransferableAmount, RestAmount 1 Day After to TGE: ");
-				for (let i=0 ; i<5; i++) {
-					console.log("Wallet ",i ," : ", addresses4[i], "Amount: ", amount4[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses4[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses4[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses4[i])).toString());
-				}
-				for (let i=0 ; i<100; i++) {
-					expect((await omnitoken.balanceOf(addresses4[i])).toString()).to.equal((amount4[i]).toString());
-					expect((await omnitoken.getTransferableAmount(addresses4[i])).toString()).to.equal((amount4[i]).toString());
-					expect((await omnitoken.getRestAmount(addresses4[i])).toString()).to.equal('0');
-				}
-				console.log("List of Wallet of Allocation #6, Balances, TransferableAmount, RestAmount 1 Day After to TGE: ");
-				for (let i=0 ; i<5; i++) {
-					console.log("Wallet ",i ," : ", addresses6[i], "Amount: ", amount6[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses6[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses6[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses6[i])).toString());
-				}
-				for (let i=0 ; i<100; i++) {
-					expect((await omnitoken.balanceOf(addresses6[i])).toString()).to.equal((amount6[i]).toString());
-					expect((await omnitoken.getTransferableAmount(addresses6[i])).toString()).to.equal('0');
-					expect((await omnitoken.getRestAmount(addresses6[i])).toString()).to.equal((amount6[i]).toString());
-				}
-				console.log("List of Wallet of Allocation #10, Balances, TransferableAmount, RestAmount 1 Day After to TGE: ");
 				for (let i=0 ; i<5; i++) {
 					console.log("Wallet ",i ," : ", addresses10[i], "Amount: ", amount10[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses10[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses10[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses10[i])).toString());
 				}
