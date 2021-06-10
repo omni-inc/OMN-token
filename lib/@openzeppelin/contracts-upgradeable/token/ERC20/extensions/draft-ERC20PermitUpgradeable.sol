@@ -10,7 +10,6 @@ import "../../../utils/CountersUpgradeable.sol";
 import "../../../utils/AddressUpgradeable.sol";
 import "../../../proxy/utils/Initializable.sol";
 import "../../../interfaces/IERC1271Upgradeable.sol";
-import "hardhat/console.sol";
 
 /**
  * @dev Implementation of the ERC20 Permit extension allowing approvals to be made via signatures, as defined in

@@ -13,7 +13,6 @@ import "../@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.so
 import "../@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import "../@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import "../main/Blacklistable.sol";
-import "hardhat/console.sol";
 import "./Math.sol";
 
 struct FrozenWallet {

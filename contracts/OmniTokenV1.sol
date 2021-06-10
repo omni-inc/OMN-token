@@ -11,7 +11,6 @@ import "../lib/@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol
 import "../lib/main/Claimable.sol";
 import "../lib/main/CirculatingSupply.sol";
 import "../lib/main/Vesting.sol";
-import "hardhat/console.sol";
 
 contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting {
 	using AddressUpgradeable for address;
@@ -28,7 +27,6 @@ contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting {
 
 		// Mint Total Supply
 		mint(getMaxTotalSupply());
-		console.log("Deploying Vesting Types");
 		// Begininng Deploy of Allocation in the ERC20
 		// Allocation #1 / VestingType # 0, Early Backers Total (6.9565217)% and Start After 30 days Locked the Token
 		vestingTypes.push(VestingType(1930501930501930, 0, 30 days, true)); // 30 Days Locked, 0.193050193050193 Percent daily for 518 days
@@ -55,8 +53,6 @@ contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting {
 		// Allocation #13 / VestingType # 11, Company Reserve Total (9.21739127442027)% and Start After 273 days Locked the Token
 		vestingTypes.push(VestingType(994035785288270, 0, 273 days, true)); // 273 Days Locked, 0.099403578528827 Percent daily for 1006 days
 
-		//Finish Deploy of Allocation in the ERC20
-		console.log("Deploying a OMN Token: ", _greeting);
 	}
 
 	/**
