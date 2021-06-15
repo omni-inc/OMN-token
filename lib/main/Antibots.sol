@@ -9,8 +9,8 @@ import "../@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol";
 import "../@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 /**
- * @title Blacklistable Methods
- * @dev Allows accounts to be blacklisted by Owner
+ * @title AntiBots Methods
+ * @dev Allows  by Owner
  */
 contract Antibots is OwnableUpgradeable {
     using AddressUpgradeable for address;

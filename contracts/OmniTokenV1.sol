@@ -29,6 +29,8 @@ contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting, An
 
 		// Mint Total Supply
 		mint(getMaxTotalSupply());
+		// explicitly set burnBeforeBlockNumberDisabled to false
+        burnBeforeBlockNumberDisabled = false;
 		// Begininng Deploy of Allocation in the ERC20
 		// Allocation #1 / VestingType # 0, Early Backers Total (6.9565217)% and Start After 30 days Locked the Token
 		vestingTypes.push(VestingType(1930501930501930, 0, 30 days, true)); // 30 Days Locked, 0.193050193050193 Percent daily for 518 days
