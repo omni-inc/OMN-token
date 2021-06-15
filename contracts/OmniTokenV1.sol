@@ -34,6 +34,7 @@ contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting {
 		vestingTypes.push(VestingType(2188183807439820, 0, 30 days, true)); // 30 Days Locked, 0.218818380743982 Percent daily for 457 days
 		// Allocation #3 / VestingType # 2, Private Total (8.21739132)%, Unlocked 10% when start the vesting, Start with 30 days Locked the Token and After (8.21739132)%
         vestingTypes.push(VestingType(2272727272727270, 100000000000000000, 30 days, true)); // 10% Unlocked when start, 30 Days Locked, 0.227272727272727 Percent daily for 396 Days for the 90% Rest
+		// TODO: add 10 allocation with change vesting
 		// Allocation #4 Public (1.3043478)% /#10 Liquidity (3)% / VestingType # 3, and Daily Rate in wei (0), Unlocked the all Token immediatly when Start the Vesting
         vestingTypes.push(VestingType(100000000000000000000, 100000000000000000000, 0, true)); // 0 Days 100 Percent
 		// Allocation #5 / VestingType # 4, OMNI Team Total (10)% and Start After 273 days Locked the Token
