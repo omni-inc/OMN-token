@@ -21,24 +21,16 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface AntibotsInterface extends ethers.utils.Interface {
   functions: {
-    "burnBeforeBlockNumber()": FunctionFragment;
-    "burnBeforeBlockNumberDisabled()": FunctionFragment;
     "disableBurnBeforeBlockNumber()": FunctionFragment;
     "disableTransfers(uint256)": FunctionFragment;
-    "isTransferDisabled()": FunctionFragment;
+    "getBurnBeforeBlockNumber()": FunctionFragment;
+    "getBurnBeforeBlockNumberDisabled()": FunctionFragment;
+    "getIsTransferDisabled()": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
   };
 
-  encodeFunctionData(
-    functionFragment: "burnBeforeBlockNumber",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "burnBeforeBlockNumberDisabled",
-    values?: undefined
-  ): string;
   encodeFunctionData(
     functionFragment: "disableBurnBeforeBlockNumber",
     values?: undefined
@@ -48,7 +40,15 @@ interface AntibotsInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "isTransferDisabled",
+    functionFragment: "getBurnBeforeBlockNumber",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBurnBeforeBlockNumberDisabled",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getIsTransferDisabled",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -62,14 +62,6 @@ interface AntibotsInterface extends ethers.utils.Interface {
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "burnBeforeBlockNumber",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "burnBeforeBlockNumberDisabled",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "disableBurnBeforeBlockNumber",
     data: BytesLike
   ): Result;
@@ -78,7 +70,15 @@ interface AntibotsInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "isTransferDisabled",
+    functionFragment: "getBurnBeforeBlockNumber",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getBurnBeforeBlockNumberDisabled",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getIsTransferDisabled",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -144,18 +144,6 @@ export class Antibots extends Contract {
   interface: AntibotsInterface;
 
   functions: {
-    burnBeforeBlockNumber(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    "burnBeforeBlockNumber()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    burnBeforeBlockNumberDisabled(
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    "burnBeforeBlockNumberDisabled()"(
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
     disableBurnBeforeBlockNumber(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -174,9 +162,23 @@ export class Antibots extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    isTransferDisabled(overrides?: CallOverrides): Promise<[boolean]>;
+    getBurnBeforeBlockNumber(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "isTransferDisabled()"(overrides?: CallOverrides): Promise<[boolean]>;
+    "getBurnBeforeBlockNumber()"(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    getBurnBeforeBlockNumberDisabled(
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    "getBurnBeforeBlockNumberDisabled()"(
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    getIsTransferDisabled(overrides?: CallOverrides): Promise<[boolean]>;
+
+    "getIsTransferDisabled()"(overrides?: CallOverrides): Promise<[boolean]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
@@ -201,16 +203,6 @@ export class Antibots extends Contract {
     ): Promise<ContractTransaction>;
   };
 
-  burnBeforeBlockNumber(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "burnBeforeBlockNumber()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  burnBeforeBlockNumberDisabled(overrides?: CallOverrides): Promise<boolean>;
-
-  "burnBeforeBlockNumberDisabled()"(
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
   disableBurnBeforeBlockNumber(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -229,9 +221,19 @@ export class Antibots extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  isTransferDisabled(overrides?: CallOverrides): Promise<boolean>;
+  getBurnBeforeBlockNumber(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "isTransferDisabled()"(overrides?: CallOverrides): Promise<boolean>;
+  "getBurnBeforeBlockNumber()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getBurnBeforeBlockNumberDisabled(overrides?: CallOverrides): Promise<boolean>;
+
+  "getBurnBeforeBlockNumberDisabled()"(
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  getIsTransferDisabled(overrides?: CallOverrides): Promise<boolean>;
+
+  "getIsTransferDisabled()"(overrides?: CallOverrides): Promise<boolean>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
@@ -256,16 +258,6 @@ export class Antibots extends Contract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    burnBeforeBlockNumber(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "burnBeforeBlockNumber()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    burnBeforeBlockNumberDisabled(overrides?: CallOverrides): Promise<boolean>;
-
-    "burnBeforeBlockNumberDisabled()"(
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
     disableBurnBeforeBlockNumber(overrides?: CallOverrides): Promise<void>;
 
     "disableBurnBeforeBlockNumber()"(overrides?: CallOverrides): Promise<void>;
@@ -280,9 +272,21 @@ export class Antibots extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    isTransferDisabled(overrides?: CallOverrides): Promise<boolean>;
+    getBurnBeforeBlockNumber(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "isTransferDisabled()"(overrides?: CallOverrides): Promise<boolean>;
+    "getBurnBeforeBlockNumber()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getBurnBeforeBlockNumberDisabled(
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "getBurnBeforeBlockNumberDisabled()"(
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    getIsTransferDisabled(overrides?: CallOverrides): Promise<boolean>;
+
+    "getIsTransferDisabled()"(overrides?: CallOverrides): Promise<boolean>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
@@ -322,18 +326,6 @@ export class Antibots extends Contract {
   };
 
   estimateGas: {
-    burnBeforeBlockNumber(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "burnBeforeBlockNumber()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    burnBeforeBlockNumberDisabled(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "burnBeforeBlockNumberDisabled()"(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     disableBurnBeforeBlockNumber(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -352,9 +344,21 @@ export class Antibots extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    isTransferDisabled(overrides?: CallOverrides): Promise<BigNumber>;
+    getBurnBeforeBlockNumber(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "isTransferDisabled()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "getBurnBeforeBlockNumber()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getBurnBeforeBlockNumberDisabled(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getBurnBeforeBlockNumberDisabled()"(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getIsTransferDisabled(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getIsTransferDisabled()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -380,22 +384,6 @@ export class Antibots extends Contract {
   };
 
   populateTransaction: {
-    burnBeforeBlockNumber(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "burnBeforeBlockNumber()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    burnBeforeBlockNumberDisabled(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "burnBeforeBlockNumberDisabled()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     disableBurnBeforeBlockNumber(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -414,11 +402,27 @@ export class Antibots extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    isTransferDisabled(
+    getBurnBeforeBlockNumber(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "isTransferDisabled()"(
+    "getBurnBeforeBlockNumber()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getBurnBeforeBlockNumberDisabled(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getBurnBeforeBlockNumberDisabled()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getIsTransferDisabled(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getIsTransferDisabled()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

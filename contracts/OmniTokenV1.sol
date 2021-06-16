@@ -129,25 +129,6 @@ contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting, An
         }
     }
 
-    /**
-     * @dev Destroys `amount` tokens from `account`, deducting from the caller's
-     * allowance.
-     * @param account Address where the caller's allowance to burn the tokens
-	 * @param amount Amount tokens to burn
-     * See {ERC20-_burn} and {ERC20-allowance}.
-     *
-     * Requirements:
-     *
-     * - the caller must have allowance for ``accounts``'s tokens of at least
-     * `amount`.
-     */
-    function burnFrom(address account, uint256 amount) public virtual {
-        uint256 currentAllowance = allowance(account, _msgSender());
-        require(currentAllowance >= amount, "ERC20: burn amount exceeds allowance");
-        _approve(account, _msgSender(), currentAllowance - amount);
-        _burn(account, amount);
-    }
-
 	/**
      * @dev Destroys `amount` tokens from the caller.
      * @param amount Amount token to burn
@@ -192,7 +173,7 @@ contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting, An
 	function _beforeTokenTransfer(address sender, address recipient, uint256 amount) internal virtual override notBlacklisted(sender) {
 		require(!isBlacklisted(recipient), "ERC20 OMN: recipient account is blacklisted");
 		// Permit the Owner execute token transfer/mint/burn while paused contract
-		if (isTransferDisabled()) {
+		if (_msgSender() != owner()) {
 			require(!paused(), "ERC20Pausable: token transfer/mint/burn while paused");
 		}
         require(canTransfer(sender, amount), "ERC20 OMN: Wait for vesting day!");

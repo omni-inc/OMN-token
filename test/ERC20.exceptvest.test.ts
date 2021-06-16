@@ -743,7 +743,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 			});
 
 			it("9.2.- Anti-bot defense should be off after deploy", async () => {
-				const isTransferDisabled = await omnitoken.connect(user).isTransferDisabled();
+				const isTransferDisabled = await omnitoken.getIsTransferDisabled();
 				expect(isTransferDisabled).to.be.equal(false);
 			});
 
@@ -752,10 +752,8 @@ describe("ERC20 Full Test except Vesting", async () => {
 
 				await omnitoken.disableTransfers(defenseBlockDuration);
 
-				// transfers should be disabled
-				expect(await omnitoken.connect(user).isTransferDisabled()).to.be.equal(true);
 				// owner should transfer
-				expect(await omnitoken.isTransferDisabled()).to.be.equal(false);
+				expect(await omnitoken.getIsTransferDisabled()).to.be.equal(true);
 
 				const senderBalance: BigNumber = await omnitoken.balanceOf(await user.getAddress());
 				const receiverBalance: BigNumber = await omnitoken.balanceOf(await owner.getAddress());
@@ -797,7 +795,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 				await omnitoken.disableTransfers(defenseBlockDuration);
 
 				// transfers should be disabled
-				expect(await omnitoken.connect(user).isTransferDisabled()).to.be.equal(true);
+				expect(await omnitoken.getIsTransferDisabled()).to.be.equal(true);
 
 				const senderBalance: BigNumber = await omnitoken.balanceOf(await user.getAddress());
 				const receiverBalance: BigNumber = await omnitoken.balanceOf(await owner.getAddress());
@@ -827,12 +825,12 @@ describe("ERC20 Full Test except Vesting", async () => {
 			it("9.5.- Should transfer after defense is over", async () => {
 				await omnitoken.disableTransfers(defenseBlockDuration);
 
-				expect(await omnitoken.connect(user).isTransferDisabled()).to.be.equal(true);
+				expect(await omnitoken.getIsTransferDisabled()).to.be.equal(true);
 
 				// wait until defense is over
 				await skipBlocks(defenseBlockDuration);
 
-				expect(await omnitoken.connect(user).isTransferDisabled()).to.be.equal(false);
+				expect(await omnitoken.getIsTransferDisabled()).to.be.equal(false);
 
 				await expect(
 					omnitoken.connect(user).transfer(await owner.getAddress(), tokenAmount)
@@ -842,11 +840,11 @@ describe("ERC20 Full Test except Vesting", async () => {
 			it("9.6.- Should disable defense calling disableBurnBeforeBlockNumber method", async () => {
 				await omnitoken.disableBurnBeforeBlockNumber();
 
-				const burnBeforeBlockNumber = await omnitoken.burnBeforeBlockNumber();
+				const burnBeforeBlockNumber = await omnitoken.getBurnBeforeBlockNumber();
 				expect(burnBeforeBlockNumber).to.be.equal(0);
 
 				const burnBeforeBlockNumberDisabled =
-					await omnitoken.burnBeforeBlockNumberDisabled();
+					await omnitoken.getBurnBeforeBlockNumberDisabled();
 				expect(burnBeforeBlockNumberDisabled).to.be.equal(true);
 
 				await expect(

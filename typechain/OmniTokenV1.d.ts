@@ -30,9 +30,6 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "burn(uint256)": FunctionFragment;
-    "burnBeforeBlockNumber()": FunctionFragment;
-    "burnBeforeBlockNumberDisabled()": FunctionFragment;
-    "burnFrom(address,uint256)": FunctionFragment;
     "canTransfer(address,uint256)": FunctionFragment;
     "circulatingSupply()": FunctionFragment;
     "claimValues(address,address)": FunctionFragment;
@@ -44,7 +41,10 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     "dropOmniWallet(address)": FunctionFragment;
     "frozenWallets(address)": FunctionFragment;
     "getBlacklist()": FunctionFragment;
+    "getBurnBeforeBlockNumber()": FunctionFragment;
+    "getBurnBeforeBlockNumberDisabled()": FunctionFragment;
     "getDays(uint256)": FunctionFragment;
+    "getIsTransferDisabled()": FunctionFragment;
     "getMaxTotalSupply()": FunctionFragment;
     "getOmniWallets()": FunctionFragment;
     "getReleaseTime()": FunctionFragment;
@@ -56,7 +56,6 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     "isBlacklisted(address)": FunctionFragment;
     "isOmniWallet(address)": FunctionFragment;
     "isStarted(uint256)": FunctionFragment;
-    "isTransferDisabled()": FunctionFragment;
     "mint(uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "nonces(address)": FunctionFragment;
@@ -102,18 +101,6 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(functionFragment: "burn", values: [BigNumberish]): string;
   encodeFunctionData(
-    functionFragment: "burnBeforeBlockNumber",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "burnBeforeBlockNumberDisabled",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "burnFrom",
-    values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "canTransfer",
     values: [string, BigNumberish]
   ): string;
@@ -155,8 +142,20 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "getBurnBeforeBlockNumber",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBurnBeforeBlockNumberDisabled",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "getDays",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getIsTransferDisabled",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getMaxTotalSupply",
@@ -198,10 +197,6 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "isStarted",
     values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isTransferDisabled",
-    values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "mint", values: [BigNumberish]): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
@@ -276,15 +271,6 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "burnBeforeBlockNumber",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "burnBeforeBlockNumberDisabled",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "burnFrom", data: BytesLike): Result;
-  decodeFunctionResult(
     functionFragment: "canTransfer",
     data: BytesLike
   ): Result;
@@ -325,7 +311,19 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     functionFragment: "getBlacklist",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "getBurnBeforeBlockNumber",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getBurnBeforeBlockNumberDisabled",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getDays", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getIsTransferDisabled",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "getMaxTotalSupply",
     data: BytesLike
@@ -364,10 +362,6 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "isStarted", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "isTransferDisabled",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
@@ -555,30 +549,6 @@ export class OmniTokenV1 extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    burnBeforeBlockNumber(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    "burnBeforeBlockNumber()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    burnBeforeBlockNumberDisabled(
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    "burnBeforeBlockNumberDisabled()"(
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    burnFrom(
-      account: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "burnFrom(address,uint256)"(
-      account: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     canTransfer(
       sender: string,
       amount: BigNumberish,
@@ -695,6 +665,20 @@ export class OmniTokenV1 extends Contract {
 
     "getBlacklist()"(overrides?: CallOverrides): Promise<[string[]]>;
 
+    getBurnBeforeBlockNumber(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    "getBurnBeforeBlockNumber()"(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    getBurnBeforeBlockNumberDisabled(
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    "getBurnBeforeBlockNumberDisabled()"(
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
     getDays(
       afterDays: BigNumberish,
       overrides?: CallOverrides
@@ -704,6 +688,10 @@ export class OmniTokenV1 extends Contract {
       afterDays: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
+
+    getIsTransferDisabled(overrides?: CallOverrides): Promise<[boolean]>;
+
+    "getIsTransferDisabled()"(overrides?: CallOverrides): Promise<[boolean]>;
 
     getMaxTotalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -792,10 +780,6 @@ export class OmniTokenV1 extends Contract {
       startDay: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
-
-    isTransferDisabled(overrides?: CallOverrides): Promise<[boolean]>;
-
-    "isTransferDisabled()"(overrides?: CallOverrides): Promise<[boolean]>;
 
     mint(
       _amount: BigNumberish,
@@ -1040,28 +1024,6 @@ export class OmniTokenV1 extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  burnBeforeBlockNumber(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "burnBeforeBlockNumber()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  burnBeforeBlockNumberDisabled(overrides?: CallOverrides): Promise<boolean>;
-
-  "burnBeforeBlockNumberDisabled()"(
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  burnFrom(
-    account: string,
-    amount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "burnFrom(address,uint256)"(
-    account: string,
-    amount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   canTransfer(
     sender: string,
     amount: BigNumberish,
@@ -1178,6 +1140,16 @@ export class OmniTokenV1 extends Contract {
 
   "getBlacklist()"(overrides?: CallOverrides): Promise<string[]>;
 
+  getBurnBeforeBlockNumber(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "getBurnBeforeBlockNumber()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getBurnBeforeBlockNumberDisabled(overrides?: CallOverrides): Promise<boolean>;
+
+  "getBurnBeforeBlockNumberDisabled()"(
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   getDays(
     afterDays: BigNumberish,
     overrides?: CallOverrides
@@ -1187,6 +1159,10 @@ export class OmniTokenV1 extends Contract {
     afterDays: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  getIsTransferDisabled(overrides?: CallOverrides): Promise<boolean>;
+
+  "getIsTransferDisabled()"(overrides?: CallOverrides): Promise<boolean>;
 
   getMaxTotalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1266,10 +1242,6 @@ export class OmniTokenV1 extends Contract {
     startDay: BigNumberish,
     overrides?: CallOverrides
   ): Promise<boolean>;
-
-  isTransferDisabled(overrides?: CallOverrides): Promise<boolean>;
-
-  "isTransferDisabled()"(overrides?: CallOverrides): Promise<boolean>;
 
   mint(
     _amount: BigNumberish,
@@ -1508,28 +1480,6 @@ export class OmniTokenV1 extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    burnBeforeBlockNumber(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "burnBeforeBlockNumber()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    burnBeforeBlockNumberDisabled(overrides?: CallOverrides): Promise<boolean>;
-
-    "burnBeforeBlockNumberDisabled()"(
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    burnFrom(
-      account: string,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "burnFrom(address,uint256)"(
-      account: string,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     canTransfer(
       sender: string,
       amount: BigNumberish,
@@ -1639,6 +1589,18 @@ export class OmniTokenV1 extends Contract {
 
     "getBlacklist()"(overrides?: CallOverrides): Promise<string[]>;
 
+    getBurnBeforeBlockNumber(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getBurnBeforeBlockNumber()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getBurnBeforeBlockNumberDisabled(
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "getBurnBeforeBlockNumberDisabled()"(
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     getDays(
       afterDays: BigNumberish,
       overrides?: CallOverrides
@@ -1648,6 +1610,10 @@ export class OmniTokenV1 extends Contract {
       afterDays: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    getIsTransferDisabled(overrides?: CallOverrides): Promise<boolean>;
+
+    "getIsTransferDisabled()"(overrides?: CallOverrides): Promise<boolean>;
 
     getMaxTotalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1730,10 +1696,6 @@ export class OmniTokenV1 extends Contract {
       startDay: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
-
-    isTransferDisabled(overrides?: CallOverrides): Promise<boolean>;
-
-    "isTransferDisabled()"(overrides?: CallOverrides): Promise<boolean>;
 
     mint(_amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
@@ -2051,30 +2013,6 @@ export class OmniTokenV1 extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    burnBeforeBlockNumber(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "burnBeforeBlockNumber()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    burnBeforeBlockNumberDisabled(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "burnBeforeBlockNumberDisabled()"(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    burnFrom(
-      account: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "burnFrom(address,uint256)"(
-      account: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     canTransfer(
       sender: string,
       amount: BigNumberish,
@@ -2168,6 +2106,18 @@ export class OmniTokenV1 extends Contract {
 
     "getBlacklist()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getBurnBeforeBlockNumber(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getBurnBeforeBlockNumber()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getBurnBeforeBlockNumberDisabled(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getBurnBeforeBlockNumberDisabled()"(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getDays(
       afterDays: BigNumberish,
       overrides?: CallOverrides
@@ -2177,6 +2127,10 @@ export class OmniTokenV1 extends Contract {
       afterDays: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    getIsTransferDisabled(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getIsTransferDisabled()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     getMaxTotalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2265,10 +2219,6 @@ export class OmniTokenV1 extends Contract {
       startDay: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    isTransferDisabled(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "isTransferDisabled()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     mint(
       _amount: BigNumberish,
@@ -2505,34 +2455,6 @@ export class OmniTokenV1 extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    burnBeforeBlockNumber(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "burnBeforeBlockNumber()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    burnBeforeBlockNumberDisabled(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "burnBeforeBlockNumberDisabled()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    burnFrom(
-      account: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "burnFrom(address,uint256)"(
-      account: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     canTransfer(
       sender: string,
       amount: BigNumberish,
@@ -2631,6 +2553,22 @@ export class OmniTokenV1 extends Contract {
 
     "getBlacklist()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    getBurnBeforeBlockNumber(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getBurnBeforeBlockNumber()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getBurnBeforeBlockNumberDisabled(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getBurnBeforeBlockNumberDisabled()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getDays(
       afterDays: BigNumberish,
       overrides?: CallOverrides
@@ -2638,6 +2576,14 @@ export class OmniTokenV1 extends Contract {
 
     "getDays(uint256)"(
       afterDays: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getIsTransferDisabled(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getIsTransferDisabled()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2732,14 +2678,6 @@ export class OmniTokenV1 extends Contract {
 
     "isStarted(uint256)"(
       startDay: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    isTransferDisabled(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "isTransferDisabled()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
