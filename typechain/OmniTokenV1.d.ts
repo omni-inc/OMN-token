@@ -48,7 +48,7 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     "getTimestamp()": FunctionFragment;
     "getTransferableAmount(address)": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
-    "initialize(string)": FunctionFragment;
+    "initialize()": FunctionFragment;
     "isBlacklisted(address)": FunctionFragment;
     "isOmniWallet(address)": FunctionFragment;
     "isStarted(uint256)": FunctionFragment;
@@ -165,7 +165,10 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     functionFragment: "increaseAllowance",
     values: [string, BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "initialize", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "initialize",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "isBlacklisted",
     values: [string]
@@ -677,12 +680,10 @@ export class OmniTokenV1 extends Contract {
     ): Promise<ContractTransaction>;
 
     initialize(
-      _greeting: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "initialize(string)"(
-      _greeting: string,
+    "initialize()"(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -1125,12 +1126,10 @@ export class OmniTokenV1 extends Contract {
   ): Promise<ContractTransaction>;
 
   initialize(
-    _greeting: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "initialize(string)"(
-    _greeting: string,
+  "initialize()"(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1560,12 +1559,9 @@ export class OmniTokenV1 extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    initialize(_greeting: string, overrides?: CallOverrides): Promise<void>;
+    initialize(overrides?: CallOverrides): Promise<void>;
 
-    "initialize(string)"(
-      _greeting: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    "initialize()"(overrides?: CallOverrides): Promise<void>;
 
     isBlacklisted(
       _account: string,
@@ -2048,12 +2044,10 @@ export class OmniTokenV1 extends Contract {
     ): Promise<BigNumber>;
 
     initialize(
-      _greeting: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "initialize(string)"(
-      _greeting: string,
+    "initialize()"(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -2479,12 +2473,10 @@ export class OmniTokenV1 extends Contract {
     ): Promise<PopulatedTransaction>;
 
     initialize(
-      _greeting: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "initialize(string)"(
-      _greeting: string,
+    "initialize()"(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
