@@ -19,7 +19,7 @@ contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting {
 	// Constant Max Total Supply of OMNI Social Media Network
  	uint256 private constant _maxTotalSupply = 638_888_889 * (uint256(10) ** uint256(18));
 
-	function initialize(string memory _greeting) initializer() public {
+	function initialize() initializer() public {
 		__Ownable_init();
 		__ERC20_init_unchained('OMNI App', 'OMN');
 		__Pausable_init_unchained();
@@ -34,9 +34,8 @@ contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting {
 		vestingTypes.push(VestingType(2188183807439820, 0, 30 days, true)); // 30 Days Locked, 0.218818380743982 Percent daily for 457 days
 		// Allocation #3 / VestingType # 2, Private Total (8.21739132)%, Unlocked 10% when start the vesting, Start with 30 days Locked the Token and After (8.21739132)%
         vestingTypes.push(VestingType(2272727272727270, 100000000000000000, 30 days, true)); // 10% Unlocked when start, 30 Days Locked, 0.227272727272727 Percent daily for 396 Days for the 90% Rest
-		// TODO: add 10 allocation with change vesting
-		// Allocation #4 Public (1.3043478)% /#10 Liquidity (3)% / VestingType # 3, and Daily Rate in wei (0), Unlocked the all Token immediatly when Start the Vesting
-        vestingTypes.push(VestingType(100000000000000000000, 100000000000000000000, 0, true)); // 0 Days 100 Percent
+		// Allocation #4 / VestingType # 3, Public Total (1.3043478)%, Unlocked 33% when start the vesting, Start with 30 days Locked the Token and After (67)% divided in 31 days
+        vestingTypes.push(VestingType(100000000000000000000, 33000000000000000000, 0, true)); // 33% Unlocked when start, 30 Days Locked, 0.227272727272727 Percent daily for 31 Days for the 67% Rest
 		// Allocation #5 / VestingType # 4, OMNI Team Total (10)% and Start After 273 days Locked the Token
 		vestingTypes.push(VestingType(3636363636363640, 0, 273 days, true)); // 273 Days Locked, 0.363636363636364 Percent daily for 275 days
 		// Allocation #6 / VestingType # 5, Advisors Total (5)% and Start After 30 days Locked the Token
@@ -47,11 +46,13 @@ contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting {
 		vestingTypes.push(VestingType(1562500000000000, 0, 273 days, true)); // 273 Days Locked, 0.15625 Percent daily for 640 days
 		// Allocation #9 / VestingType # 8, Tech Partners Total (5)% and Start After 365 days Locked the Token
 		vestingTypes.push(VestingType(1564945226917060, 0, 365 days, true)); // 365 Days Locked, 0.1564945226917060 Percent daily for 639 days
-		// Allocation #11 / VestingType # 9, Ecosystem Total (20)% and Start After 92 days Locked the Token
+		// Allocation #10 / VestingType # 9, Liquidity Total (3)% and Daily Rate in wei (0), Unlocked the all Token immediatly when Start the Vesting
+		vestingTypes.push(VestingType(100000000000000000000, 100000000000000000000, 0, true)); // 0 Days 100 Percent
+		// Allocation #11 / VestingType # 10, Ecosystem Total (20)% and Start After 92 days Locked the Token
 		vestingTypes.push(VestingType(783085356303837, 0, 92 days, true)); // 92 Days Locked, 0.0783085356303837 Percent daily for 1277 days
-		// Allocation #12 / VestingType # 10, Community Reserve Total (3)% and Start After 183 days Locked the Token
+		// Allocation #12 / VestingType # 11, Community Reserve Total (3)% and Start After 183 days Locked the Token
 		vestingTypes.push(VestingType(843170320404722, 0, 183 days, true)); // 183 Days Locked, 0.0843170320404722 Percent daily for 1186 days
-		// Allocation #13 / VestingType # 11, Company Reserve Total (9.21739127442027)% and Start After 273 days Locked the Token
+		// Allocation #13 / VestingType # 12, Company Reserve Total (9.21739127442027)% and Start After 273 days Locked the Token
 		vestingTypes.push(VestingType(994035785288270, 0, 273 days, true)); // 273 Days Locked, 0.099403578528827 Percent daily for 1006 days
 
 	}
