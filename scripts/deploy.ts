@@ -23,7 +23,7 @@ const main = async () => {
 
   	const OmniToken = await ethers.getContractFactory("OmniTokenV1");
 	const Erc20Token = await ethers.getContractFactory("ERC20Token");
-	const omnitoken = await upgrades.deployProxy(OmniToken, ["Hello, OMN Token Ver 1"]);
+	const omnitoken = await upgrades.deployProxy(OmniToken);
 	const erc20Token = await upgrades.deployProxy(Erc20Token);
 
 	await omnitoken.deployed();

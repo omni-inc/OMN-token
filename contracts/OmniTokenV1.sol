@@ -21,7 +21,7 @@ contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting, An
 	// Constant Max Total Supply of OMNI Social Media Network
  	uint256 private constant _maxTotalSupply = 638_888_889 * (uint256(10) ** uint256(18));
 
-	function initialize(string memory _greeting) initializer() public {
+	function initialize() initializer() public {
 		__Ownable_init();
 		__ERC20_init_unchained('OMNI App', 'OMN');
 		__Pausable_init_unchained();

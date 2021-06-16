@@ -26,7 +26,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 
 	it("1. Should return the Total Supply, Balance of the Owner, Name, Symbol and Decimals", async () => {
 		const OmniToken = await ethers.getContractFactory("OmniTokenV1");
-		const omnitoken = await upgrades.deployProxy(OmniToken, ["Hello, OMN Token Ver 1"]);
+		const omnitoken = await upgrades.deployProxy(OmniToken);
 
 		await omnitoken.deployed();
 		// verify the Address
@@ -61,7 +61,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 
 	it("2. Should be Setting and Getting the OwnerShip of the Smart Contract", async () => {
 		const OmniToken = await ethers.getContractFactory("OmniTokenV1");
-		const omnitoken = await upgrades.deployProxy(OmniToken, ["Hello, OMN Token Ver 1"]);
+		const omnitoken = await upgrades.deployProxy(OmniToken);
 
 		await omnitoken.deployed();
 		// verify the Address
@@ -100,7 +100,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 
 	it("3. Should the right value for Balance Of, Transfer, Transfer From, and Approve, etc", async () => {
 		const OmniToken = await ethers.getContractFactory("OmniTokenV1");
-		const omnitoken = await upgrades.deployProxy(OmniToken, ["Hello, OMN Token Ver 1"]);
+		const omnitoken = await upgrades.deployProxy(OmniToken);
 
 		await omnitoken.deployed();
 		// verify the Address
@@ -200,7 +200,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 
 	it("4. Should the right value for add, drop or revert when i try to execute a transfer", async () => {
 		const OmniToken = await ethers.getContractFactory("OmniTokenV1");
-		const omnitoken = await upgrades.deployProxy(OmniToken, ["Hello, OMN Token Ver 1"]);
+		const omnitoken = await upgrades.deployProxy(OmniToken);
 
 		await omnitoken.deployed();
 		// verify the Address
@@ -295,7 +295,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 
 	it("5. Should the right value of the Circulating Supply for add, drop any wallets in the Array for OMNI Wallets", async () => {
 		const OmniToken = await ethers.getContractFactory("OmniTokenV1");
-		const omnitoken = await upgrades.deployProxy(OmniToken, ["Hello, OMN Token Ver 1"]);
+		const omnitoken = await upgrades.deployProxy(OmniToken);
 
 		await omnitoken.deployed();
 		// verify the Address
@@ -405,7 +405,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 	it("6. Should the right value of the Claim wallets in the Array for OMNI Wallets", async () => {
 		const OmniToken = await ethers.getContractFactory("OmniTokenV1");
 		const Erc20Token = await ethers.getContractFactory("ERC20Token");
-		const omnitoken = await upgrades.deployProxy(OmniToken, ["Hello, OMN Token Ver 1"]);
+		const omnitoken = await upgrades.deployProxy(OmniToken);
 		const erc20Token = await upgrades.deployProxy(Erc20Token);
 
 		await omnitoken.deployed();
@@ -457,7 +457,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 
 	it("7.- Sending to TransferMany Methods, and Verify the Tokens into the Wallets", async () => {
 		const OmniToken = await ethers.getContractFactory("OmniTokenV1");
-		const omnitoken = await upgrades.deployProxy(OmniToken, ["Hello, OMN Token Ver 1"]);
+		const omnitoken = await upgrades.deployProxy(OmniToken);
 
 		await omnitoken.deployed();
 		// verify the Address
@@ -540,7 +540,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 
 		const OmniToken = await ethers.getContractFactory("OmniTokenV1");
 		const Erc20Token = await ethers.getContractFactory("ERC20Token");
-		const omnitoken = await upgrades.deployProxy(OmniToken, ["Hello, OMN Token Ver 1"]);
+		const omnitoken = await upgrades.deployProxy(OmniToken);
 		const erc20Token = await upgrades.deployProxy(Erc20Token);
 
 		await omnitoken.deployed();
@@ -701,7 +701,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 
 		const OmniToken = await ethers.getContractFactory("OmniTokenV1");
 		const Erc20Token = await ethers.getContractFactory("ERC20Token");
-		const omnitoken = await upgrades.deployProxy(OmniToken, ["Hello, OMN Token Ver 1"]);
+		const omnitoken = await upgrades.deployProxy(OmniToken);
 		const erc20Token = await upgrades.deployProxy(Erc20Token);
 
 		await omnitoken.deployed();

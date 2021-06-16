@@ -22,7 +22,7 @@ describe("ERC20 Only Vesting Test", async () => {
 
 	it("1.- Add Allocation, and Verify into the Frozen Wallets Unlocked and Locked Tokens into the Wallets", async () => {
 		const OmniToken = await ethers.getContractFactory("OmniTokenV1");
-		const omnitoken = await upgrades.deployProxy(OmniToken, ["Hello, OMN Token Ver 1"]);
+		const omnitoken = await upgrades.deployProxy(OmniToken);
 
 		await omnitoken.deployed();
 		// verify the Address
