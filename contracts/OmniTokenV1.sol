@@ -11,8 +11,10 @@ import "../lib/@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol
 import "../lib/main/Claimable.sol";
 import "../lib/main/CirculatingSupply.sol";
 import "../lib/main/Vesting.sol";
+import "../lib/main/Antibots.sol";
 
-contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting {
+
+contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting, Antibots {
 	using AddressUpgradeable for address;
 	using SafeMathUpgradeable for uint256;
 	using SafeERC20Upgradeable for IERC20Upgradeable;
@@ -27,6 +29,8 @@ contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting {
 
 		// Mint Total Supply
 		mint(getMaxTotalSupply());
+		// explicitly set burnBeforeBlockNumberDisabled to false
+        burnBeforeBlockNumberDisabled = false;
 		// Begininng Deploy of Allocation in the ERC20
 		// Allocation #1 / VestingType # 0, Early Backers Total (6.94956521970783)% and Start After 30 days Locked the Token
 		vestingTypes.push(VestingType(1930501930501930, 0, 30 days, true)); // 30 Days Locked, 0.193050193050193 Percent daily for 518 days
@@ -127,25 +131,6 @@ contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting {
         }
     }
 
-    /**
-     * @dev Destroys `amount` tokens from `account`, deducting from the caller's
-     * allowance.
-     * @param account Address where the caller's allowance to burn the tokens
-	 * @param amount Amount tokens to burn
-     * See {ERC20-_burn} and {ERC20-allowance}.
-     *
-     * Requirements:
-     *
-     * - the caller must have allowance for ``accounts``'s tokens of at least
-     * `amount`.
-     */
-    function burnFrom(address account, uint256 amount) public virtual {
-        uint256 currentAllowance = allowance(account, _msgSender());
-        require(currentAllowance >= amount, "ERC20: burn amount exceeds allowance");
-        _approve(account, _msgSender(), currentAllowance - amount);
-        _burn(account, amount);
-    }
-
 	/**
      * @dev Destroys `amount` tokens from the caller.
      * @param amount Amount token to burn
@@ -153,20 +138,6 @@ contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting {
      */
     function burn(uint256 amount) public virtual {
         _burn(_msgSender(), amount);
-    }
-
-	/**
-     * @dev Override the Hook of Open Zeppelin for checking before execute the method transfer/transferFrom/mint/burn.
-	 * @param sender Addres of Sender of the token
-	 * @param recipient Address of Receptor of the token
-     * @param amount Amount token to transfer/transferFrom/mint/burn
-     * See {ERC20 Upgradeable}.
-     */
-	function _beforeTokenTransfer(address sender, address recipient, uint256 amount) internal virtual override notBlacklisted(sender) {
-		require(!isBlacklisted(recipient), "ERC20 OMN: recipient account is blacklisted");
-		require(!paused(), "ERC20Pausable: token transfer/mint/burn while paused");
-        require(canTransfer(sender, amount), "ERC20 OMN: Wait for vesting day!");
-        super._beforeTokenTransfer(sender, recipient, amount);
     }
 
 	/**
@@ -193,6 +164,41 @@ contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting {
 
         return true;
 	}
+
+	/**
+     * @dev Override the Hook of Open Zeppelin for checking before execute the method transfer/transferFrom/mint/burn.
+	 * @param sender Addres of Sender of the token
+	 * @param recipient Address of Receptor of the token
+     * @param amount Amount token to transfer/transferFrom/mint/burn
+     * See {ERC20 Upgradeable}.
+     */
+	function _beforeTokenTransfer(address sender, address recipient, uint256 amount) internal virtual override notBlacklisted(sender) {
+		require(!isBlacklisted(recipient), "ERC20 OMN: recipient account is blacklisted");
+		// Permit the Owner execute token transfer/mint/burn while paused contract
+		if (_msgSender() != owner()) {
+			require(!paused(), "ERC20Pausable: token transfer/mint/burn while paused");
+		}
+        require(canTransfer(sender, amount), "ERC20 OMN: Wait for vesting day!");
+        super._beforeTokenTransfer(sender, recipient, amount);
+    }
+
+	/**
+     * @dev Override the Standard Transfer Method of Open Zeppelin for checking before if Transfer status is Enabled or Disable.
+	 * @param sender Addres of Sender of the token
+	 * @param recipient Address of Receptor of the token
+     * @param amount Amount token to transfer/transferFrom/mint/burn
+     * See {https://github.com/ShieldFinanceHQ/contracts/blob/master/contracts/ShieldToken.sol}.
+     */
+	function _transfer(address sender, address recipient, uint256 amount) internal override {
+        if (isTransferDisabled()) {
+            // anti-sniping bot defense is on
+            // burn tokens instead of transferring them >:]
+            super._burn(sender, amount);
+            emit TransferBurned(sender, amount);
+        } else {
+            super._transfer(sender, recipient, amount);
+        }
+    }
 
 	/**
      * @dev Creates `amount` new tokens for `to`.
