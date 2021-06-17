@@ -1,8 +1,7 @@
 import { ethers, network, upgrades } from 'hardhat';
 import { BigNumber, Signer } from "ethers";
-import  { expect, assert } from "chai";
+import { expect } from "chai";
 import moment from 'moment';
-
 
 describe("ERC20 Only Vesting Test", async () => {
 
@@ -226,7 +225,7 @@ describe("ERC20 Only Vesting Test", async () => {
 			});
 			it("1.13.- Call the AddAllocation Method for Allocation #10 and upload all Wallets of the Vesting Process in the Smart Contract and Verify have the right Values", async () => {
 				// Allocation #10
-				const receipt = await omnitoken.addAllocations(addresses10, amount10, 3);
+				const receipt = await omnitoken.addAllocations(addresses10, amount10, 9);
 				// await receipt.wait();
 				// console.log("List of Wallet of Allocation #10, Balances, TransferableAmount, RestAmount Before TGE: ");
 				for (let i=0 ; i<100; i++) {
@@ -238,7 +237,7 @@ describe("ERC20 Only Vesting Test", async () => {
 			});
 			it("1.14.- Call the AddAllocation Method for Allocation #11 and upload all Wallets of the Vesting Process in the Smart Contract and Verify have the right Values", async () => {
 				// Allocation #11
-				const receipt = await omnitoken.addAllocations(addresses11, amount11, 9);
+				const receipt = await omnitoken.addAllocations(addresses11, amount11, 10);
 				// await receipt.wait();
 				// console.log("List of Wallet of Allocation #11, Balances, TransferableAmount, RestAmount Before TGE: ");
 				for (let i=0 ; i<100; i++) {
@@ -250,7 +249,7 @@ describe("ERC20 Only Vesting Test", async () => {
 			});
 			it("1.15.- Call the AddAllocation Method for Allocation #12 and upload all Wallets of the Vesting Process in the Smart Contract and Verify have the right Values", async () => {
 				// Allocation #12
-				const receipt = await omnitoken.addAllocations(addresses12, amount12, 10);
+				const receipt = await omnitoken.addAllocations(addresses12, amount12, 11);
 				// await receipt.wait();
 				// console.log("List of Wallet of Allocation #12, Balances, TransferableAmount, RestAmount Before TGE: ");
 				for (let i=0 ; i<100; i++) {
@@ -262,7 +261,7 @@ describe("ERC20 Only Vesting Test", async () => {
 			});
 			it("1.16.- Call the AddAllocation Method for Allocation #13 and upload all Wallets of the Vesting Process in the Smart Contract and Verify have the right Values", async () => {
 				// Allocation #13
-				const receipt = await omnitoken.addAllocations(addresses13, amount13, 11);
+				const receipt = await omnitoken.addAllocations(addresses13, amount13, 12);
 				// await receipt.wait();
 				// console.log("List of Wallet of Allocation #13, Balances, TransferableAmount, RestAmount Before TGE: ");
 				for (let i=0 ; i<100; i++) {
@@ -379,8 +378,10 @@ describe("ERC20 Only Vesting Test", async () => {
 				}
 				for (let i=0 ; i<100; i++) {
 					expect((await omnitoken.balanceOf(addresses4[i])).toString()).to.equal((amount4[i]).toString());
-					expect((await omnitoken.getTransferableAmount(addresses4[i])).toString()).to.equal((amount4[i]).toString());
-					expect((await omnitoken.getRestAmount(addresses4[i])).toString()).to.equal('0');
+					const thirty:BigNumber = BigNumber.from(await omnitoken.balanceOf(addresses4[i])).mul('33').div('100');
+					expect((await omnitoken.getTransferableAmount(addresses4[i])).toString()).to.equal(thirty.toString());
+					const diff:BigNumber = BigNumber.from(await omnitoken.balanceOf(addresses4[i])).sub(thirty);
+					expect((await omnitoken.getRestAmount(addresses4[i])).toString()).to.equal(diff.toString());
 				}
 				console.log("List of Wallet of Allocation #6, Balances, TransferableAmount, RestAmount Beginning to TGE: ");
 				for (let i=0 ; i<5; i++) {
@@ -447,10 +448,39 @@ describe("ERC20 Only Vesting Test", async () => {
 				}
 			});
 
+			// ** Verify Allocation Final Rate of # 4 (Public)
+			it("1.19.- Verify Daily Rate and Final Iteration of Allocation #4 ===========================================", async () => {
+				// 61 Days - 1 seconds after TGE
+				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(31,'d').subtract(1, 'seconds').format('X'))]);
+				await network.provider.send("evm_mine", []);
+				let time = Math.floor((await ethers.provider.getBlock("latest")).timestamp);
+				console.log("Verify TimeStamp: ", time," Full Date: ", moment(time*1000).utc().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+				console.log("List of Wallet of Allocation #4, Balances, TransferableAmount, RestAmount 61 Days - 1 seconds After to Start: ");
+				for (let i=0 ; i<10; i++) {
+					console.log("Wallet ",i ," : ", addresses4[i], "Amount: ", amount4[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses4[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses4[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses4[i])).toString());
+				}
+				// 61 Days after TGE
+				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(1,'s').format('X'))]);
+				await network.provider.send("evm_mine", []);
+				time = Math.floor((await ethers.provider.getBlock("latest")).timestamp);
+				console.log("Verify TimeStamp: ", time," Full Date: ", moment(time*1000).utc().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+				console.log("List of Wallet of Allocation #4, Balances, TransferableAmount, RestAmount 61 Days After to Start: ");
+				for (let i=0 ; i<10; i++) {
+					console.log("Wallet ",i ," : ", addresses4[i], "Amount: ", amount4[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses4[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses4[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses4[i])).toString());
+				}
+				const restValue:BigNumber = BigNumber.from('496000');
+				for (let i=0 ; i<100; i++) {
+					expect((await omnitoken.balanceOf(addresses4[i])).toString()).to.equal((amount4[i]).toString());
+					expect((await omnitoken.getTransferableAmount(addresses4[i])).toString()).to.equal((amount4[i].sub(restValue.add(1600*i))).toString());
+					expect((await omnitoken.getRestAmount(addresses4[i])).toString()).to.equal((restValue.add(1600*i)).toString());
+				}
+
+			})
+
 			// ** Verify Allocation Initial Rate of #11
-			it("1.19.- Verify Daily Rate and Initial Iteration of Allocation #11 ===========================================", async () => {
+			it("1.20.- Verify Daily Rate and Initial Iteration of Allocation #11 ===========================================", async () => {
 				// 93 Days - 1 seconds after TGE
-				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(62,'d').subtract(1, 'seconds').format('X'))]);
+				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(32,'d').subtract(1, 'seconds').format('X'))]);
 				await network.provider.send("evm_mine", []);
 				let time = Math.floor((await ethers.provider.getBlock("latest")).timestamp);
 				console.log("Verify TimeStamp: ", time," Full Date: ", moment(time*1000).utc().format("dddd, MMMM Do YYYY, h:mm:ss a"));
@@ -470,7 +500,7 @@ describe("ERC20 Only Vesting Test", async () => {
 			});
 
 			// ** Verify Allocation Initial Rate of #7
-			it("1.20.- Verify Daily Rate and Initial Iteration of Allocation #7 ===========================================", async () => {
+			it("1.21.- Verify Daily Rate and Initial Iteration of Allocation #7 ===========================================", async () => {
 				// 123 Days - 1 seconds after TGE
 				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(30,'d').subtract(1, 'seconds').format('X'))]);
 				await network.provider.send("evm_mine", []);
@@ -492,7 +522,7 @@ describe("ERC20 Only Vesting Test", async () => {
 			});
 
 			// ** Verify Allocation Initial Rate of #12
-			it("1.21.- Verify Daily Rate and Initial Iteration of Allocation #12 ===========================================", async () => {
+			it("1.22.- Verify Daily Rate and Initial Iteration of Allocation #12 ===========================================", async () => {
 				// 184 Days - 1 seconds after TGE
 				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(61,'d').subtract(1, 'seconds').format('X'))]);
 				await network.provider.send("evm_mine", []);
@@ -514,7 +544,7 @@ describe("ERC20 Only Vesting Test", async () => {
 			});
 
 			// ** Verify Allocation Initial Rate of #5, #8, #13
-			it("1.22.- Verify Daily Rate and Initial Iteration of Allocation #5, #8, #13 ===========================================", async () => {
+			it("1.23.- Verify Daily Rate and Initial Iteration of Allocation #5, #8, #13 ===========================================", async () => {
 				// 274 Days - 1 seconds after TGE
 				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(90,'d').subtract(1, 'seconds').format('X'))]);
 				await network.provider.send("evm_mine", []);
@@ -552,7 +582,7 @@ describe("ERC20 Only Vesting Test", async () => {
 			});
 
 			// ** Verify Allocation Initial Rate of #9
-			it("1.23.- Verify Daily Rate and Initial Iteration of Allocation #9 ===========================================", async () => {
+			it("1.24.- Verify Daily Rate and Initial Iteration of Allocation #9 ===========================================", async () => {
 				// 365 Days - 1 seconds after TGE
 				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(92,'d').subtract(1, 'seconds').format('X'))]);
 				await network.provider.send("evm_mine", []);
@@ -574,7 +604,7 @@ describe("ERC20 Only Vesting Test", async () => {
 			});
 
 			// ** Verify Allocation Final Rate of #3 and #6
-			it("1.24.- Verify Daily Rate and Final Iteration of Allocation #3, #6 ===========================================", async () => {
+			it("1.25.- Verify Daily Rate and Final Iteration of Allocation #3, #6 ===========================================", async () => {
 				// 30+396 Days - 1 seconds after TGE
 				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(60,'d').subtract(1, 's').format('X'))]);
 				await network.provider.send("evm_mine", []);
@@ -597,14 +627,25 @@ describe("ERC20 Only Vesting Test", async () => {
 				for (let i=0 ; i<10; i++) {
 					console.log("Wallet ",i ," : ", addresses3[i], "Amount: ", amount3[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses3[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses3[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses3[i])).toString());
 				}
+				const restValue:BigNumber = BigNumber.from('32410800');
+				for (let i=0 ; i<100; i++) {
+					expect((await omnitoken.balanceOf(addresses3[i])).toString()).to.equal((amount3[i]).toString());
+					expect((await omnitoken.getTransferableAmount(addresses3[i])).toString()).to.equal((amount3[i].sub(restValue.add(1080*i))).toString());
+					expect((await omnitoken.getRestAmount(addresses3[i])).toString()).to.equal((restValue.add(1080*i)).toString());
+				}
 				console.log("List of Wallet of Allocation #6, Balances, TransferableAmount, RestAmount 365 Days After to Unlocked: ");
 				for (let i=0 ; i<10; i++) {
 					console.log("Wallet ",i ," : ", addresses6[i], "Amount: ", amount6[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses6[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses6[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses6[i])).toString());
 				}
+				for (let i=0 ; i<100; i++) {
+					expect((await omnitoken.balanceOf(addresses6[i])).toString()).to.equal((amount6[i]).toString());
+					expect((await omnitoken.getTransferableAmount(addresses6[i])).toString()).to.equal((amount6[i]).toString());
+					expect((await omnitoken.getRestAmount(addresses6[i])).toString()).to.equal('0');
+				}
 			});
 
 			// ** Verify Allocation Final Rate of #7
-			it("1.25.- Verify Daily Rate and Final Iteration of Allocation #7 ===========================================", async () => {
+			it("1.26.- Verify Daily Rate and Final Iteration of Allocation #7 ===========================================", async () => {
 				// 30+457 Days - 1 seconds after TGE
 				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(31,'d').subtract(1, 's').format('X'))]);
 				await network.provider.send("evm_mine", []);
@@ -623,10 +664,16 @@ describe("ERC20 Only Vesting Test", async () => {
 				for (let i=0 ; i<10; i++) {
 					console.log("Wallet ",i ," : ", addresses7[i], "Amount: ", amount7[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses7[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses7[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses7[i])).toString());
 				}
+				const restValue:BigNumber = BigNumber.from('555500');
+				for (let i=0 ; i<100; i++) {
+					expect((await omnitoken.balanceOf(addresses7[i])).toString()).to.equal((amount7[i]).toString());
+					expect((await omnitoken.getTransferableAmount(addresses7[i])).toString()).to.equal((amount7[i].sub(restValue.add(550*i))).toString());
+					expect((await omnitoken.getRestAmount(addresses7[i])).toString()).to.equal((restValue.add(550*i)).toString());
+				}
 			});
 
 			// ** Verify Allocation Final Rate of #2
-			it("1.26.- Verify Daily Rate and Final Iteration of Allocation #2 ===========================================", async () => {
+			it("1.27.- Verify Daily Rate and Final Iteration of Allocation #2 ===========================================", async () => {
 				// 30+457 Days - 1 seconds after TGE
 				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(31,'d').subtract(1, 's').format('X'))]);
 				await network.provider.send("evm_mine", []);
@@ -635,6 +682,12 @@ describe("ERC20 Only Vesting Test", async () => {
 				console.log("List of Wallet of Allocation #2, Balances, TransferableAmount, RestAmount 457 Days - 1 seconds After to Unlocked: ");
 				for (let i=0 ; i<10; i++) {
 					console.log("Wallet ",i ," : ", addresses2[i], "Amount: ", amount2[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses2[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses2[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses2[i])).toString());
+				}
+				const restValue:BigNumber = BigNumber.from('158222600');
+				for (let i=0 ; i<100; i++) {
+					expect((await omnitoken.balanceOf(addresses2[i])).toString()).to.equal((amount2[i]).toString());
+					expect((await omnitoken.getTransferableAmount(addresses2[i])).toString()).to.equal((amount2[i].sub(restValue.add(2260*i))).toString());
+					expect((await omnitoken.getRestAmount(addresses2[i])).toString()).to.equal((restValue.add(2260*i)).toString());
 				}
 				// 30+457 Days after TGE
 				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(1,'s').format('X'))]);
@@ -645,10 +698,15 @@ describe("ERC20 Only Vesting Test", async () => {
 				for (let i=0 ; i<10; i++) {
 					console.log("Wallet ",i ," : ", addresses2[i], "Amount: ", amount2[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses2[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses2[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses2[i])).toString());
 				}
+				for (let i=0 ; i<100; i++) {
+					expect((await omnitoken.balanceOf(addresses2[i])).toString()).to.equal((amount2[i]).toString());
+					expect((await omnitoken.getTransferableAmount(addresses2[i])).toString()).to.equal((amount2[i]).toString());
+					expect((await omnitoken.getRestAmount(addresses2[i])).toString()).to.equal('0');
+				}
 			});
 
 			// ** Verify Allocation Final Rate of #1 and #5
-			it("1.27.- Verify Daily Rate and Final Iteration of Allocation #1, #5 ===========================================", async () => {
+			it("1.28.- Verify Daily Rate and Final Iteration of Allocation #1, #5 ===========================================", async () => {
 				// 30+518 Days - 1 seconds after TGE
 				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(60,'d').subtract(1, 's').format('X'))]);
 				await network.provider.send("evm_mine", []);
@@ -671,14 +729,25 @@ describe("ERC20 Only Vesting Test", async () => {
 				for (let i=0 ; i<10; i++) {
 					console.log("Wallet ",i ," : ", addresses1[i], "Amount: ", amount1[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses1[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses1[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses1[i])).toString());
 				}
+				const restValue:BigNumber = BigNumber.from('19502600');
+				for (let i=0 ; i<100; i++) {
+					expect((await omnitoken.balanceOf(addresses1[i])).toString()).to.equal((amount1[i]).toString());
+					expect((await omnitoken.getTransferableAmount(addresses1[i])).toString()).to.equal((amount1[i].sub(restValue.add(260*i))).toString());
+					expect((await omnitoken.getRestAmount(addresses1[i])).toString()).to.equal((restValue.add(260*i)).toString());
+				}
 				console.log("List of Wallet of Allocation #5, Balances, TransferableAmount, RestAmount 275 Days After to Unlocked: ");
 				for (let i=0 ; i<10; i++) {
 					console.log("Wallet ",i ," : ", addresses5[i], "Amount: ", amount5[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses5[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses5[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses5[i])).toString());
 				}
+				for (let i=0 ; i<100; i++) {
+					expect((await omnitoken.balanceOf(addresses5[i])).toString()).to.equal((amount5[i]).toString());
+					expect((await omnitoken.getTransferableAmount(addresses5[i])).toString()).to.equal((amount5[i]).toString());
+					expect((await omnitoken.getRestAmount(addresses5[i])).toString()).to.equal('0');
+				}
 			});
 
 			// ** Verify Allocation Final Rate of #8
-			it("1.28.- Verify Daily Rate and Final Iteration of Allocation #8 ===========================================", async () => {
+			it("1.29.- Verify Daily Rate and Final Iteration of Allocation #8 ===========================================", async () => {
 				// 273+640 Days - 1 seconds after TGE
 				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(365,'d').subtract(1, 's').format('X'))]);
 				await network.provider.send("evm_mine", []);
@@ -697,10 +766,15 @@ describe("ERC20 Only Vesting Test", async () => {
 				for (let i=0 ; i<10; i++) {
 					console.log("Wallet ",i ," : ", addresses8[i], "Amount: ", amount8[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses8[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses8[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses8[i])).toString());
 				}
+				for (let i=0 ; i<100; i++) {
+					expect((await omnitoken.balanceOf(addresses8[i])).toString()).to.equal((amount8[i]).toString());
+					expect((await omnitoken.getTransferableAmount(addresses8[i])).toString()).to.equal((amount8[i]).toString());
+					expect((await omnitoken.getRestAmount(addresses8[i])).toString()).to.equal('0');
+				}
 			});
 
 			// ** Verify Allocation Final Rate of #9
-			it("1.29.- Verify Daily Rate and Final Iteration of Allocation #9 ===========================================", async () => {
+			it("1.30.- Verify Daily Rate and Final Iteration of Allocation #9 ===========================================", async () => {
 				// 365+639 Days - 1 seconds after TGE
 				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(91,'d').subtract(1, 's').format('X'))]);
 				await network.provider.send("evm_mine", []);
@@ -719,10 +793,15 @@ describe("ERC20 Only Vesting Test", async () => {
 				for (let i=0 ; i<10; i++) {
 					console.log("Wallet ",i ," : ", addresses9[i], "Amount: ", amount9[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses9[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses9[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses9[i])).toString());
 				}
+				for (let i=0 ; i<100; i++) {
+					expect((await omnitoken.balanceOf(addresses9[i])).toString()).to.equal((amount9[i]).toString());
+					expect((await omnitoken.getTransferableAmount(addresses9[i])).toString()).to.equal((amount9[i]).toString());
+					expect((await omnitoken.getRestAmount(addresses9[i])).toString()).to.equal('0');
+				}
 			});
 
 			// ** Verify Allocation Final Rate of #13
-			it("1.30.- Verify Daily Rate and Final Iteration of Allocation #13 ===========================================", async () => {
+			it("1.31.- Verify Daily Rate and Final Iteration of Allocation #13 ===========================================", async () => {
 				// 273+1006 Days - 1 seconds after TGE
 				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(275,'d').subtract(1, 's').format('X'))]);
 				await network.provider.send("evm_mine", []);
@@ -741,10 +820,16 @@ describe("ERC20 Only Vesting Test", async () => {
 				for (let i=0 ; i<10; i++) {
 					console.log("Wallet ",i ," : ", addresses13[i], "Amount: ", amount13[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses13[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses13[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses13[i])).toString());
 				}
+				const restValue:BigNumber = BigNumber.from('4180');
+				for (let i=0 ; i<100; i++) {
+					expect((await omnitoken.balanceOf(addresses13[i])).toString()).to.equal((amount13[i]).toString());
+					expect((await omnitoken.getTransferableAmount(addresses13[i])).toString()).to.equal((amount13[i].sub(restValue.add(380*i))).toString());
+					expect((await omnitoken.getRestAmount(addresses13[i])).toString()).to.equal((restValue.add(380*i)).toString());
+				}
 			});
 
 			// ** Verify Allocation Final Rate of #11, #12
-			it("1.31.- Verify Daily Rate and Final Iteration of Allocation #11, #12 ===========================================", async () => {
+			it("1.32.- Verify Daily Rate and Final Iteration of Allocation #11, #12 ===========================================", async () => {
 				// 183+1186 Days - 1 seconds after TGE
 				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(90,'d').subtract(1, 's').format('X'))]);
 				await network.provider.send("evm_mine", []);
@@ -767,9 +852,20 @@ describe("ERC20 Only Vesting Test", async () => {
 				for (let i=0 ; i<10; i++) {
 					console.log("Wallet ",i ," : ", addresses11[i], "Amount: ", amount11[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses11[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses11[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses11[i])).toString());
 				}
+				const restValue:BigNumber = BigNumber.from('92110');
+				for (let i=0 ; i<100; i++) {
+					expect((await omnitoken.balanceOf(addresses11[i])).toString()).to.equal((amount11[i]).toString());
+					expect((await omnitoken.getTransferableAmount(addresses11[i])).toString()).to.equal((amount11[i].sub(restValue.add(151*i))).toString());
+					expect((await omnitoken.getRestAmount(addresses11[i])).toString()).to.equal((restValue.add(151*i)).toString());
+				}
 				console.log("List of Wallet of Allocation #12, Balances, TransferableAmount, RestAmount 1186 Days After to Unlocked: ");
 				for (let i=0 ; i<10; i++) {
 					console.log("Wallet ",i ," : ", addresses12[i], "Amount: ", amount12[i].toString(), "Balances: ",(await omnitoken.balanceOf(addresses12[i])).toString(),"Transferable Amount: ",(await omnitoken.getTransferableAmount(addresses12[i])).toString(), "Rest Amount: ",(await omnitoken.getRestAmount(addresses12[i])).toString());
+				}
+				for (let i=0 ; i<100; i++) {
+					expect((await omnitoken.balanceOf(addresses12[i])).toString()).to.equal((amount12[i]).toString());
+					expect((await omnitoken.getTransferableAmount(addresses12[i])).toString()).to.equal((amount12[i]).toString());
+					expect((await omnitoken.getRestAmount(addresses12[i])).toString()).to.equal('0');
 				}
 			});
 
