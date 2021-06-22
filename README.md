@@ -5,7 +5,7 @@ Before to Start
 #### Validate Develop Environment
 ---
 - Node v14.17.0 or +
-- Solc v0.8.0 or +
+- Solc v0.8.4 or +
 - Hardhat v2.2.1 or +
 
 #### Start migration
