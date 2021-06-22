@@ -32,32 +32,32 @@ contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting, An
 		// explicitly set burnBeforeBlockNumberDisabled to false
         burnBeforeBlockNumberDisabled = false;
 		// Begininng Deploy of Allocation in the ERC20
-		// Allocation #1 / VestingType # 0, Early Backers Total (6.94956521970783)% and Start After 30 days Locked the Token
-		vestingTypes.push(VestingType(1930501930501930, 0, 31 days, true)); // 31 Days Locked, 0.193050193050193 Percent daily for 518 days
-		// Allocation #2 / VestingType # 1, Seed Total (9.39130435095652)% and Start After 31 days Locked the Token
-		vestingTypes.push(VestingType(2188183807439820, 0, 31 days, true)); // 30 Days Locked, 0.218818380743982 Percent daily for 457 days
-		// Allocation #3 / VestingType # 2, Private Total (9.52434782926174)%, Unlocked 10% when start the vesting, Start with 31 days Locked the Token and After (8.57191304633557)%
-        vestingTypes.push(VestingType(2272727272727270, 100000000000000000, 31 days, true)); // 10% Unlocked when start, 31 Days Locked, 0.227272727272727 Percent daily for 396 Days for the 90% Rest
-		// Allocation #4 / VestingType # 3, Public Total (1.56521739182609)%, Unlocked 33% when start the vesting, Start with 31 days Locked the Token and After (1.04869565252348)%
-        vestingTypes.push(VestingType(21612903225806400, 330000000000000000, 31 days, true)); // 33% Unlocked when start, 31 Days Locked, 2.16129032258064 Percent daily for 31 Days for the 67% Rest
+		// Allocation #1 / VestingType # 0, Early Backers Total (6.94956521970783)% and Start with 31 days Locked the Token
+		vestingTypes.push(VestingType(1930501930501930, 0, 31 days, 0, 0,  true, true)); // 31 Days Locked, 0.193050193050193 Percent daily for 518 days
+		// Allocation #2 / VestingType # 1, Seed Total (9.39130435095652)% and Start with 31 days Locked the Token
+		vestingTypes.push(VestingType(2188183807439820, 0, 31 days, 0, 0,  true, true)); // 30 Days Locked, 0.218818380743982 Percent daily for 457 days
+		// Allocation #3 / VestingType # 2, Private Sale Total (9.52434782926174)%, Unlocked 10% when start the vesting, Start with 31 days Locked the Token and After (8.57191304633557)%
+        vestingTypes.push(VestingType(2272727272727270, 100000000000000000, 31 days, 0, 0, true, true)); // 10% Unlocked when start, 31 Days Locked, 0.227272727272727 Percent daily for 396 Days for the 90% Rest
+		// Allocation #4 / VestingType # 3, Public Sale Total (1.56521739182609)%, Unlocked 34% when start the vesting, Start with 0 days Locked the Token and After (33)% Monthly
+        vestingTypes.push(VestingType(0, 340000000000000000, 0, 330000000000000000, 0, true, false)); // 34% Unlocked when start, 33% Percent Monthly for 2 months Rest
 		// Allocation #5 / VestingType # 4, OMNI Team Total (10)% and Start After 274 days Locked the Token
-		vestingTypes.push(VestingType(3636363636363640, 0, 274 days, true)); // 274 Days Locked, 0.363636363636364 Percent daily for 275 days
+		vestingTypes.push(VestingType(3636363636363640, 0, 274 days, 0, 0, true, true)); // 274 Days Locked, 0.363636363636364 Percent daily for 275 days
 		// Allocation #6 / VestingType # 5, Advisors Total (5)% and Start After 31 days Locked the Token
-		vestingTypes.push(VestingType(2525252525252530, 0, 31 days, true)); // 31 Days Locked, 0.2525252525252530 Percent daily for 396 days
+		vestingTypes.push(VestingType(2525252525252530, 0, 31 days, 0, 0, true, true)); // 31 Days Locked, 0.2525252525252530 Percent daily for 396 days
 		// Allocation #7 / VestingType # 6, Tech Partners Total (10)% Start After 365 days Locked the Token
-		vestingTypes.push(VestingType(1562500000000000, 0, 365 days, true)); // 365 Days Locked, 0.15625 Percent daily for 640 days
+		vestingTypes.push(VestingType(1562500000000000, 0, 365 days, 0, 0, true, true)); // 365 Days Locked, 0.15625 Percent daily for 640 days
 		// Allocation #8 / VestingType # 7, Marketing Total (8)% Start After 184 days Locked the Token
-		vestingTypes.push(VestingType(3663003663003660, 0, 184 days, true)); // 184 Days Locked, 0.366300366300366 Percent daily for 273 days
+		vestingTypes.push(VestingType(3663003663003660, 0, 184 days, 0, 0, true, true)); // 184 Days Locked, 0.366300366300366 Percent daily for 273 days
 		// Allocation #9 / VestingType # 8, Foundation Total (5)% and Start After 274 days Locked the Token
-		vestingTypes.push(VestingType(1562500000000000, 0, 274 days, true)); // 274 Days Locked, 0.15625 Percent daily for 640 days
+		vestingTypes.push(VestingType(1562500000000000, 0, 274 days, 0, 0, true, true)); // 274 Days Locked, 0.15625 Percent daily for 640 days
 		// Allocation #10 / VestingType # 9, Liquidity Total (3)% and Daily Rate in wei (0), Unlocked the all Token immediatly when Start the Vesting
-		vestingTypes.push(VestingType(1000000000000000000, 1000000000000000000, 0, true)); // 0 Days 100 Percent
+		vestingTypes.push(VestingType(1000000000000000000, 1000000000000000000, 0, 0, 0, true, true)); // 0 Days 100 Percent
 		// Allocation #11 / VestingType # 10, Ecosystem Total (20)% and Start After 92 days Locked the Token
-		vestingTypes.push(VestingType(782472613458529, 0, 92 days, true)); // 92 Days Locked, 0.0783085356303837 Percent daily for 1278 days
+		vestingTypes.push(VestingType(782472613458529, 0, 92 days, 0, 0, true, true)); // 92 Days Locked, 0.0783085356303837 Percent daily for 1278 days
 		// Allocation #12 / VestingType # 11, Community Reserve Total (3)% and Start After 183 days Locked the Token
-		vestingTypes.push(VestingType(843170320404722, 0, 184 days, true)); // 184 Days Locked, 0.0843170320404722 Percent daily for 1186 days
+		vestingTypes.push(VestingType(843170320404722, 0, 184 days, 0, 0, true, true)); // 184 Days Locked, 0.0843170320404722 Percent daily for 1186 days
 		// Allocation #13 / VestingType # 12, Company Reserve Total (8.56956520824781)% and Start After 273 days Locked the Token
-		vestingTypes.push(VestingType(994035785288270, 0, 274 days, true)); // 274 Days Locked, 0.099403578528827 Percent daily for 1006 days
+		vestingTypes.push(VestingType(994035785288270, 0, 274 days, 0, 0, true, true)); // 274 Days Locked, 0.099403578528827 Percent daily for 1006 days
 
 	}
 

@@ -22,6 +22,7 @@ struct FrozenWallet {
     address wallet;
     uint256 totalAmount;
     uint256 dailyAmount;
+	uint256 monthlyAmount;
     uint256 initialAmount;
 }
 
@@ -29,7 +30,10 @@ struct VestingType {
     uint256 dailyRate;
     uint256 initialRate;
     uint256 afterDays;
+	uint256 monthRate;
+	uint256 monthDelay;
 	bool vesting;
+	bool vestingType; //true for daily rate and false for monthly rate
 }
 
 /**
@@ -56,6 +60,7 @@ contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable
 		address indexed wallet,
 		uint256 indexed totalAmount,
 		uint256 dailyAmount,
+		uint256 monthlyAmount,
 		uint256 initialAmount
 	);
 
@@ -94,16 +99,26 @@ contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable
         for(uint256 j = 0; j < addressesLength; j++) {
             address _address = addresses[j];
             uint256 totalAmount = totalAmounts[j];
-            uint256 dailyAmount = mulDiv(totalAmounts[j], vestingType.dailyRate, 1000000000000000000);
+			uint256 dailyAmount;
+			uint256 monthlyAmount;
+			uint256 afterDay;
+			if (vestingType.vestingType) {
+				dailyAmount = mulDiv(totalAmounts[j], vestingType.dailyRate, 1000000000000000000);
+				monthlyAmount = uint(0);
+				 afterDay = vestingType.afterDays;
+			} else {
+				dailyAmount = uint(0);
+				monthlyAmount = mulDiv(totalAmounts[j], vestingType.monthRate, 1000000000000000000);
+				afterDay = vestingType.monthDelay.mul(30 days);
+			}
             uint256 initialAmount = mulDiv(totalAmounts[j], vestingType.initialRate, 1000000000000000000);
-            uint256 afterDay = vestingType.afterDays;
 
 			// Transfer Token to the Wallet
             _balances[_address] = _balances[_address].add(totalAmount);
             emit Transfer(msg.sender, _address, totalAmount);
 
 			// Frozen Wallet
-            addFrozenWallet(_address, totalAmount, dailyAmount, initialAmount, afterDay);
+            addFrozenWallet(_address, totalAmount, dailyAmount, monthlyAmount, initialAmount, afterDay);
         }
 
         return true;
@@ -114,10 +129,11 @@ contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable
 	 * @param wallet Wallet will be Frozen based on correspondig Allocation
 	 * @param totalAmount Total Amount of Stake holder based on Investment and the Allocation to participate
 	 * @param dailyAmount Daily Amount of Stake holder based on Investment and the Allocation to participate
-	 * @param initialAmount Daily Amount of Stake holder based on Investment and the Allocation to participate
+	 * @param monthlyAmount Monthly Amount of Stake holder based on Investment and the Allocation to participate
+	 * @param initialAmount Initial Amount of Stake holder based on Investment and the Allocation to participate
 	 * @param afterDays Period of Days after to start Unlocked Token based on the Allocation to participate
      */
-	function addFrozenWallet(address wallet, uint256 totalAmount, uint256 dailyAmount, uint256 initialAmount, uint256 afterDays) internal whenNotPaused() {
+	function addFrozenWallet(address wallet, uint256 totalAmount, uint256 dailyAmount,uint256 monthlyAmount ,uint256 initialAmount, uint256 afterDays) internal whenNotPaused() {
         uint256 releaseTime = getReleaseTime();
 
         // Create frozen wallets
@@ -128,6 +144,7 @@ contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable
             wallet,
             totalAmount,
             dailyAmount,
+			monthlyAmount,
             initialAmount
         );
 
@@ -142,13 +159,14 @@ contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable
 			wallet,
             totalAmount,
             dailyAmount,
+			monthlyAmount,
             initialAmount);
     }
 
     /**
      * @dev Auxiliary Method to permit to get the Last Exactly Unix Epoch of Blockchain timestamp
      */
-    function getTimestamp() external view returns (uint256) {
+    function getTimestamp() public view returns (uint256) {
         return block.timestamp;
     }
 
@@ -165,8 +183,25 @@ contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable
         }
 
         uint256 diff = block.timestamp.sub(time);
-        uint256 dias = diff.div(24 hours); // adapt this formula for days, not for month
+        uint256 dias = diff.div(24 hours);
         return dias;
+    }
+
+    /**
+     * @dev Auxiliary Method to permit get the number of months elapsed time from the TGE to the current moment
+	 * @param afterDays Period of Days after to start Unlocked Token based on the Allocation to participate	 */
+	 function getMonths(uint afterDays) public view returns (uint256) {
+        uint256 releaseTime = getReleaseTime();
+        uint256 time = releaseTime.add(afterDays);
+
+        if (block.timestamp < time) {
+            return 0;
+        }
+
+        uint256 diff = block.timestamp.sub(time);
+        uint256 months = diff.div(30 days);
+
+        return months;
     }
 
 	/**
@@ -194,9 +229,18 @@ contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable
             return 0;
         }
 
-        uint256 dias = getDays(frozenWallets[sender].afterDays);
-        uint256 dailyTransferableAmount = frozenWallets[sender].dailyAmount.mul(dias);
-        uint256 transferableAmount = dailyTransferableAmount.add(frozenWallets[sender].initialAmount);
+		uint256 transferableAmount;
+
+		if ((frozenWallets[sender].monthlyAmount == uint(0)) && (frozenWallets[sender].dailyAmount != uint(0))) {
+			uint256 dias = getDays(frozenWallets[sender].afterDays);
+        	uint256 dailyTransferableAmount = frozenWallets[sender].dailyAmount.mul(dias);
+			transferableAmount = dailyTransferableAmount.add(frozenWallets[sender].initialAmount);
+		}
+		if ((frozenWallets[sender].monthlyAmount != uint(0)) && (frozenWallets[sender].dailyAmount == uint(0))) {
+			uint256 meses = getMonths(frozenWallets[sender].afterDays);
+			uint256 monthlyTransferableAmount = frozenWallets[sender].monthlyAmount.mul(meses);
+			transferableAmount = monthlyTransferableAmount.add(frozenWallets[sender].initialAmount);
+		}
 
         if (transferableAmount > frozenWallets[sender].totalAmount) {
             return frozenWallets[sender].totalAmount;

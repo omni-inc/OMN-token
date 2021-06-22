@@ -34,6 +34,7 @@ interface VestingInterface extends ethers.utils.Interface {
     "frozenWallets(address)": FunctionFragment;
     "getBlacklist()": FunctionFragment;
     "getDays(uint256)": FunctionFragment;
+    "getMonths(uint256)": FunctionFragment;
     "getReleaseTime()": FunctionFragment;
     "getRestAmount(address)": FunctionFragment;
     "getTimestamp()": FunctionFragment;
@@ -96,6 +97,10 @@ interface VestingInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getDays",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getMonths",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -205,6 +210,7 @@ interface VestingInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getDays", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getMonths", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getReleaseTime",
     data: BytesLike
@@ -266,7 +272,7 @@ interface VestingInterface extends ethers.utils.Interface {
     "Transfer(address,address,uint256)": EventFragment;
     "Unpaused(address)": EventFragment;
     "inBlacklisted(address)": EventFragment;
-    "inFrozenWallet(bool,uint32,uint32,address,uint256,uint256,uint256)": EventFragment;
+    "inFrozenWallet(bool,uint32,uint32,address,uint256,uint256,uint256,uint256)": EventFragment;
     "outBlacklisted(address)": EventFragment;
   };
 
@@ -413,13 +419,23 @@ export class Vesting extends Contract {
       arg0: string,
       overrides?: CallOverrides
     ): Promise<
-      [boolean, number, number, string, BigNumber, BigNumber, BigNumber] & {
+      [
+        boolean,
+        number,
+        number,
+        string,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber
+      ] & {
         scheduled: boolean;
         startDay: number;
         afterDays: number;
         wallet: string;
         totalAmount: BigNumber;
         dailyAmount: BigNumber;
+        monthlyAmount: BigNumber;
         initialAmount: BigNumber;
       }
     >;
@@ -428,13 +444,23 @@ export class Vesting extends Contract {
       arg0: string,
       overrides?: CallOverrides
     ): Promise<
-      [boolean, number, number, string, BigNumber, BigNumber, BigNumber] & {
+      [
+        boolean,
+        number,
+        number,
+        string,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber
+      ] & {
         scheduled: boolean;
         startDay: number;
         afterDays: number;
         wallet: string;
         totalAmount: BigNumber;
         dailyAmount: BigNumber;
+        monthlyAmount: BigNumber;
         initialAmount: BigNumber;
       }
     >;
@@ -449,6 +475,16 @@ export class Vesting extends Contract {
     ): Promise<[BigNumber]>;
 
     "getDays(uint256)"(
+      afterDays: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    getMonths(
+      afterDays: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    "getMonths(uint256)"(
       afterDays: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
@@ -624,11 +660,22 @@ export class Vesting extends Contract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
-      [BigNumber, BigNumber, BigNumber, boolean] & {
+      [
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        boolean,
+        boolean
+      ] & {
         dailyRate: BigNumber;
         initialRate: BigNumber;
         afterDays: BigNumber;
+        monthRate: BigNumber;
+        monthDelay: BigNumber;
         vesting: boolean;
+        vestingType: boolean;
       }
     >;
 
@@ -636,11 +683,22 @@ export class Vesting extends Contract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
-      [BigNumber, BigNumber, BigNumber, boolean] & {
+      [
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        boolean,
+        boolean
+      ] & {
         dailyRate: BigNumber;
         initialRate: BigNumber;
         afterDays: BigNumber;
+        monthRate: BigNumber;
+        monthDelay: BigNumber;
         vesting: boolean;
+        vestingType: boolean;
       }
     >;
   };
@@ -734,13 +792,23 @@ export class Vesting extends Contract {
     arg0: string,
     overrides?: CallOverrides
   ): Promise<
-    [boolean, number, number, string, BigNumber, BigNumber, BigNumber] & {
+    [
+      boolean,
+      number,
+      number,
+      string,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber
+    ] & {
       scheduled: boolean;
       startDay: number;
       afterDays: number;
       wallet: string;
       totalAmount: BigNumber;
       dailyAmount: BigNumber;
+      monthlyAmount: BigNumber;
       initialAmount: BigNumber;
     }
   >;
@@ -749,13 +817,23 @@ export class Vesting extends Contract {
     arg0: string,
     overrides?: CallOverrides
   ): Promise<
-    [boolean, number, number, string, BigNumber, BigNumber, BigNumber] & {
+    [
+      boolean,
+      number,
+      number,
+      string,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber
+    ] & {
       scheduled: boolean;
       startDay: number;
       afterDays: number;
       wallet: string;
       totalAmount: BigNumber;
       dailyAmount: BigNumber;
+      monthlyAmount: BigNumber;
       initialAmount: BigNumber;
     }
   >;
@@ -770,6 +848,16 @@ export class Vesting extends Contract {
   ): Promise<BigNumber>;
 
   "getDays(uint256)"(
+    afterDays: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  getMonths(
+    afterDays: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "getMonths(uint256)"(
     afterDays: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
@@ -939,11 +1027,22 @@ export class Vesting extends Contract {
     arg0: BigNumberish,
     overrides?: CallOverrides
   ): Promise<
-    [BigNumber, BigNumber, BigNumber, boolean] & {
+    [
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      boolean,
+      boolean
+    ] & {
       dailyRate: BigNumber;
       initialRate: BigNumber;
       afterDays: BigNumber;
+      monthRate: BigNumber;
+      monthDelay: BigNumber;
       vesting: boolean;
+      vestingType: boolean;
     }
   >;
 
@@ -951,11 +1050,22 @@ export class Vesting extends Contract {
     arg0: BigNumberish,
     overrides?: CallOverrides
   ): Promise<
-    [BigNumber, BigNumber, BigNumber, boolean] & {
+    [
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      boolean,
+      boolean
+    ] & {
       dailyRate: BigNumber;
       initialRate: BigNumber;
       afterDays: BigNumber;
+      monthRate: BigNumber;
+      monthDelay: BigNumber;
       vesting: boolean;
+      vestingType: boolean;
     }
   >;
 
@@ -1043,13 +1153,23 @@ export class Vesting extends Contract {
       arg0: string,
       overrides?: CallOverrides
     ): Promise<
-      [boolean, number, number, string, BigNumber, BigNumber, BigNumber] & {
+      [
+        boolean,
+        number,
+        number,
+        string,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber
+      ] & {
         scheduled: boolean;
         startDay: number;
         afterDays: number;
         wallet: string;
         totalAmount: BigNumber;
         dailyAmount: BigNumber;
+        monthlyAmount: BigNumber;
         initialAmount: BigNumber;
       }
     >;
@@ -1058,13 +1178,23 @@ export class Vesting extends Contract {
       arg0: string,
       overrides?: CallOverrides
     ): Promise<
-      [boolean, number, number, string, BigNumber, BigNumber, BigNumber] & {
+      [
+        boolean,
+        number,
+        number,
+        string,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber
+      ] & {
         scheduled: boolean;
         startDay: number;
         afterDays: number;
         wallet: string;
         totalAmount: BigNumber;
         dailyAmount: BigNumber;
+        monthlyAmount: BigNumber;
         initialAmount: BigNumber;
       }
     >;
@@ -1079,6 +1209,16 @@ export class Vesting extends Contract {
     ): Promise<BigNumber>;
 
     "getDays(uint256)"(
+      afterDays: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getMonths(
+      afterDays: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getMonths(uint256)"(
       afterDays: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1250,11 +1390,22 @@ export class Vesting extends Contract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
-      [BigNumber, BigNumber, BigNumber, boolean] & {
+      [
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        boolean,
+        boolean
+      ] & {
         dailyRate: BigNumber;
         initialRate: BigNumber;
         afterDays: BigNumber;
+        monthRate: BigNumber;
+        monthDelay: BigNumber;
         vesting: boolean;
+        vestingType: boolean;
       }
     >;
 
@@ -1262,11 +1413,22 @@ export class Vesting extends Contract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
-      [BigNumber, BigNumber, BigNumber, boolean] & {
+      [
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        boolean,
+        boolean
+      ] & {
         dailyRate: BigNumber;
         initialRate: BigNumber;
         afterDays: BigNumber;
+        monthRate: BigNumber;
+        monthDelay: BigNumber;
         vesting: boolean;
+        vestingType: boolean;
       }
     >;
   };
@@ -1313,9 +1475,19 @@ export class Vesting extends Contract {
       wallet: string | null,
       totalAmount: BigNumberish | null,
       dailyAmount: null,
+      monthlyAmount: null,
       initialAmount: null
     ): TypedEventFilter<
-      [boolean, number, number, string, BigNumber, BigNumber, BigNumber],
+      [
+        boolean,
+        number,
+        number,
+        string,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber
+      ],
       {
         scheduled: boolean;
         startDay: number;
@@ -1323,6 +1495,7 @@ export class Vesting extends Contract {
         wallet: string;
         totalAmount: BigNumber;
         dailyAmount: BigNumber;
+        monthlyAmount: BigNumber;
         initialAmount: BigNumber;
       }
     >;
@@ -1435,6 +1608,16 @@ export class Vesting extends Contract {
     ): Promise<BigNumber>;
 
     "getDays(uint256)"(
+      afterDays: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getMonths(
+      afterDays: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getMonths(uint256)"(
       afterDays: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1728,6 +1911,16 @@ export class Vesting extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "getDays(uint256)"(
+      afterDays: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getMonths(
+      afterDays: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getMonths(uint256)"(
       afterDays: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
