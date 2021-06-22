@@ -32,6 +32,10 @@ INFURAKEY=
 <br/>
 PRIVATE_KEY=
 <br/>
+COINMARKETCAP_API_KEY=
+<br/>
+ETHERSCAN_API_KEY=
+<br/>
 URL_BSC=https://bsc-dataseed1.binance.org
 <br/>
 URL_TESTNET_BSC=https://data-seed-prebsc-1-s1.binance.org:8545
