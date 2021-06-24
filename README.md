@@ -51,3 +51,4 @@ URL_MOONBEAM_TESTNET=https://rpc.testnet.moonbeam.network
 ---
 ![](./sizereporter.png)
 
+# OMN-token
