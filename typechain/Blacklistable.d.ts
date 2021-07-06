@@ -83,14 +83,14 @@ interface BlacklistableInterface extends ethers.utils.Interface {
   ): Result;
 
   events: {
+    "InBlacklisted(address)": EventFragment;
+    "OutBlacklisted(address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
-    "inBlacklisted(address)": EventFragment;
-    "outBlacklisted(address)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "InBlacklisted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OutBlacklisted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "inBlacklisted"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "outBlacklisted"): EventFragment;
 }
 
 export class Blacklistable extends Contract {
@@ -296,6 +296,14 @@ export class Blacklistable extends Contract {
   };
 
   filters: {
+    InBlacklisted(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
+
+    OutBlacklisted(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
+
     OwnershipTransferred(
       previousOwner: string | null,
       newOwner: string | null
@@ -303,14 +311,6 @@ export class Blacklistable extends Contract {
       [string, string],
       { previousOwner: string; newOwner: string }
     >;
-
-    inBlacklisted(
-      _account: string | null
-    ): TypedEventFilter<[string], { _account: string }>;
-
-    outBlacklisted(
-      _account: string | null
-    ): TypedEventFilter<[string], { _account: string }>;
   };
 
   estimateGas: {

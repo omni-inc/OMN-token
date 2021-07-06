@@ -12,7 +12,6 @@ import {
   Contract,
   ContractTransaction,
   Overrides,
-  PayableOverrides,
   CallOverrides,
 } from "ethers";
 import { BytesLike } from "@ethersproject/bytes";
@@ -408,31 +407,33 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
+    "DisableDefenseAntiBots(uint256,bool)": EventFragment;
+    "InBlacklisted(address)": EventFragment;
+    "InOmniWallet(address)": EventFragment;
+    "OutBlacklisted(address)": EventFragment;
+    "OutOmniWallet(address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "Paused(address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
     "TransferBurned(address,uint256)": EventFragment;
     "Unpaused(address)": EventFragment;
     "ValueReceived(address,uint256)": EventFragment;
-    "inBlacklisted(address)": EventFragment;
     "inFrozenWallet(bool,uint32,uint32,address,uint256,uint256,uint256,uint256)": EventFragment;
-    "inOmniWallet(address)": EventFragment;
-    "outBlacklisted(address)": EventFragment;
-    "outOmniWallet(address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "DisableDefenseAntiBots"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "InBlacklisted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "InOmniWallet"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OutBlacklisted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OutOmniWallet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferBurned"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ValueReceived"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "inBlacklisted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "inFrozenWallet"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "inOmniWallet"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "outBlacklisted"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "outOmniWallet"): EventFragment;
 }
 
 export class OmniTokenV1 extends Contract {
@@ -487,14 +488,14 @@ export class OmniTokenV1 extends Contract {
       addresses: string[],
       totalAmounts: BigNumberish[],
       vestingTypeIndex: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     "addAllocations(address[],uint256[],uint256)"(
       addresses: string[],
       totalAmounts: BigNumberish[],
       vestingTypeIndex: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     addBlacklist(
@@ -570,9 +571,13 @@ export class OmniTokenV1 extends Contract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    circulatingSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
+    circulatingSupply(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { result: BigNumber }>;
 
-    "circulatingSupply()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+    "circulatingSupply()"(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { result: BigNumber }>;
 
     claimValues(
       _token: string,
@@ -711,12 +716,12 @@ export class OmniTokenV1 extends Contract {
     getDays(
       afterDays: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<[BigNumber] & { dias: BigNumber }>;
 
     "getDays(uint256)"(
       afterDays: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<[BigNumber] & { dias: BigNumber }>;
 
     getIsTransferDisabled(overrides?: CallOverrides): Promise<[boolean]>;
 
@@ -729,12 +734,12 @@ export class OmniTokenV1 extends Contract {
     getMonths(
       afterDays: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<[BigNumber] & { months: BigNumber }>;
 
     "getMonths(uint256)"(
       afterDays: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<[BigNumber] & { months: BigNumber }>;
 
     getOmniWallets(overrides?: CallOverrides): Promise<[string[]]>;
 
@@ -761,12 +766,12 @@ export class OmniTokenV1 extends Contract {
     getTransferableAmount(
       sender: string,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<[BigNumber] & { transferableAmount: BigNumber }>;
 
     "getTransferableAmount(address)"(
       sender: string,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<[BigNumber] & { transferableAmount: BigNumber }>;
 
     increaseAllowance(
       spender: string,
@@ -1012,14 +1017,14 @@ export class OmniTokenV1 extends Contract {
     addresses: string[],
     totalAmounts: BigNumberish[],
     vestingTypeIndex: BigNumberish,
-    overrides?: PayableOverrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   "addAllocations(address[],uint256[],uint256)"(
     addresses: string[],
     totalAmounts: BigNumberish[],
     vestingTypeIndex: BigNumberish,
-    overrides?: PayableOverrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   addBlacklist(
@@ -2016,6 +2021,30 @@ export class OmniTokenV1 extends Contract {
       { owner: string; spender: string; value: BigNumber }
     >;
 
+    DisableDefenseAntiBots(
+      blockNumber: null,
+      statusDefense: null
+    ): TypedEventFilter<
+      [BigNumber, boolean],
+      { blockNumber: BigNumber; statusDefense: boolean }
+    >;
+
+    InBlacklisted(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
+
+    InOmniWallet(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
+
+    OutBlacklisted(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
+
+    OutOmniWallet(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
+
     OwnershipTransferred(
       previousOwner: string | null,
       newOwner: string | null
@@ -2053,10 +2082,6 @@ export class OmniTokenV1 extends Contract {
       { sender: string; value: BigNumber }
     >;
 
-    inBlacklisted(
-      _account: string | null
-    ): TypedEventFilter<[string], { _account: string }>;
-
     inFrozenWallet(
       scheduled: null,
       startDay: null,
@@ -2088,18 +2113,6 @@ export class OmniTokenV1 extends Contract {
         initialAmount: BigNumber;
       }
     >;
-
-    inOmniWallet(
-      _account: string | null
-    ): TypedEventFilter<[string], { _account: string }>;
-
-    outBlacklisted(
-      _account: string | null
-    ): TypedEventFilter<[string], { _account: string }>;
-
-    outOmniWallet(
-      _account: string | null
-    ): TypedEventFilter<[string], { _account: string }>;
   };
 
   estimateGas: {
@@ -2111,14 +2124,14 @@ export class OmniTokenV1 extends Contract {
       addresses: string[],
       totalAmounts: BigNumberish[],
       vestingTypeIndex: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     "addAllocations(address[],uint256[],uint256)"(
       addresses: string[],
       totalAmounts: BigNumberish[],
       vestingTypeIndex: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     addBlacklist(
@@ -2558,14 +2571,14 @@ export class OmniTokenV1 extends Contract {
       addresses: string[],
       totalAmounts: BigNumberish[],
       vestingTypeIndex: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     "addAllocations(address[],uint256[],uint256)"(
       addresses: string[],
       totalAmounts: BigNumberish[],
       vestingTypeIndex: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     addBlacklist(

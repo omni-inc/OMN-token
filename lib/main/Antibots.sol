@@ -5,7 +5,6 @@
 
 pragma solidity 0.8.4;
 
-import "../@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol";
 import "../@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 /**
@@ -13,14 +12,15 @@ import "../@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
  * @dev Allows  by Owner
  */
 contract Antibots is OwnableUpgradeable {
-    using AddressUpgradeable for address;
 
 	// anti-sniping bot defense
-    uint256 internal burnBeforeBlockNumber;
+    uint256 private burnBeforeBlockNumber;
     bool internal burnBeforeBlockNumberDisabled;
 
 	// Event where Transfer is Burned
 	event TransferBurned(address indexed wallet, uint256 amount);
+	// Event Disable Antibots defense forever
+	event DisableDefenseAntiBots (uint256 blockNumber, bool statusDefense);
 
 	// anti-sniping bot defense
 	/**
@@ -49,15 +49,16 @@ contract Antibots is OwnableUpgradeable {
 	 * @dev Setting boolean burnBeforeBlockNumberDisabled in true and disable the antibots Defense
      */
     function disableBurnBeforeBlockNumber() public onlyOwner() {
-        burnBeforeBlockNumber = 0;
+        burnBeforeBlockNumber = uint(0);
         burnBeforeBlockNumberDisabled = true;
+		emit DisableDefenseAntiBots (block.number, burnBeforeBlockNumberDisabled);
     }
 	/** --------------------- GETTER -----------------------------*/
 	/**
      * @dev Antibots Defense - Getting the status of Transfer Disabled (true or false)
 	 * @dev Return the status of TransferDisabled function
      */
-	function getIsTransferDisabled() public view onlyOwner() returns (bool) {
+	function getIsTransferDisabled() public view returns (bool) {
 		return (!burnBeforeBlockNumberDisabled && (block.number < burnBeforeBlockNumber));
 	}
 
@@ -73,7 +74,7 @@ contract Antibots is OwnableUpgradeable {
      * @dev Antibots Defense - Getting the status of Antibots Defense are available (true or false)
 	 * @dev Return boolean status if the Antibots Defense can used or never again!!
      */
-	function getBurnBeforeBlockNumberDisabled() public view onlyOwner() returns (bool) {
+	function getBurnBeforeBlockNumberDisabled() public view returns (bool) {
 		return burnBeforeBlockNumberDisabled;
 	}
 }

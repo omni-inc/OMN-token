@@ -83,14 +83,14 @@ interface CirculatingSupplyInterface extends ethers.utils.Interface {
   ): Result;
 
   events: {
+    "InOmniWallet(address)": EventFragment;
+    "OutOmniWallet(address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
-    "inOmniWallet(address)": EventFragment;
-    "outOmniWallet(address)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "InOmniWallet"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OutOmniWallet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "inOmniWallet"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "outOmniWallet"): EventFragment;
 }
 
 export class CirculatingSupply extends Contract {
@@ -299,6 +299,14 @@ export class CirculatingSupply extends Contract {
   };
 
   filters: {
+    InOmniWallet(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
+
+    OutOmniWallet(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
+
     OwnershipTransferred(
       previousOwner: string | null,
       newOwner: string | null
@@ -306,14 +314,6 @@ export class CirculatingSupply extends Contract {
       [string, string],
       { previousOwner: string; newOwner: string }
     >;
-
-    inOmniWallet(
-      _account: string | null
-    ): TypedEventFilter<[string], { _account: string }>;
-
-    outOmniWallet(
-      _account: string | null
-    ): TypedEventFilter<[string], { _account: string }>;
   };
 
   estimateGas: {

@@ -12,7 +12,6 @@ import {
   Contract,
   ContractTransaction,
   Overrides,
-  PayableOverrides,
   CallOverrides,
 } from "ethers";
 import { BytesLike } from "@ethersproject/bytes";
@@ -28,6 +27,7 @@ interface VestingInterface extends ethers.utils.Interface {
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
+    "claimValues(address,address)": FunctionFragment;
     "decimals()": FunctionFragment;
     "decreaseAllowance(address,uint256)": FunctionFragment;
     "dropBlacklist(address)": FunctionFragment;
@@ -78,6 +78,10 @@ interface VestingInterface extends ethers.utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "claimValues",
+    values: [string, string]
+  ): string;
   encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "decreaseAllowance",
@@ -192,6 +196,10 @@ interface VestingInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "claimValues",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "decreaseAllowance",
@@ -267,23 +275,25 @@ interface VestingInterface extends ethers.utils.Interface {
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
+    "InBlacklisted(address)": EventFragment;
+    "OutBlacklisted(address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "Paused(address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
     "Unpaused(address)": EventFragment;
-    "inBlacklisted(address)": EventFragment;
+    "ValueReceived(address,uint256)": EventFragment;
     "inFrozenWallet(bool,uint32,uint32,address,uint256,uint256,uint256,uint256)": EventFragment;
-    "outBlacklisted(address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "InBlacklisted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OutBlacklisted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "inBlacklisted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ValueReceived"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "inFrozenWallet"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "outBlacklisted"): EventFragment;
 }
 
 export class Vesting extends Contract {
@@ -338,14 +348,14 @@ export class Vesting extends Contract {
       addresses: string[],
       totalAmounts: BigNumberish[],
       vestingTypeIndex: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     "addAllocations(address[],uint256[],uint256)"(
       addresses: string[],
       totalAmounts: BigNumberish[],
       vestingTypeIndex: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     addBlacklist(
@@ -388,6 +398,18 @@ export class Vesting extends Contract {
       account: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
+
+    claimValues(
+      _token: string,
+      _to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "claimValues(address,address)"(
+      _token: string,
+      _to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     decimals(overrides?: CallOverrides): Promise<[number]>;
 
@@ -472,22 +494,22 @@ export class Vesting extends Contract {
     getDays(
       afterDays: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<[BigNumber] & { dias: BigNumber }>;
 
     "getDays(uint256)"(
       afterDays: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<[BigNumber] & { dias: BigNumber }>;
 
     getMonths(
       afterDays: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<[BigNumber] & { months: BigNumber }>;
 
     "getMonths(uint256)"(
       afterDays: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<[BigNumber] & { months: BigNumber }>;
 
     getReleaseTime(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -510,12 +532,12 @@ export class Vesting extends Contract {
     getTransferableAmount(
       sender: string,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<[BigNumber] & { transferableAmount: BigNumber }>;
 
     "getTransferableAmount(address)"(
       sender: string,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<[BigNumber] & { transferableAmount: BigNumber }>;
 
     increaseAllowance(
       spender: string,
@@ -711,14 +733,14 @@ export class Vesting extends Contract {
     addresses: string[],
     totalAmounts: BigNumberish[],
     vestingTypeIndex: BigNumberish,
-    overrides?: PayableOverrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   "addAllocations(address[],uint256[],uint256)"(
     addresses: string[],
     totalAmounts: BigNumberish[],
     vestingTypeIndex: BigNumberish,
-    overrides?: PayableOverrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   addBlacklist(
@@ -761,6 +783,18 @@ export class Vesting extends Contract {
     account: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  claimValues(
+    _token: string,
+    _to: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "claimValues(address,address)"(
+    _token: string,
+    _to: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   decimals(overrides?: CallOverrides): Promise<number>;
 
@@ -1126,6 +1160,18 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    claimValues(
+      _token: string,
+      _to: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "claimValues(address,address)"(
+      _token: string,
+      _to: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     decimals(overrides?: CallOverrides): Promise<number>;
 
     "decimals()"(overrides?: CallOverrides): Promise<number>;
@@ -1443,6 +1489,14 @@ export class Vesting extends Contract {
       { owner: string; spender: string; value: BigNumber }
     >;
 
+    InBlacklisted(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
+
+    OutBlacklisted(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
+
     OwnershipTransferred(
       previousOwner: string | null,
       newOwner: string | null
@@ -1464,9 +1518,13 @@ export class Vesting extends Contract {
 
     Unpaused(account: null): TypedEventFilter<[string], { account: string }>;
 
-    inBlacklisted(
-      _account: string | null
-    ): TypedEventFilter<[string], { _account: string }>;
+    ValueReceived(
+      sender: string | null,
+      value: BigNumberish | null
+    ): TypedEventFilter<
+      [string, BigNumber],
+      { sender: string; value: BigNumber }
+    >;
 
     inFrozenWallet(
       scheduled: null,
@@ -1499,10 +1557,6 @@ export class Vesting extends Contract {
         initialAmount: BigNumber;
       }
     >;
-
-    outBlacklisted(
-      _account: string | null
-    ): TypedEventFilter<[string], { _account: string }>;
   };
 
   estimateGas: {
@@ -1514,14 +1568,14 @@ export class Vesting extends Contract {
       addresses: string[],
       totalAmounts: BigNumberish[],
       vestingTypeIndex: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     "addAllocations(address[],uint256[],uint256)"(
       addresses: string[],
       totalAmounts: BigNumberish[],
       vestingTypeIndex: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     addBlacklist(
@@ -1563,6 +1617,18 @@ export class Vesting extends Contract {
     "balanceOf(address)"(
       account: string,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    claimValues(
+      _token: string,
+      _to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "claimValues(address,address)"(
+      _token: string,
+      _to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     decimals(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1811,14 +1877,14 @@ export class Vesting extends Contract {
       addresses: string[],
       totalAmounts: BigNumberish[],
       vestingTypeIndex: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     "addAllocations(address[],uint256[],uint256)"(
       addresses: string[],
       totalAmounts: BigNumberish[],
       vestingTypeIndex: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     addBlacklist(
@@ -1863,6 +1929,18 @@ export class Vesting extends Contract {
     "balanceOf(address)"(
       account: string,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    claimValues(
+      _token: string,
+      _to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "claimValues(address,address)"(
+      _token: string,
+      _to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
