@@ -7,12 +7,10 @@ pragma solidity 0.8.4;
 
 import "../@openzeppelin/contracts-upgradeable/token/ERC20/extensions/draft-ERC20PermitUpgradeable.sol";
 import "../@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
-import "../@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol";
 import "../@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "../@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 import "../@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
-import "../@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
-import "../main/Blacklistable.sol";
+import "../main/Claimable.sol";
 import "./Math.sol";
 
 struct FrozenWallet {
@@ -40,11 +38,8 @@ struct VestingType {
  * @title Vesting Methods
  * @dev All Method to permit handle the Vesting Process of OMN token
  */
-contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable, ERC20PermitUpgradeable {
-	using AddressUpgradeable for address;
+contract Vesting is OwnableUpgradeable, Math, Claimable, PausableUpgradeable, ERC20PermitUpgradeable {
 	using SafeMathUpgradeable for uint256;
-	using SafeMathUpgradeable for uint32;
-	using SafeERC20Upgradeable for IERC20Upgradeable;
 
 	// Mapping of FrozenWallet
 	// Address Wallets -> Struc FrozenWallet
@@ -78,11 +73,11 @@ contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable
 	 * @param totalAmounts Array of Amount coprresponding with each wallets, will be Locked and Unlocked Based on the Predefined Allocation
 	 * @param vestingTypeIndex Index corresponding to the List of Wallets to be Upload in the Smart Contract ERC20 of OMNI Foundation
      */
-    function addAllocations(address[] calldata addresses, uint256[] calldata totalAmounts, uint256 vestingTypeIndex) external payable onlyOwner() whenNotPaused() returns (bool) {
+    function addAllocations(address[] calldata addresses, uint256[] calldata totalAmounts, uint256 vestingTypeIndex) external onlyOwner() whenNotPaused() returns (bool) {
         require(addresses.length == totalAmounts.length, "Address and totalAmounts length must be same");
-        require(vestingTypes[vestingTypeIndex].vesting, "Vesting type isn't found");
+		VestingType memory vestingType = vestingTypes[vestingTypeIndex];
+        require(vestingType.vesting, "Vesting type isn't found");
 
-        VestingType memory vestingType = vestingTypes[vestingTypeIndex];
         uint256 addressesLength = addresses.length;
 		uint256 total = 0;
 
@@ -90,7 +85,7 @@ contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable
 			address _address = addresses[i];
 			require(_address != address(0), "ERC20: transfer to the zero address");
 			require(!isBlacklisted(_address), "ERC20 OMN: recipient account is blacklisted");
-			require(totalAmounts[i] != uint(0), "ERC20 OMN: total amount token is zero");
+			require(totalAmounts[i] != 0, "ERC20 OMN: total amount token is zero");
 			total = total.add(totalAmounts[i]);
 		}
 
@@ -103,15 +98,15 @@ contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable
 			uint256 monthlyAmount;
 			uint256 afterDay;
 			if (vestingType.vestingType) {
-				dailyAmount = mulDiv(totalAmounts[j], vestingType.dailyRate, 1000000000000000000);
-				monthlyAmount = uint(0);
+				dailyAmount = mulDiv(totalAmounts[j], vestingType.dailyRate, 1e18);
+				monthlyAmount = 0;
 				 afterDay = vestingType.afterDays;
 			} else {
-				dailyAmount = uint(0);
-				monthlyAmount = mulDiv(totalAmounts[j], vestingType.monthRate, 1000000000000000000);
+				dailyAmount = 0;
+				monthlyAmount = mulDiv(totalAmounts[j], vestingType.monthRate, 1e18);
 				afterDay = vestingType.monthDelay.mul(30 days);
 			}
-            uint256 initialAmount = mulDiv(totalAmounts[j], vestingType.initialRate, 1000000000000000000);
+            uint256 initialAmount = mulDiv(totalAmounts[j], vestingType.initialRate, 1e18);
 
 			// Transfer Token to the Wallet
             _balances[_address] = _balances[_address].add(totalAmount);
@@ -133,7 +128,7 @@ contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable
 	 * @param initialAmount Initial Amount of Stake holder based on Investment and the Allocation to participate
 	 * @param afterDays Period of Days after to start Unlocked Token based on the Allocation to participate
      */
-	function addFrozenWallet(address wallet, uint256 totalAmount, uint256 dailyAmount,uint256 monthlyAmount ,uint256 initialAmount, uint256 afterDays) internal whenNotPaused() {
+	function addFrozenWallet(address wallet, uint256 totalAmount, uint256 dailyAmount,uint256 monthlyAmount ,uint256 initialAmount, uint256 afterDays) internal {
         uint256 releaseTime = getReleaseTime();
 
         // Create frozen wallets
@@ -174,32 +169,32 @@ contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable
      * @dev Auxiliary Method to permit get the number of days elapsed time from the TGE to the current moment
 	 * @param afterDays Period of Days after to start Unlocked Token based on the Allocation to participate
 	 */
-    function getDays(uint256 afterDays) public view returns (uint256) {
+    function getDays(uint256 afterDays) public view returns (uint256 dias) {
         uint256 releaseTime = getReleaseTime();
         uint256 time = releaseTime.add(afterDays);
 
         if (block.timestamp < time) {
-            return 0;
+            return dias;
         }
 
         uint256 diff = block.timestamp.sub(time);
-        uint256 dias = diff.div(24 hours);
+        dias = diff.div(24 hours);
         return dias;
     }
 
     /**
      * @dev Auxiliary Method to permit get the number of months elapsed time from the TGE to the current moment
 	 * @param afterDays Period of Days after to start Unlocked Token based on the Allocation to participate	 */
-	 function getMonths(uint afterDays) public view returns (uint256) {
+	 function getMonths(uint afterDays) public view returns (uint256 months) {
         uint256 releaseTime = getReleaseTime();
         uint256 time = releaseTime.add(afterDays);
 
         if (block.timestamp < time) {
-            return 0;
+            return months;
         }
 
         uint256 diff = block.timestamp.sub(time);
-        uint256 months = diff.div(30 days);
+        months = diff.div(30 days);
 
         return months;
     }
@@ -222,28 +217,28 @@ contract Vesting is OwnableUpgradeable, Math, Blacklistable, PausableUpgradeable
      * @dev Auxiliary Method to permit get of token can be transferable based on Allocation of the Frozen Wallet
 	 * @param sender Wallets of Stakeholders to verify amount of Token are Unlocked based on Allocation
 	 */
-    function getTransferableAmount(address sender) public view returns (uint256) {
+    function getTransferableAmount(address sender) public view returns (uint256 transferableAmount) {
 		uint256 releaseTime = getReleaseTime();
 
 		if (block.timestamp < releaseTime) {
-            return 0;
+            return transferableAmount;
         }
 
-		uint256 transferableAmount;
+		FrozenWallet memory frozenWallet = frozenWallets[sender];
 
-		if ((frozenWallets[sender].monthlyAmount == uint(0)) && (frozenWallets[sender].dailyAmount != uint(0))) {
-			uint256 dias = getDays(frozenWallets[sender].afterDays);
-        	uint256 dailyTransferableAmount = frozenWallets[sender].dailyAmount.mul(dias);
-			transferableAmount = dailyTransferableAmount.add(frozenWallets[sender].initialAmount);
+		if ((frozenWallet.monthlyAmount == 0) && (frozenWallet.dailyAmount != 0)) {
+			uint256 dias = getDays(frozenWallet.afterDays);
+        	uint256 dailyTransferableAmount = frozenWallet.dailyAmount.mul(dias);
+			transferableAmount = dailyTransferableAmount.add(frozenWallet.initialAmount);
 		}
-		if ((frozenWallets[sender].monthlyAmount != uint(0)) && (frozenWallets[sender].dailyAmount == uint(0))) {
-			uint256 meses = getMonths(frozenWallets[sender].afterDays);
-			uint256 monthlyTransferableAmount = frozenWallets[sender].monthlyAmount.mul(meses);
-			transferableAmount = monthlyTransferableAmount.add(frozenWallets[sender].initialAmount);
+		if ((frozenWallet.monthlyAmount != 0) && (frozenWallet.dailyAmount == 0)) {
+			uint256 meses = getMonths(frozenWallet.afterDays);
+			uint256 monthlyTransferableAmount = frozenWallet.monthlyAmount.mul(meses);
+			transferableAmount = monthlyTransferableAmount.add(frozenWallet.initialAmount);
 		}
 
-        if (transferableAmount > frozenWallets[sender].totalAmount) {
-            return frozenWallets[sender].totalAmount;
+        if (transferableAmount > frozenWallet.totalAmount) {
+            return frozenWallet.totalAmount;
         }
 
         return transferableAmount;

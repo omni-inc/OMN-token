@@ -29,8 +29,6 @@ contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting, An
 
 		// Mint Total Supply
 		mint(getMaxTotalSupply());
-		// explicitly set burnBeforeBlockNumberDisabled to false
-        burnBeforeBlockNumberDisabled = false;
 		// Begininng Deploy of Allocation in the ERC20
 		// Allocation #1 / VestingType # 0, Early Backers Total (6.94956521970783)% and Start with 31 days Locked the Token
 		vestingTypes.push(VestingType(1930501930501930, 0, 31 days, 0, 0,  true, true)); // 31 Days Locked, 0.193050193050193 Percent daily for 518 days
@@ -89,7 +87,7 @@ contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting, An
 			address recipient = recipients[i];
 			require(recipient != address(0), "ERC20: transfer to the zero address");
 			require(!isBlacklisted(recipient), "ERC20 OMN: recipient account is blacklisted");
-			require(amounts[i] != uint(0), "ERC20 OMN: total amount token is zero");
+			require(amounts[i] != 0, "ERC20 OMN: total amount token is zero");
             total = total.add(amounts[i]);
         }
 
@@ -107,11 +105,11 @@ contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting, An
 	/**
      * @dev Circulating Supply Method for Calculated based on Wallets of OMNI Foundation
      */
-	function circulatingSupply() public view returns (uint256) {
+	function circulatingSupply() public view returns (uint256 result) {
 		uint256 index = omni_wallets.length;
-		uint256 result = totalSupply().sub(balanceOf(owner()));
+		result = totalSupply().sub(balanceOf(owner()));
 		for (uint256 i=0; i < index ; i++ ) {
-			if ((omni_wallets[i] != address(0)) && (result != uint256(0))) {
+			if ((omni_wallets[i] != address(0)) && (result != 0)) {
 				result -= balanceOf(omni_wallets[i]);
 			}
 		}
@@ -136,7 +134,7 @@ contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting, An
      * @param amount Amount token to burn
      * See {ERC20-_burn}.
      */
-    function burn(uint256 amount) public virtual {
+    function burn(uint256 amount) public {
         _burn(_msgSender(), amount);
     }
 
