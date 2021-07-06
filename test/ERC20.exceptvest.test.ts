@@ -217,7 +217,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 				await expect(omnitoken.connect(accounts[1]).addBlacklist(await accounts[0].getAddress())).to.be.revertedWith("Ownable: caller is not the owner");
 				console.log("Add all odd accounts from 4 to 16 address:");
 				for (let i=4; i <= 16; i+=2) {
-					await expect(omnitoken.addBlacklist(await accounts[i].getAddress())).to.emit(omnitoken, 'inBlacklisted').withArgs(await accounts[i].getAddress());
+					await expect(omnitoken.addBlacklist(await accounts[i].getAddress())).to.emit(omnitoken, 'InBlacklisted').withArgs(await accounts[i].getAddress());
 					console.log("Account ", i, "Blacklisted ", await accounts[i].getAddress());
 				}
 				const address:string[] = await omnitoken.getBlacklist()
@@ -230,7 +230,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 			it("4.2.- Drop some address from Blacklist, adn verify the changes", async () => {
 				console.log("Drop accounts from positions 4, 8, 12 and 16 address:");
 				for (let i=4; i <= 16; i+=4) {
-					await expect(omnitoken.dropBlacklist(await accounts[i].getAddress())).to.emit(omnitoken, 'outBlacklisted').withArgs(await accounts[i].getAddress());
+					await expect(omnitoken.dropBlacklist(await accounts[i].getAddress())).to.emit(omnitoken, 'OutBlacklisted').withArgs(await accounts[i].getAddress());
 					console.log("Account ", i, "Blacklisted ", await accounts[i].getAddress());
 				}
 				const address:string[] = await omnitoken.getBlacklist()
@@ -326,10 +326,10 @@ describe("ERC20 Full Test except Vesting", async () => {
 
 			it("5.2.- Add several list of Accounts in the OMNI Wallets Array: ", async () => {
 				console.log("Verify only the Owner can add wallet to the OMNI Wallets Array: ");
-				await expect(omnitoken.connect(accounts[1]).addOmniWallet(await accounts[0].getAddress())).to.be.revertedWith("ERC20: is not the Owner");
+				await expect(omnitoken.connect(accounts[1]).addOmniWallet(await accounts[0].getAddress())).to.be.revertedWith("Ownable: caller is not the owner");
 				console.log("Add OMNI Wallets array, Accounts 4, 8, 12 and 16:");
 				for (let i=4; i <= 16; i+=4) {
-					await expect(omnitoken.addOmniWallet(await accounts[i].getAddress())).to.emit(omnitoken, 'inOmniWallet').withArgs(await accounts[i].getAddress());
+					await expect(omnitoken.addOmniWallet(await accounts[i].getAddress())).to.emit(omnitoken, 'InOmniWallet').withArgs(await accounts[i].getAddress());
 					console.log("Account ", i, "OMNI Wallets Address", await accounts[i].getAddress());
 				}
 				const address:string[] = await omnitoken.getOmniWallets()
@@ -350,7 +350,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 			it("5.4.- Drop some address from OMNI Wallets, and verify the changes", async () => {
 				console.log("Drop accounts from positions 4, 8, 12 and 16 address:");
 				for (let i=4; i <= 16; i+=4) {
-					await expect(omnitoken.dropOmniWallet(await accounts[i].getAddress())).to.emit(omnitoken, 'outOmniWallet').withArgs(await accounts[i].getAddress());
+					await expect(omnitoken.dropOmniWallet(await accounts[i].getAddress())).to.emit(omnitoken, 'OutOmniWallet').withArgs(await accounts[i].getAddress());
 					console.log("Account ", i, "OMNI Wallets Address ", await accounts[i].getAddress());
 				}
 				const address:string[] = await omnitoken.getOmniWallets()
@@ -368,7 +368,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 			});
 
 			it("5.6.- Sending token another Count not included in OMNI Wallets: ", async () => {
-				await expect(omnitoken.connect(accounts[1]).addOmniWallet(await accounts[0].getAddress())).to.be.revertedWith("ERC20: is not the Owner");
+				await expect(omnitoken.connect(accounts[1]).addOmniWallet(await accounts[0].getAddress())).to.be.revertedWith("Ownable: caller is not the owner");
 				console.log("Transfer Token to Accounts 2, 6, 10, 14 and 18:");
 				for (let i=2; i <= 18; i+=4) {
 					await expect(omnitoken.transfer(await accounts[i].getAddress(),'1000000000000000000000000')).to.emit(omnitoken, 'Transfer').withArgs(await accounts[0].getAddress(), await accounts[i].getAddress(), '1000000000000000000000000');
@@ -382,10 +382,10 @@ describe("ERC20 Full Test except Vesting", async () => {
 			});
 
 			it("5.7.- Verify the Circulating Supply if include the accounts 2, 6, 10, 14 and 18 in the OMNI Wallets Array: ", async () => {
-				await expect(omnitoken.connect(accounts[1]).addOmniWallet(await accounts[0].getAddress())).to.be.revertedWith("ERC20: is not the Owner");
+				await expect(omnitoken.connect(accounts[1]).addOmniWallet(await accounts[0].getAddress())).to.be.revertedWith("Ownable: caller is not the owner");
 				console.log("Add OMNI Wallets array the Accounts 2, 6, 10, 14 and 18:");
 				for (let i=2; i <= 18; i+=4) {
-					await expect(omnitoken.addOmniWallet(await accounts[i].getAddress())).to.emit(omnitoken, 'inOmniWallet').withArgs(await accounts[i].getAddress());
+					await expect(omnitoken.addOmniWallet(await accounts[i].getAddress())).to.emit(omnitoken, 'InOmniWallet').withArgs(await accounts[i].getAddress());
 					console.log("Account ", i, "OMNI Wallets Address", await accounts[i].getAddress());
 				}
 				console.log("Circulating Supply After drop All OMNI Wallets: ", (await omnitoken.circulatingSupply()).toString());
@@ -498,9 +498,9 @@ describe("ERC20 Full Test except Vesting", async () => {
 			it("7.2.- Call the TransferMany Method, and Include a Blacklisted Address in the Wallets Array, Revert Transaction", async () => {
 				// Revert Because include a Blacklisted Address in Array
 				addresses1[index] = address;
-				await expect(omnitoken.addBlacklist(address)).to.emit(omnitoken, 'inBlacklisted').withArgs(address);
+				await expect(omnitoken.addBlacklist(address)).to.emit(omnitoken, 'InBlacklisted').withArgs(address);
 				await expect(omnitoken.transferMany(addresses1, amount1)).to.be.revertedWith("ERC20 OMN: recipient account is blacklisted");
-				await expect(omnitoken.dropBlacklist(address)).to.emit(omnitoken, 'outBlacklisted').withArgs(address);
+				await expect(omnitoken.dropBlacklist(address)).to.emit(omnitoken, 'OutBlacklisted').withArgs(address);
 			});
 			it("7.3.- Call the TransferMany Method, and Include a Zero TotalAmount, in the Amount Array, Revert Transaction", async () => {
 				// Revert Because include a Zero TotalAmount in Array
@@ -566,7 +566,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 		describe("Testing the ERC20 Permit Method a Auxiliary Methods", async () => {
 
 			it('8.1.- initializes DOMAIN_SEPARATOR and PERMIT_TYPEHASH correctly', async () => {
-				assert.equal(await owner.getAddress(), '0xaCf5ABBB75c4B5bA7609De6f89a4d0466483225a');
+				assert.equal(await owner.getAddress(), '0x381eF709d8FEf0eb99F6c3723107863335005fE5');
 
 				assert.equal(name, 'OMNI App');
 

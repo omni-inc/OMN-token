@@ -63,7 +63,7 @@ contract Vesting is OwnableUpgradeable, Math, Claimable, PausableUpgradeable, ER
      * @dev Method to permit to get the Exactly Unix Epoch of Token Generate Event
      */
 	function getReleaseTime() public pure returns (uint256) {
-        return 1625140800; // "Tuesday, 1 July 2021 12:00:00 GMT"
+        return 1626440400; // "Tuesday, 1 July 2021 12:00:00 GMT"
     }
 
     /**

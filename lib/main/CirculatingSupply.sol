@@ -61,7 +61,7 @@ contract CirculatingSupply is OwnableUpgradeable {
      * @param _account The address to exclude
      */
 	function dropOmniWallet(address _account) public notZero(_account) onlyOwner() returns (bool) {
-		require(!isOmniWallet(_account), "ERC20 OMN: OmniWallet don't exist");
+		require(isOmniWallet(_account), "ERC20 OMN: OmniWallet don't exist");
 		uint256 index = omni_wallets.length;
 		for (uint256 i=0; i < index ; i++ ) {
 			if (_account == omni_wallets[i]) {

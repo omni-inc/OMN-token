@@ -105,9 +105,9 @@ describe("ERC20 Only Vesting Test", async () => {
 			it("1.2.- Call the AddAllocation Method, and Include a Blacklisted Address in the Wallets Array, Revert Transaction", async () => {
 				// Revert Because include a Blacklisted Address in Array
 				addresses1[35] = address;
-				await expect(omnitoken.addBlacklist(address)).to.emit(omnitoken, 'inBlacklisted').withArgs(address);
+				await expect(omnitoken.addBlacklist(address)).to.emit(omnitoken, 'InBlacklisted').withArgs(address);
 				await expect(omnitoken.addAllocations(addresses1, amount1, 0)).to.be.revertedWith("ERC20 OMN: recipient account is blacklisted");
-				await expect(omnitoken.dropBlacklist(address)).to.emit(omnitoken, 'outBlacklisted').withArgs(address);
+				await expect(omnitoken.dropBlacklist(address)).to.emit(omnitoken, 'OutBlacklisted').withArgs(address);
 			});
 			it("1.3.- Call the AddAllocation Method, and Include a Zero TotalAmount, in the Amount Array, Revert Transaction", async () => {
 				// Revert Because include a Zero TotalAmount in Array
