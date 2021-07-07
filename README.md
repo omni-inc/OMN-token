@@ -22,14 +22,14 @@ OR
 ```
 npm run deploy
 ```
-
+---
 #### Start Hardhat test
 ---
 
 ```
 npx hardhat test
 ```
-
+---
 ## environment variables (.env file)
 ---
 
@@ -42,16 +42,22 @@ npx hardhat test
 - URL_TESTNET_BSC=https://data-seed-prebsc-1-s1.binance.org:8545
 - URL_MOONBEAM_TESTNET=https://rpc.testnet.moonbeam.network
 
+---
 ### Last ETH Gas Reporter
+
+---
 
 - Simulation for addAllocation() and transferMany() Methods based arrays of 100 addresses
 
----
 ![](./gasreporter.png)
+
+---
 
 ### Last Contract Size Reporter
 
 ---
 ![](./sizereporter.png)
+
+---
 
 # OMN-token
