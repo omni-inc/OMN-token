@@ -378,7 +378,7 @@ describe("ERC20 Only Vesting Test", async () => {
 				}
 				for (let i=0 ; i<100; i++) {
 					expect((await omnitoken.balanceOf(addresses4[i])).toString()).to.equal((amount4[i]).toString());
-					const thirty:BigNumber = BigNumber.from(await omnitoken.balanceOf(addresses4[i])).mul('34').div('100');
+					const thirty:BigNumber = BigNumber.from(await omnitoken.balanceOf(addresses4[i])).mul('0').div('100');
 					expect((await omnitoken.getTransferableAmount(addresses4[i])).toString()).to.equal(thirty.toString());
 					const diff:BigNumber = BigNumber.from(await omnitoken.balanceOf(addresses4[i])).sub(thirty);
 					expect((await omnitoken.getRestAmount(addresses4[i])).toString()).to.equal(diff.toString());
@@ -416,7 +416,7 @@ describe("ERC20 Only Vesting Test", async () => {
 				}
 				for (let i=0 ; i<100; i++) {
 					expect((await omnitoken.balanceOf(addresses4[i])).toString()).to.equal((amount4[i]).toString());
-					const thirty:BigNumber = BigNumber.from(await omnitoken.balanceOf(addresses4[i])).mul('34').div('100');
+					const thirty:BigNumber = BigNumber.from(await omnitoken.balanceOf(addresses4[i])).mul('0').div('100');
 					expect((await omnitoken.getTransferableAmount(addresses4[i])).toString()).to.equal(thirty.toString());
 					const diff:BigNumber = BigNumber.from(await omnitoken.balanceOf(addresses4[i])).sub(thirty);
 					expect((await omnitoken.getRestAmount(addresses4[i])).toString()).to.equal(diff.toString());
@@ -432,7 +432,7 @@ describe("ERC20 Only Vesting Test", async () => {
 				}
 				for (let i=0 ; i<100; i++) {
 					expect((await omnitoken.balanceOf(addresses4[i])).toString()).to.equal((amount4[i]).toString());
-					const thirty:BigNumber = BigNumber.from(await omnitoken.balanceOf(addresses4[i])).mul('67').div('100');;
+					const thirty:BigNumber = BigNumber.from(await omnitoken.balanceOf(addresses4[i])).mul('33').div('100');;
 					expect((await omnitoken.getTransferableAmount(addresses4[i])).toString()).to.equal(thirty.toString());
 					const diff:BigNumber = BigNumber.from(await omnitoken.balanceOf(addresses4[i])).sub(thirty);
 					expect((await omnitoken.getRestAmount(addresses4[i])).toString()).to.equal(diff.toString());
@@ -547,7 +547,7 @@ describe("ERC20 Only Vesting Test", async () => {
 				}
 				for (let i=0 ; i<100; i++) {
 					expect((await omnitoken.balanceOf(addresses4[i])).toString()).to.equal((amount4[i]).toString());
-					const thirty:BigNumber = BigNumber.from(await omnitoken.balanceOf(addresses4[i])).mul('67').div('100');
+					const thirty:BigNumber = BigNumber.from(await omnitoken.balanceOf(addresses4[i])).mul('33').div('100');
 					expect((await omnitoken.getTransferableAmount(addresses4[i])).toString()).to.equal(thirty.toString());
 					const diff:BigNumber = BigNumber.from(await omnitoken.balanceOf(addresses4[i])).sub(thirty);
 					expect((await omnitoken.getRestAmount(addresses4[i])).toString()).to.equal(diff.toString());
@@ -563,7 +563,7 @@ describe("ERC20 Only Vesting Test", async () => {
 				}
 				for (let i=0 ; i<100; i++) {
 					expect((await omnitoken.balanceOf(addresses4[i])).toString()).to.equal((amount4[i]).toString());
-					const thirty:BigNumber = BigNumber.from(await omnitoken.balanceOf(addresses4[i]));
+					const thirty:BigNumber = BigNumber.from(await omnitoken.balanceOf(addresses4[i])).mul('66').div('100');
 					expect((await omnitoken.getTransferableAmount(addresses4[i])).toString()).to.equal(thirty.toString());
 					const diff:BigNumber = BigNumber.from(await omnitoken.balanceOf(addresses4[i])).sub(thirty);
 					expect((await omnitoken.getRestAmount(addresses4[i])).toString()).to.equal(diff.toString());

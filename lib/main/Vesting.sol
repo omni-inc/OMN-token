@@ -63,7 +63,7 @@ contract Vesting is OwnableUpgradeable, Math, Claimable, PausableUpgradeable, ER
      * @dev Method to permit to get the Exactly Unix Epoch of Token Generate Event
      */
 	function getReleaseTime() public pure returns (uint256) {
-        return 1626440400; // "Tuesday, 1 July 2021 12:00:00 GMT"
+        return 1626440400; // "Friday, 16 July 2021 13:00:00 GMT"
     }
 
     /**
@@ -97,6 +97,7 @@ contract Vesting is OwnableUpgradeable, Math, Claimable, PausableUpgradeable, ER
 			uint256 dailyAmount;
 			uint256 monthlyAmount;
 			uint256 afterDay;
+			uint256 initialAmount;
 			if (vestingType.vestingType) {
 				dailyAmount = mulDiv(totalAmounts[j], vestingType.dailyRate, 1e18);
 				monthlyAmount = 0;
@@ -106,8 +107,19 @@ contract Vesting is OwnableUpgradeable, Math, Claimable, PausableUpgradeable, ER
 				monthlyAmount = mulDiv(totalAmounts[j], vestingType.monthRate, 1e18);
 				afterDay = vestingType.monthDelay.mul(30 days);
 			}
-            uint256 initialAmount = mulDiv(totalAmounts[j], vestingType.initialRate, 1e18);
-
+			/**
+			* @dev The Allocation #4, VestingTypeIndex #3, correspond the Public Allocation
+			* @dev which will be managed by an IDO, within the ApolloX Platform, in the Binance Smart Chain
+			* @dev Therefore, 34% of said allocation, which is the first part to be delivered during the IDO,
+			* @dev will be previously transferred to ApolloX to be delivered to the Stakeholders participating
+			* @dev in the IDO prior to the vesting process as such.
+			* @dev the remaining 66 percent will be delivered in two stages of 33% every 30 days, completing 100% in two months.
+			*/
+			if (vestingTypeIndex == 3) {
+				initialAmount = 0;
+			} else {
+				initialAmount = mulDiv(totalAmounts[j], vestingType.initialRate, 1e18);
+			}
 			// Transfer Token to the Wallet
             _balances[_address] = _balances[_address].add(totalAmount);
             emit Transfer(msg.sender, _address, totalAmount);
