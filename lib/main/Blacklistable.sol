@@ -29,7 +29,7 @@ contract Blacklistable is OwnableUpgradeable {
     modifier notBlacklisted(address _account) {
         require(
             !blacklisted[_account],
-            "Blacklistable: sender account is blacklisted"
+            "ERC20 OMN: sender account is blacklisted"
         );
         _;
     }
@@ -39,7 +39,7 @@ contract Blacklistable is OwnableUpgradeable {
 	 * @param _to The address to check
      */
     modifier validAddress(address _to) {
-        require(_to != address(0), "ERC20 OMN: wallet must be different zero address");
+        require(_to != address(0), "ERC20 OMN: Not Add Zero Address");
         /* solcov ignore next */
         _;
     }
@@ -67,6 +67,7 @@ contract Blacklistable is OwnableUpgradeable {
      * @param _account The address to remove from the blacklist
      */
     function dropBlacklist(address _account) public validAddress(_account) onlyOwner() {
+		require(isBlacklisted(_account), "ERC20 OMN: Blacklisted Wallet don't exist");
         blacklisted[_account] = false;
         emit OutBlacklisted(_account);
     }
