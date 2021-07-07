@@ -346,7 +346,11 @@ describe("ERC20 Full Test except Vesting", async () => {
 					await expect(omnitoken.addOmniWallet(await accounts[i].getAddress())).to.emit(omnitoken, 'InOmniWallet').withArgs(await accounts[i].getAddress());
 					console.log("Account ", i, "OMNI Wallets Address", await accounts[i].getAddress());
 				}
-				const address:string[] = await omnitoken.getOmniWallets()
+				console.log("Revert for Add again in the OmniWallet Arrays");
+				await expect(omnitoken.addOmniWallet(await accounts[4].getAddress())).to.be.revertedWith("ERC20 OMN: wallet is already OmniWallet");
+				await expect(omnitoken.addOmniWallet(await accounts[8].getAddress())).to.be.revertedWith("ERC20 OMN: wallet is already OmniWallet");
+				await expect(omnitoken.addOmniWallet(await accounts[12].getAddress())).to.be.revertedWith("ERC20 OMN: wallet is already OmniWallet");
+				const address:string[] = await omnitoken.getOmniWallets();
 				console.log("List of Address OMNI Wallets: ");
 				for (let i=0; i < address.length ; i++) {
 					console.log("Address OMNI Wallets: ", address[i], "Status :", await omnitoken.isOmniWallet(address[i]));

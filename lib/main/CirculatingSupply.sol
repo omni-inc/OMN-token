@@ -51,6 +51,7 @@ contract CirculatingSupply is OwnableUpgradeable {
      * @param _account The address to include
      */
 	function addOmniWallet(address _account) public notZero(_account) onlyOwner() returns (bool) {
+		require(!isOmniWallet(_account), "ERC20 OMN: wallet is already OmniWallet");
 		omni_wallets.push(_account);
 		emit InOmniWallet(_account);
 		return true;
