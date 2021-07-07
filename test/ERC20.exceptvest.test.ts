@@ -215,11 +215,17 @@ describe("ERC20 Full Test except Vesting", async () => {
 			it("4.1.- Add several list of Accounts in the Blacklist: ", async () => {
 				console.log("Verify only the Owner can add wallet to the Blacklist: ");
 				await expect(omnitoken.connect(accounts[1]).addBlacklist(await accounts[0].getAddress())).to.be.revertedWith("Ownable: caller is not the owner");
+				const walletZeroAddress = '0x0000000000000000000000000000000000000000';
+				console.log("Revert for WalletAddressZero");
+				await expect(omnitoken.addBlacklist(walletZeroAddress)).to.be.revertedWith("ERC20 OMN: Not Add Zero Address");
 				console.log("Add all odd accounts from 4 to 16 address:");
 				for (let i=4; i <= 16; i+=2) {
 					await expect(omnitoken.addBlacklist(await accounts[i].getAddress())).to.emit(omnitoken, 'InBlacklisted').withArgs(await accounts[i].getAddress());
 					console.log("Account ", i, "Blacklisted ", await accounts[i].getAddress());
 				}
+				await expect(omnitoken.addBlacklist(await accounts[4].getAddress())).to.be.revertedWith("ERC20 OMN: sender account is blacklisted");
+				await expect(omnitoken.addBlacklist(await accounts[8].getAddress())).to.be.revertedWith("ERC20 OMN: sender account is blacklisted");
+				await expect(omnitoken.addBlacklist(await accounts[12].getAddress())).to.be.revertedWith("ERC20 OMN: sender account is blacklisted");
 				const address:string[] = await omnitoken.getBlacklist()
 				console.log("List of Address Blacklisted: ");
 				for (let i=0; i < address.length ; i++) {
@@ -233,6 +239,11 @@ describe("ERC20 Full Test except Vesting", async () => {
 					await expect(omnitoken.dropBlacklist(await accounts[i].getAddress())).to.emit(omnitoken, 'OutBlacklisted').withArgs(await accounts[i].getAddress());
 					console.log("Account ", i, "Blacklisted ", await accounts[i].getAddress());
 				}
+				const walletZeroAddress = '0x0000000000000000000000000000000000000000';
+				console.log("Revert for WalletAddressZero");
+				await expect(omnitoken.dropBlacklist(walletZeroAddress)).to.be.revertedWith("ERC20 OMN: Not Add Zero Address");
+				console.log("Revert for Drop a wrong wallet")
+				await expect(omnitoken.dropBlacklist(await accounts[20].getAddress())).to.be.revertedWith("ERC20 OMN: Blacklisted Wallet don't exist");
 				const address:string[] = await omnitoken.getBlacklist()
 				console.log("List of Address Blacklisted: ");
 				for (let i=0; i < address.length ; i++) {
@@ -327,6 +338,9 @@ describe("ERC20 Full Test except Vesting", async () => {
 			it("5.2.- Add several list of Accounts in the OMNI Wallets Array: ", async () => {
 				console.log("Verify only the Owner can add wallet to the OMNI Wallets Array: ");
 				await expect(omnitoken.connect(accounts[1]).addOmniWallet(await accounts[0].getAddress())).to.be.revertedWith("Ownable: caller is not the owner");
+				const walletZeroAddress = '0x0000000000000000000000000000000000000000';
+				console.log("Revert for WalletAddressZero");
+				await expect(omnitoken.addOmniWallet(walletZeroAddress)).to.be.revertedWith("ERC20 OMN: Not Add Zero Address");
 				console.log("Add OMNI Wallets array, Accounts 4, 8, 12 and 16:");
 				for (let i=4; i <= 16; i+=4) {
 					await expect(omnitoken.addOmniWallet(await accounts[i].getAddress())).to.emit(omnitoken, 'InOmniWallet').withArgs(await accounts[i].getAddress());
@@ -349,13 +363,20 @@ describe("ERC20 Full Test except Vesting", async () => {
 
 			it("5.4.- Drop some address from OMNI Wallets, and verify the changes", async () => {
 				console.log("Drop accounts from positions 4, 8, 12 and 16 address:");
+				const address:string[] = await omnitoken.getOmniWallets();
 				for (let i=4; i <= 16; i+=4) {
 					await expect(omnitoken.dropOmniWallet(await accounts[i].getAddress())).to.emit(omnitoken, 'OutOmniWallet').withArgs(await accounts[i].getAddress());
 					console.log("Account ", i, "OMNI Wallets Address ", await accounts[i].getAddress());
 				}
-				const address:string[] = await omnitoken.getOmniWallets()
+				const walletZeroAddress = '0x0000000000000000000000000000000000000000';
+				console.log("Revert for WalletAddressZero");
+				await expect(omnitoken.dropOmniWallet(walletZeroAddress)).to.be.revertedWith("ERC20 OMN: Not Add Zero Address");
+				console.log("Revert for Drop an not exist address")
+				await expect(omnitoken.dropOmniWallet(await accounts[20].getAddress())).to.be.revertedWith("ERC20 OMN: OmniWallet don't exist");
+				const address2:string[] = await omnitoken.getOmniWallets();
+				expect(address2.length).to.be.equal(address.length-4);
 				console.log("List of Address OMNI Wallets: ");
-				for (let i=0; i < address.length ; i++) {
+				for (let i=0; i < address2.length ; i++) {
 					console.log("Address OMNI Wallets: ", address[i], "Status :",  await omnitoken.isOmniWallet(address[i]));
 				}
 			});
@@ -428,6 +449,9 @@ describe("ERC20 Full Test except Vesting", async () => {
 				await accounts[0].sendTransaction({to: omnitoken.address, value: value2});
 				//await expect(accounts[0].sendTransaction({to: omnitoken.address, value: 10})).to.be.revertedWith("ERC20 OMN: Sending Ether for Error, revert!!!");
 				console.log("Verify the Balance After send ETH: ", (await ethers.provider.getBalance(omnitoken.address)).toString());
+				const walletZeroAddress = '0x0000000000000000000000000000000000000000';
+				console.log("Revert for WalletAddressZero");
+				await expect(omnitoken.claimValues('0x0000000000000000000000000000000000000000', walletZeroAddress)).to.be.revertedWith("ERC20 OMN: Not Add Zero Address");
 				const address = await accounts[15].getAddress();
 				console.log("Verify Balance of ETH Accounts[15] before claim: ", (await ethers.provider.getBalance(address)).toString());
 				await omnitoken.claimValues('0x0000000000000000000000000000000000000000', address);
@@ -439,6 +463,9 @@ describe("ERC20 Full Test except Vesting", async () => {
 			it("6.2- Sending ERC20 token and After Claim with Method", async () => {
 				await erc20Token.mintToWallet(omnitoken.address,'9000000000000000000');
 				console.log("Balance ERC20 Token of Smart Contract OMNI before Claim: ", (await erc20Token.balanceOf(omnitoken.address)).toString());
+				const walletZeroAddress = '0x0000000000000000000000000000000000000000';
+				console.log("Revert for WalletAddressZero");
+				await expect(omnitoken.claimValues(erc20Token.address, walletZeroAddress)).to.be.revertedWith("ERC20 OMN: Not Add Zero Address");
 				const address = await accounts[15].getAddress();
 				console.log("Balance ERC20 Token of Accounts[15] before Claim: ", (await erc20Token.balanceOf(address)).toString());
 				await omnitoken.claimValues(erc20Token.address, address);
