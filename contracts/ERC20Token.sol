@@ -23,7 +23,7 @@ contract ERC20Token is OwnableUpgradeable, ERC20Upgradeable {
 
     function mintToWallet(address address_, uint256 amount)
         public
-        payable
+		onlyOwner()
         returns (bool)
     {
         _mint(address_, amount);

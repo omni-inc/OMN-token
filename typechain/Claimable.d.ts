@@ -21,15 +21,35 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface ClaimableInterface extends ethers.utils.Interface {
   functions: {
+    "addBlacklist(address)": FunctionFragment;
     "claimValues(address,address)": FunctionFragment;
+    "dropBlacklist(address)": FunctionFragment;
+    "getBlacklist()": FunctionFragment;
+    "isBlacklisted(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
   };
 
   encodeFunctionData(
+    functionFragment: "addBlacklist",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "claimValues",
     values: [string, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "dropBlacklist",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBlacklist",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isBlacklisted",
+    values: [string]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
@@ -42,7 +62,23 @@ interface ClaimableInterface extends ethers.utils.Interface {
   ): string;
 
   decodeFunctionResult(
+    functionFragment: "addBlacklist",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "claimValues",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "dropBlacklist",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getBlacklist",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isBlacklisted",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -56,10 +92,14 @@ interface ClaimableInterface extends ethers.utils.Interface {
   ): Result;
 
   events: {
+    "InBlacklisted(address)": EventFragment;
+    "OutBlacklisted(address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "ValueReceived(address,uint256)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "InBlacklisted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OutBlacklisted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ValueReceived"): EventFragment;
 }
@@ -108,6 +148,16 @@ export class Claimable extends Contract {
   interface: ClaimableInterface;
 
   functions: {
+    addBlacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "addBlacklist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     claimValues(
       _token: string,
       _to: string,
@@ -119,6 +169,30 @@ export class Claimable extends Contract {
       _to: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    dropBlacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "dropBlacklist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    getBlacklist(overrides?: CallOverrides): Promise<[string[]]>;
+
+    "getBlacklist()"(overrides?: CallOverrides): Promise<[string[]]>;
+
+    isBlacklisted(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    "isBlacklisted(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
@@ -143,6 +217,16 @@ export class Claimable extends Contract {
     ): Promise<ContractTransaction>;
   };
 
+  addBlacklist(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "addBlacklist(address)"(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   claimValues(
     _token: string,
     _to: string,
@@ -154,6 +238,27 @@ export class Claimable extends Contract {
     _to: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  dropBlacklist(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "dropBlacklist(address)"(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  getBlacklist(overrides?: CallOverrides): Promise<string[]>;
+
+  "getBlacklist()"(overrides?: CallOverrides): Promise<string[]>;
+
+  isBlacklisted(_account: string, overrides?: CallOverrides): Promise<boolean>;
+
+  "isBlacklisted(address)"(
+    _account: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
@@ -178,6 +283,13 @@ export class Claimable extends Contract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    addBlacklist(_account: string, overrides?: CallOverrides): Promise<void>;
+
+    "addBlacklist(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     claimValues(
       _token: string,
       _to: string,
@@ -189,6 +301,27 @@ export class Claimable extends Contract {
       _to: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    dropBlacklist(_account: string, overrides?: CallOverrides): Promise<void>;
+
+    "dropBlacklist(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    getBlacklist(overrides?: CallOverrides): Promise<string[]>;
+
+    "getBlacklist()"(overrides?: CallOverrides): Promise<string[]>;
+
+    isBlacklisted(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "isBlacklisted(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
@@ -210,6 +343,14 @@ export class Claimable extends Contract {
   };
 
   filters: {
+    InBlacklisted(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
+
+    OutBlacklisted(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
+
     OwnershipTransferred(
       previousOwner: string | null,
       newOwner: string | null
@@ -228,6 +369,16 @@ export class Claimable extends Contract {
   };
 
   estimateGas: {
+    addBlacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "addBlacklist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     claimValues(
       _token: string,
       _to: string,
@@ -238,6 +389,30 @@ export class Claimable extends Contract {
       _token: string,
       _to: string,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    dropBlacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "dropBlacklist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    getBlacklist(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getBlacklist()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    isBlacklisted(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "isBlacklisted(address)"(
+      _account: string,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
@@ -264,6 +439,16 @@ export class Claimable extends Contract {
   };
 
   populateTransaction: {
+    addBlacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "addBlacklist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     claimValues(
       _token: string,
       _to: string,
@@ -274,6 +459,30 @@ export class Claimable extends Contract {
       _token: string,
       _to: string,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    dropBlacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "dropBlacklist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    getBlacklist(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getBlacklist()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    isBlacklisted(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "isBlacklisted(address)"(
+      _account: string,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;

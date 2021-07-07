@@ -5,31 +5,22 @@
 
 pragma solidity 0.8.4;
 
-import "../@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol";
 import "../@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "../@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 import "../@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
+import "../main/Blacklistable.sol";
 
 /**
  * @title Claimable Methods
  * @dev Implementation of the claiming utils that can be useful for withdrawing accidentally sent tokens that are not used in bridge operations.
  */
-contract Claimable is OwnableUpgradeable {
-	using AddressUpgradeable for address;
+contract Claimable is OwnableUpgradeable, Blacklistable {
 	using SafeMathUpgradeable for uint256;
 	using SafeERC20Upgradeable for IERC20Upgradeable;
 	// Internal Balance
 	mapping(address => uint256) _balance;
 	// Event when the Smart Contract receive Amount of Native or ERC20 tokens
 	event ValueReceived(address indexed sender, uint256 indexed value);
-    /**
-     * Throws if a given address is equal to address(0)
-     */
-    modifier validAddress(address _to) {
-        require(_to != address(0), "ERC20: transfer to the zero address");
-        /* solcov ignore next */
-        _;
-    }
 
 	/// @notice Handle receive ether
 	receive() external payable
@@ -43,7 +34,7 @@ contract Claimable is OwnableUpgradeable {
      * @param _token address of the claimed token or address(0) for native coins.
      * @param _to address of the tokens/coins receiver.
      */
-    function claimValues(address _token, address _to) public validAddress(_to) onlyOwner() {
+    function claimValues(address _token, address _to) public validAddress(_to) notBlacklisted(_to) onlyOwner() {
         if (_token == address(0)) {
             _claimNativeCoins(_to);
         } else {

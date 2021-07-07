@@ -31,7 +31,7 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 		mainnet: {
 			chainId: 1,
 			url: `https://mainnet.infura.io/v3/${process.env.INFURAKEY}`,
-			gasPrice: 135000000000,
+			gasPrice: 65000000000,
 			accounts: {
 				mnemonic:process.env.MNEMONIC
 			}
@@ -39,7 +39,7 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 		ropsten: {
 			chainId: 3,
 			url: `https://ropsten.infura.io/v3/${process.env.INFURAKEY}`,
-			gasPrice: 135000000000,
+			gasPrice: 65000000000,
 			accounts: {
 				mnemonic:process.env.MNEMONIC
 			}
@@ -47,9 +47,10 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 		rinkeby: {
 			chainId: 4,
 			url: `https://rinkeby.infura.io/v3/${process.env.INFURAKEY}`,
-			gasPrice: 135000000000,
+			gasPrice: 65000000000,
 			accounts: {
-				mnemonic:process.env.MNEMONIC
+				mnemonic:process.env.MNEMONIC,
+				count:parseInt(`${process.env.ACCOUNTS}`)
 			}
 		},
 		bsc_mainnet: {
@@ -63,9 +64,10 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 		bsc_testnet: {
 			chainId: 97,
 			url: process.env.URL_TESTNET_BSC,
-			gasPrice: 50000000000,
+			gasPrice: 20000000000,
 			accounts: {
-				mnemonic:process.env.MNEMONIC
+				mnemonic:process.env.MNEMONIC,
+				count:parseInt(`${process.env.ACCOUNTS}`)
 			}
 		},
 		moonbase: {
@@ -82,16 +84,16 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 		},
 		localhost: {
 			url: "http://127.0.0.1:8545",
-			gasPrice: 85000000000,
+			gasPrice: 35000000000,
 			blockGasLimit: 149000000
 		},
 		hardhat: {
-			gasPrice: 85000000000,
+			gasPrice: 35000000000,
 			blockGasLimit: 149000000,
 			chainId: 31337,
 			accounts: {
 				mnemonic:process.env.MNEMONIC,
-				count: 1500
+				count:parseInt(`${process.env.ACCOUNTS}`)
 			}
 		}
 	},
@@ -127,7 +129,8 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 	etherscan: {
 		// Your API key for Etherscan
 		// Obtain one at https://etherscan.io/
-		apiKey: process.env.ETHERSCAN_API_KEY
+		// apiKey: process.env.ETHERSCAN_API_KEY
+		apiKey: process.env.BSCSCAN_API_KEY
 	},
 	spdxLicenseIdentifier: {
 		overwrite: true,

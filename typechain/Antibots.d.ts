@@ -92,10 +92,12 @@ interface AntibotsInterface extends ethers.utils.Interface {
   ): Result;
 
   events: {
+    "DisableDefenseAntiBots(uint256,bool)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "TransferBurned(address,uint256)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "DisableDefenseAntiBots"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferBurned"): EventFragment;
 }
@@ -308,6 +310,14 @@ export class Antibots extends Contract {
   };
 
   filters: {
+    DisableDefenseAntiBots(
+      blockNumber: null,
+      statusDefense: null
+    ): TypedEventFilter<
+      [BigNumber, boolean],
+      { blockNumber: BigNumber; statusDefense: boolean }
+    >;
+
     OwnershipTransferred(
       previousOwner: string | null,
       newOwner: string | null
