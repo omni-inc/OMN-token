@@ -8,13 +8,10 @@ pragma experimental ABIEncoderV2;
 
 import "../lib/@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 import "../lib/@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "../lib/main/Claimable.sol";
-import "../lib/main/CirculatingSupply.sol";
 import "../lib/main/Vesting.sol";
-import "../lib/main/Antibots.sol";
 
 
-contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting, Antibots {
+contract OmniTokenV1 is Initializable, Vesting{
 	using AddressUpgradeable for address;
 	using SafeMathUpgradeable for uint256;
 	using SafeERC20Upgradeable for IERC20Upgradeable;
@@ -174,7 +171,7 @@ contract OmniTokenV1 is Initializable, Claimable, CirculatingSupply, Vesting, An
 		require(!isBlacklisted(recipient), "ERC20 OMN: recipient account is blacklisted");
 		// Permit the Owner execute token transfer/mint/burn while paused contract
 		if (_msgSender() != owner()) {
-			require(!paused(), "ERC20Pausable: token transfer/mint/burn while paused");
+			require(!paused(), "ERC20 OMN: token transfer/mint/burn while paused");
 		}
         require(canTransfer(sender, amount), "ERC20 OMN: Wait for vesting day!");
         super._beforeTokenTransfer(sender, recipient, amount);

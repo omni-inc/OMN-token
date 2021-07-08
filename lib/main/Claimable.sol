@@ -8,13 +8,13 @@ pragma solidity 0.8.4;
 import "../@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "../@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 import "../@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
-import "../main/Blacklistable.sol";
+import "./CirculatingSupply.sol";
 
 /**
  * @title Claimable Methods
  * @dev Implementation of the claiming utils that can be useful for withdrawing accidentally sent tokens that are not used in bridge operations.
  */
-contract Claimable is OwnableUpgradeable, Blacklistable {
+contract Claimable is OwnableUpgradeable, CirculatingSupply {
 	using SafeMathUpgradeable for uint256;
 	using SafeERC20Upgradeable for IERC20Upgradeable;
 	// Internal Balance
