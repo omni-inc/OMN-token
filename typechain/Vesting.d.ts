@@ -24,24 +24,37 @@ interface VestingInterface extends ethers.utils.Interface {
     "DOMAIN_SEPARATOR()": FunctionFragment;
     "addAllocations(address[],uint256[],uint256)": FunctionFragment;
     "addBlacklist(address)": FunctionFragment;
+    "addOmniWallet(address)": FunctionFragment;
+    "addWhiteListed(address)": FunctionFragment;
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "claimValues(address,address)": FunctionFragment;
     "decimals()": FunctionFragment;
     "decreaseAllowance(address,uint256)": FunctionFragment;
+    "disableBurnBeforeBlockNumber()": FunctionFragment;
+    "disableTransfers(uint256)": FunctionFragment;
     "dropBlacklist(address)": FunctionFragment;
+    "dropOmniWallet(address)": FunctionFragment;
+    "dropWhiteListed(address)": FunctionFragment;
     "frozenWallets(address)": FunctionFragment;
     "getBlacklist()": FunctionFragment;
+    "getBurnBeforeBlockNumber()": FunctionFragment;
+    "getBurnBeforeBlockNumberDisabled()": FunctionFragment;
     "getDays(uint256)": FunctionFragment;
+    "getIsTransferDisabled()": FunctionFragment;
     "getMonths(uint256)": FunctionFragment;
+    "getOmniWallets()": FunctionFragment;
     "getReleaseTime()": FunctionFragment;
     "getRestAmount(address)": FunctionFragment;
     "getTimestamp()": FunctionFragment;
     "getTransferableAmount(address)": FunctionFragment;
+    "getWhiteListWallets()": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
     "isBlacklisted(address)": FunctionFragment;
+    "isOmniWallet(address)": FunctionFragment;
     "isStarted(uint256)": FunctionFragment;
+    "isWhiteListed(address)": FunctionFragment;
     "name()": FunctionFragment;
     "nonces(address)": FunctionFragment;
     "owner()": FunctionFragment;
@@ -70,6 +83,14 @@ interface VestingInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
+    functionFragment: "addOmniWallet",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "addWhiteListed",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "allowance",
     values: [string, string]
   ): string;
@@ -88,7 +109,23 @@ interface VestingInterface extends ethers.utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "disableBurnBeforeBlockNumber",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "disableTransfers",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "dropBlacklist",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "dropOmniWallet",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "dropWhiteListed",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -100,12 +137,28 @@ interface VestingInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "getBurnBeforeBlockNumber",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBurnBeforeBlockNumberDisabled",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "getDays",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "getIsTransferDisabled",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "getMonths",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getOmniWallets",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getReleaseTime",
@@ -124,6 +177,10 @@ interface VestingInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
+    functionFragment: "getWhiteListWallets",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "increaseAllowance",
     values: [string, BigNumberish]
   ): string;
@@ -132,8 +189,16 @@ interface VestingInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
+    functionFragment: "isOmniWallet",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "isStarted",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isWhiteListed",
+    values: [string]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "nonces", values: [string]): string;
@@ -193,6 +258,14 @@ interface VestingInterface extends ethers.utils.Interface {
     functionFragment: "addBlacklist",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "addOmniWallet",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "addWhiteListed",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
@@ -206,7 +279,23 @@ interface VestingInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "disableBurnBeforeBlockNumber",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "disableTransfers",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "dropBlacklist",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "dropOmniWallet",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "dropWhiteListed",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -217,8 +306,24 @@ interface VestingInterface extends ethers.utils.Interface {
     functionFragment: "getBlacklist",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "getBurnBeforeBlockNumber",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getBurnBeforeBlockNumberDisabled",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getDays", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getIsTransferDisabled",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getMonths", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getOmniWallets",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "getReleaseTime",
     data: BytesLike
@@ -236,6 +341,10 @@ interface VestingInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getWhiteListWallets",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "increaseAllowance",
     data: BytesLike
   ): Result;
@@ -243,7 +352,15 @@ interface VestingInterface extends ethers.utils.Interface {
     functionFragment: "isBlacklisted",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "isOmniWallet",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "isStarted", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "isWhiteListed",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -275,22 +392,34 @@ interface VestingInterface extends ethers.utils.Interface {
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
+    "DisableDefenseAntiBots(uint256,bool)": EventFragment;
     "InBlacklisted(address)": EventFragment;
+    "InOmniWallet(address)": EventFragment;
+    "InWhiteListWallet(address)": EventFragment;
     "OutBlacklisted(address)": EventFragment;
+    "OutOmniWallet(address)": EventFragment;
+    "OutWhiteListWallet(address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "Paused(address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
+    "TransferBurned(address,uint256)": EventFragment;
     "Unpaused(address)": EventFragment;
     "ValueReceived(address,uint256)": EventFragment;
     "inFrozenWallet(bool,uint32,uint32,address,uint256,uint256,uint256,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "DisableDefenseAntiBots"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "InBlacklisted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "InOmniWallet"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "InWhiteListWallet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OutBlacklisted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OutOmniWallet"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OutWhiteListWallet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "TransferBurned"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ValueReceived"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "inFrozenWallet"): EventFragment;
@@ -368,6 +497,26 @@ export class Vesting extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    addOmniWallet(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "addOmniWallet(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    addWhiteListed(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "addWhiteListed(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     allowance(
       owner: string,
       spender: string,
@@ -427,12 +576,50 @@ export class Vesting extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    disableBurnBeforeBlockNumber(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "disableBurnBeforeBlockNumber()"(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    disableTransfers(
+      blocksDuration: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "disableTransfers(uint256)"(
+      blocksDuration: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     dropBlacklist(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     "dropBlacklist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    dropOmniWallet(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "dropOmniWallet(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    dropWhiteListed(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "dropWhiteListed(address)"(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -491,6 +678,20 @@ export class Vesting extends Contract {
 
     "getBlacklist()"(overrides?: CallOverrides): Promise<[string[]]>;
 
+    getBurnBeforeBlockNumber(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    "getBurnBeforeBlockNumber()"(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    getBurnBeforeBlockNumberDisabled(
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    "getBurnBeforeBlockNumberDisabled()"(
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
     getDays(
       afterDays: BigNumberish,
       overrides?: CallOverrides
@@ -501,6 +702,10 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { dias: BigNumber }>;
 
+    getIsTransferDisabled(overrides?: CallOverrides): Promise<[boolean]>;
+
+    "getIsTransferDisabled()"(overrides?: CallOverrides): Promise<[boolean]>;
+
     getMonths(
       afterDays: BigNumberish,
       overrides?: CallOverrides
@@ -510,6 +715,10 @@ export class Vesting extends Contract {
       afterDays: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { months: BigNumber }>;
+
+    getOmniWallets(overrides?: CallOverrides): Promise<[string[]]>;
+
+    "getOmniWallets()"(overrides?: CallOverrides): Promise<[string[]]>;
 
     getReleaseTime(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -539,6 +748,10 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { transferableAmount: BigNumber }>;
 
+    getWhiteListWallets(overrides?: CallOverrides): Promise<[string[]]>;
+
+    "getWhiteListWallets()"(overrides?: CallOverrides): Promise<[string[]]>;
+
     increaseAllowance(
       spender: string,
       addedValue: BigNumberish,
@@ -561,6 +774,16 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    isOmniWallet(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    "isOmniWallet(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
     isStarted(
       startDay: BigNumberish,
       overrides?: CallOverrides
@@ -568,6 +791,16 @@ export class Vesting extends Contract {
 
     "isStarted(uint256)"(
       startDay: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    isWhiteListed(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    "isWhiteListed(address)"(
+      _account: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
@@ -753,6 +986,26 @@ export class Vesting extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  addOmniWallet(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "addOmniWallet(address)"(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  addWhiteListed(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "addWhiteListed(address)"(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   allowance(
     owner: string,
     spender: string,
@@ -812,12 +1065,50 @@ export class Vesting extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  disableBurnBeforeBlockNumber(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "disableBurnBeforeBlockNumber()"(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  disableTransfers(
+    blocksDuration: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "disableTransfers(uint256)"(
+    blocksDuration: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   dropBlacklist(
     _account: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   "dropBlacklist(address)"(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  dropOmniWallet(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "dropOmniWallet(address)"(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  dropWhiteListed(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "dropWhiteListed(address)"(
     _account: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -876,6 +1167,16 @@ export class Vesting extends Contract {
 
   "getBlacklist()"(overrides?: CallOverrides): Promise<string[]>;
 
+  getBurnBeforeBlockNumber(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "getBurnBeforeBlockNumber()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getBurnBeforeBlockNumberDisabled(overrides?: CallOverrides): Promise<boolean>;
+
+  "getBurnBeforeBlockNumberDisabled()"(
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   getDays(
     afterDays: BigNumberish,
     overrides?: CallOverrides
@@ -886,6 +1187,10 @@ export class Vesting extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  getIsTransferDisabled(overrides?: CallOverrides): Promise<boolean>;
+
+  "getIsTransferDisabled()"(overrides?: CallOverrides): Promise<boolean>;
+
   getMonths(
     afterDays: BigNumberish,
     overrides?: CallOverrides
@@ -895,6 +1200,10 @@ export class Vesting extends Contract {
     afterDays: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  getOmniWallets(overrides?: CallOverrides): Promise<string[]>;
+
+  "getOmniWallets()"(overrides?: CallOverrides): Promise<string[]>;
 
   getReleaseTime(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -921,6 +1230,10 @@ export class Vesting extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  getWhiteListWallets(overrides?: CallOverrides): Promise<string[]>;
+
+  "getWhiteListWallets()"(overrides?: CallOverrides): Promise<string[]>;
+
   increaseAllowance(
     spender: string,
     addedValue: BigNumberish,
@@ -940,6 +1253,13 @@ export class Vesting extends Contract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  isOmniWallet(_account: string, overrides?: CallOverrides): Promise<boolean>;
+
+  "isOmniWallet(address)"(
+    _account: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   isStarted(
     startDay: BigNumberish,
     overrides?: CallOverrides
@@ -947,6 +1267,13 @@ export class Vesting extends Contract {
 
   "isStarted(uint256)"(
     startDay: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  isWhiteListed(_account: string, overrides?: CallOverrides): Promise<boolean>;
+
+  "isWhiteListed(address)"(
+    _account: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -1129,6 +1456,26 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    addOmniWallet(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "addOmniWallet(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    addWhiteListed(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "addWhiteListed(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     allowance(
       owner: string,
       spender: string,
@@ -1188,12 +1535,46 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    disableBurnBeforeBlockNumber(overrides?: CallOverrides): Promise<void>;
+
+    "disableBurnBeforeBlockNumber()"(overrides?: CallOverrides): Promise<void>;
+
+    disableTransfers(
+      blocksDuration: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "disableTransfers(uint256)"(
+      blocksDuration: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     dropBlacklist(_account: string, overrides?: CallOverrides): Promise<void>;
 
     "dropBlacklist(address)"(
       _account: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    dropOmniWallet(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "dropOmniWallet(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    dropWhiteListed(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "dropWhiteListed(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     frozenWallets(
       arg0: string,
@@ -1249,6 +1630,18 @@ export class Vesting extends Contract {
 
     "getBlacklist()"(overrides?: CallOverrides): Promise<string[]>;
 
+    getBurnBeforeBlockNumber(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getBurnBeforeBlockNumber()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getBurnBeforeBlockNumberDisabled(
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "getBurnBeforeBlockNumberDisabled()"(
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     getDays(
       afterDays: BigNumberish,
       overrides?: CallOverrides
@@ -1259,6 +1652,10 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getIsTransferDisabled(overrides?: CallOverrides): Promise<boolean>;
+
+    "getIsTransferDisabled()"(overrides?: CallOverrides): Promise<boolean>;
+
     getMonths(
       afterDays: BigNumberish,
       overrides?: CallOverrides
@@ -1268,6 +1665,10 @@ export class Vesting extends Contract {
       afterDays: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    getOmniWallets(overrides?: CallOverrides): Promise<string[]>;
+
+    "getOmniWallets()"(overrides?: CallOverrides): Promise<string[]>;
 
     getReleaseTime(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1297,6 +1698,10 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getWhiteListWallets(overrides?: CallOverrides): Promise<string[]>;
+
+    "getWhiteListWallets()"(overrides?: CallOverrides): Promise<string[]>;
+
     increaseAllowance(
       spender: string,
       addedValue: BigNumberish,
@@ -1319,6 +1724,13 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    isOmniWallet(_account: string, overrides?: CallOverrides): Promise<boolean>;
+
+    "isOmniWallet(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     isStarted(
       startDay: BigNumberish,
       overrides?: CallOverrides
@@ -1326,6 +1738,16 @@ export class Vesting extends Contract {
 
     "isStarted(uint256)"(
       startDay: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    isWhiteListed(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "isWhiteListed(address)"(
+      _account: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -1489,11 +1911,35 @@ export class Vesting extends Contract {
       { owner: string; spender: string; value: BigNumber }
     >;
 
+    DisableDefenseAntiBots(
+      blockNumber: null,
+      statusDefense: null
+    ): TypedEventFilter<
+      [BigNumber, boolean],
+      { blockNumber: BigNumber; statusDefense: boolean }
+    >;
+
     InBlacklisted(
       _account: string | null
     ): TypedEventFilter<[string], { _account: string }>;
 
+    InOmniWallet(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
+
+    InWhiteListWallet(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
+
     OutBlacklisted(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
+
+    OutOmniWallet(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
+
+    OutWhiteListWallet(
       _account: string | null
     ): TypedEventFilter<[string], { _account: string }>;
 
@@ -1514,6 +1960,14 @@ export class Vesting extends Contract {
     ): TypedEventFilter<
       [string, string, BigNumber],
       { from: string; to: string; value: BigNumber }
+    >;
+
+    TransferBurned(
+      wallet: string | null,
+      amount: null
+    ): TypedEventFilter<
+      [string, BigNumber],
+      { wallet: string; amount: BigNumber }
     >;
 
     Unpaused(account: null): TypedEventFilter<[string], { account: string }>;
@@ -1588,6 +2042,26 @@ export class Vesting extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    addOmniWallet(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "addOmniWallet(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    addWhiteListed(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "addWhiteListed(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     allowance(
       owner: string,
       spender: string,
@@ -1647,12 +2121,50 @@ export class Vesting extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    disableBurnBeforeBlockNumber(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "disableBurnBeforeBlockNumber()"(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    disableTransfers(
+      blocksDuration: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "disableTransfers(uint256)"(
+      blocksDuration: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     dropBlacklist(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     "dropBlacklist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    dropOmniWallet(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "dropOmniWallet(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    dropWhiteListed(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "dropWhiteListed(address)"(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1668,6 +2180,18 @@ export class Vesting extends Contract {
 
     "getBlacklist()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getBurnBeforeBlockNumber(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getBurnBeforeBlockNumber()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getBurnBeforeBlockNumberDisabled(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getBurnBeforeBlockNumberDisabled()"(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getDays(
       afterDays: BigNumberish,
       overrides?: CallOverrides
@@ -1678,6 +2202,10 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getIsTransferDisabled(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getIsTransferDisabled()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     getMonths(
       afterDays: BigNumberish,
       overrides?: CallOverrides
@@ -1687,6 +2215,10 @@ export class Vesting extends Contract {
       afterDays: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    getOmniWallets(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getOmniWallets()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     getReleaseTime(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1716,6 +2248,10 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getWhiteListWallets(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getWhiteListWallets()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     increaseAllowance(
       spender: string,
       addedValue: BigNumberish,
@@ -1738,6 +2274,16 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    isOmniWallet(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "isOmniWallet(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     isStarted(
       startDay: BigNumberish,
       overrides?: CallOverrides
@@ -1745,6 +2291,16 @@ export class Vesting extends Contract {
 
     "isStarted(uint256)"(
       startDay: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    isWhiteListed(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "isWhiteListed(address)"(
+      _account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1897,6 +2453,26 @@ export class Vesting extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    addOmniWallet(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "addOmniWallet(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    addWhiteListed(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "addWhiteListed(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     allowance(
       owner: string,
       spender: string,
@@ -1959,12 +2535,50 @@ export class Vesting extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    disableBurnBeforeBlockNumber(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "disableBurnBeforeBlockNumber()"(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    disableTransfers(
+      blocksDuration: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "disableTransfers(uint256)"(
+      blocksDuration: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     dropBlacklist(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     "dropBlacklist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    dropOmniWallet(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "dropOmniWallet(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    dropWhiteListed(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "dropWhiteListed(address)"(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -1983,6 +2597,22 @@ export class Vesting extends Contract {
 
     "getBlacklist()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    getBurnBeforeBlockNumber(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getBurnBeforeBlockNumber()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getBurnBeforeBlockNumberDisabled(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getBurnBeforeBlockNumberDisabled()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getDays(
       afterDays: BigNumberish,
       overrides?: CallOverrides
@@ -1993,6 +2623,14 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getIsTransferDisabled(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getIsTransferDisabled()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getMonths(
       afterDays: BigNumberish,
       overrides?: CallOverrides
@@ -2000,6 +2638,12 @@ export class Vesting extends Contract {
 
     "getMonths(uint256)"(
       afterDays: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getOmniWallets(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getOmniWallets()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2033,6 +2677,14 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getWhiteListWallets(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getWhiteListWallets()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     increaseAllowance(
       spender: string,
       addedValue: BigNumberish,
@@ -2055,6 +2707,16 @@ export class Vesting extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    isOmniWallet(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "isOmniWallet(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     isStarted(
       startDay: BigNumberish,
       overrides?: CallOverrides
@@ -2062,6 +2724,16 @@ export class Vesting extends Contract {
 
     "isStarted(uint256)"(
       startDay: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isWhiteListed(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "isWhiteListed(address)"(
+      _account: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

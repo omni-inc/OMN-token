@@ -6,29 +6,18 @@
 pragma solidity 0.8.4;
 
 import "../@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "./Antibots.sol";
 
 /**
  * @title Circulating Supply Methods
  * @dev Allows update the wallets of OMNI Foundation by Owner
  */
-contract CirculatingSupply is OwnableUpgradeable {
+contract CirculatingSupply is OwnableUpgradeable, Antibots {
 	// Array of address
     address[] internal omni_wallets;
 
     event InOmniWallet(address indexed _account);
     event OutOmniWallet(address indexed _account);
-
-	/**
-     * @dev Throws if argument account is Zero
-     * @param _account The address to check
-     */
-    modifier notZero(address _account) {
-        require(
-            _account != address(0),
-            "ERC20 OMN: Not Add Zero Address"
-        );
-        _;
-    }
 
 	/**
      * @dev function to verify if the address exist in OmniWallet or not
@@ -47,22 +36,22 @@ contract CirculatingSupply is OwnableUpgradeable {
 	}
 
 	/**
-     * @dev Include the wallet in the wallets address of OMNI Foundation
+     * @dev Include the wallet in the wallets address of OMNI Foundation Wallets
      * @param _account The address to include
      */
-	function addOmniWallet(address _account) public notZero(_account) onlyOwner() returns (bool) {
-		require(!isOmniWallet(_account), "ERC20 OMN: wallet is already OmniWallet");
+	function addOmniWallet(address _account) public validAddress(_account) onlyOwner() returns (bool) {
+		require(!isOmniWallet(_account), "ERC20 OMN: wallet is already");
 		omni_wallets.push(_account);
 		emit InOmniWallet(_account);
 		return true;
 	}
 
 	/**
-     * @dev Exclude the wallet in the wallets address of OMNI Foundation
+     * @dev Exclude the wallet in the wallets address of OMNI Foundation Wallets
      * @param _account The address to exclude
      */
-	function dropOmniWallet(address _account) public notZero(_account) onlyOwner() returns (bool) {
-		require(isOmniWallet(_account), "ERC20 OMN: OmniWallet don't exist");
+	function dropOmniWallet(address _account) public validAddress(_account) onlyOwner() returns (bool) {
+		require(isOmniWallet(_account), "ERC20 OMN: Wallet don't exist");
 		uint256 index = omni_wallets.length;
 		for (uint256 i=0; i < index ; i++ ) {
 			if (_account == omni_wallets[i]) {
@@ -76,7 +65,7 @@ contract CirculatingSupply is OwnableUpgradeable {
 	}
 
 	/**
-     * @dev Getting the all wallets address of OMNI Foundation
+     * @dev Getting the all wallets address of OMNI Foundation Wallets
      */
 	function getOmniWallets() public view returns (address[] memory) {
 		return omni_wallets;

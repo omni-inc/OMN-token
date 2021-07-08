@@ -21,16 +21,32 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface AntibotsInterface extends ethers.utils.Interface {
   functions: {
+    "addBlacklist(address)": FunctionFragment;
+    "addWhiteListed(address)": FunctionFragment;
     "disableBurnBeforeBlockNumber()": FunctionFragment;
     "disableTransfers(uint256)": FunctionFragment;
+    "dropBlacklist(address)": FunctionFragment;
+    "dropWhiteListed(address)": FunctionFragment;
+    "getBlacklist()": FunctionFragment;
     "getBurnBeforeBlockNumber()": FunctionFragment;
     "getBurnBeforeBlockNumberDisabled()": FunctionFragment;
     "getIsTransferDisabled()": FunctionFragment;
+    "getWhiteListWallets()": FunctionFragment;
+    "isBlacklisted(address)": FunctionFragment;
+    "isWhiteListed(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "addBlacklist",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "addWhiteListed",
+    values: [string]
+  ): string;
   encodeFunctionData(
     functionFragment: "disableBurnBeforeBlockNumber",
     values?: undefined
@@ -38,6 +54,18 @@ interface AntibotsInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "disableTransfers",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "dropBlacklist",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "dropWhiteListed",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBlacklist",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getBurnBeforeBlockNumber",
@@ -50,6 +78,18 @@ interface AntibotsInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "getIsTransferDisabled",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getWhiteListWallets",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isBlacklisted",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isWhiteListed",
+    values: [string]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
@@ -62,11 +102,31 @@ interface AntibotsInterface extends ethers.utils.Interface {
   ): string;
 
   decodeFunctionResult(
+    functionFragment: "addBlacklist",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "addWhiteListed",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "disableBurnBeforeBlockNumber",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "disableTransfers",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "dropBlacklist",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "dropWhiteListed",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getBlacklist",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -79,6 +139,18 @@ interface AntibotsInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getIsTransferDisabled",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getWhiteListWallets",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isBlacklisted",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isWhiteListed",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -93,11 +165,19 @@ interface AntibotsInterface extends ethers.utils.Interface {
 
   events: {
     "DisableDefenseAntiBots(uint256,bool)": EventFragment;
+    "InBlacklisted(address)": EventFragment;
+    "InWhiteListWallet(address)": EventFragment;
+    "OutBlacklisted(address)": EventFragment;
+    "OutWhiteListWallet(address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "TransferBurned(address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "DisableDefenseAntiBots"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "InBlacklisted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "InWhiteListWallet"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OutBlacklisted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OutWhiteListWallet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferBurned"): EventFragment;
 }
@@ -146,6 +226,26 @@ export class Antibots extends Contract {
   interface: AntibotsInterface;
 
   functions: {
+    addBlacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "addBlacklist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    addWhiteListed(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "addWhiteListed(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     disableBurnBeforeBlockNumber(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -164,6 +264,30 @@ export class Antibots extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    dropBlacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "dropBlacklist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    dropWhiteListed(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "dropWhiteListed(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    getBlacklist(overrides?: CallOverrides): Promise<[string[]]>;
+
+    "getBlacklist()"(overrides?: CallOverrides): Promise<[string[]]>;
+
     getBurnBeforeBlockNumber(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     "getBurnBeforeBlockNumber()"(
@@ -181,6 +305,30 @@ export class Antibots extends Contract {
     getIsTransferDisabled(overrides?: CallOverrides): Promise<[boolean]>;
 
     "getIsTransferDisabled()"(overrides?: CallOverrides): Promise<[boolean]>;
+
+    getWhiteListWallets(overrides?: CallOverrides): Promise<[string[]]>;
+
+    "getWhiteListWallets()"(overrides?: CallOverrides): Promise<[string[]]>;
+
+    isBlacklisted(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    "isBlacklisted(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    isWhiteListed(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    "isWhiteListed(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
@@ -205,6 +353,26 @@ export class Antibots extends Contract {
     ): Promise<ContractTransaction>;
   };
 
+  addBlacklist(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "addBlacklist(address)"(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  addWhiteListed(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "addWhiteListed(address)"(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   disableBurnBeforeBlockNumber(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -223,6 +391,30 @@ export class Antibots extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  dropBlacklist(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "dropBlacklist(address)"(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  dropWhiteListed(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "dropWhiteListed(address)"(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  getBlacklist(overrides?: CallOverrides): Promise<string[]>;
+
+  "getBlacklist()"(overrides?: CallOverrides): Promise<string[]>;
+
   getBurnBeforeBlockNumber(overrides?: CallOverrides): Promise<BigNumber>;
 
   "getBurnBeforeBlockNumber()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -236,6 +428,24 @@ export class Antibots extends Contract {
   getIsTransferDisabled(overrides?: CallOverrides): Promise<boolean>;
 
   "getIsTransferDisabled()"(overrides?: CallOverrides): Promise<boolean>;
+
+  getWhiteListWallets(overrides?: CallOverrides): Promise<string[]>;
+
+  "getWhiteListWallets()"(overrides?: CallOverrides): Promise<string[]>;
+
+  isBlacklisted(_account: string, overrides?: CallOverrides): Promise<boolean>;
+
+  "isBlacklisted(address)"(
+    _account: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  isWhiteListed(_account: string, overrides?: CallOverrides): Promise<boolean>;
+
+  "isWhiteListed(address)"(
+    _account: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
@@ -260,6 +470,23 @@ export class Antibots extends Contract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    addBlacklist(_account: string, overrides?: CallOverrides): Promise<void>;
+
+    "addBlacklist(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    addWhiteListed(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "addWhiteListed(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     disableBurnBeforeBlockNumber(overrides?: CallOverrides): Promise<void>;
 
     "disableBurnBeforeBlockNumber()"(overrides?: CallOverrides): Promise<void>;
@@ -273,6 +500,27 @@ export class Antibots extends Contract {
       blocksDuration: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    dropBlacklist(_account: string, overrides?: CallOverrides): Promise<void>;
+
+    "dropBlacklist(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    dropWhiteListed(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "dropWhiteListed(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    getBlacklist(overrides?: CallOverrides): Promise<string[]>;
+
+    "getBlacklist()"(overrides?: CallOverrides): Promise<string[]>;
 
     getBurnBeforeBlockNumber(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -289,6 +537,30 @@ export class Antibots extends Contract {
     getIsTransferDisabled(overrides?: CallOverrides): Promise<boolean>;
 
     "getIsTransferDisabled()"(overrides?: CallOverrides): Promise<boolean>;
+
+    getWhiteListWallets(overrides?: CallOverrides): Promise<string[]>;
+
+    "getWhiteListWallets()"(overrides?: CallOverrides): Promise<string[]>;
+
+    isBlacklisted(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "isBlacklisted(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    isWhiteListed(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "isWhiteListed(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
@@ -318,6 +590,22 @@ export class Antibots extends Contract {
       { blockNumber: BigNumber; statusDefense: boolean }
     >;
 
+    InBlacklisted(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
+
+    InWhiteListWallet(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
+
+    OutBlacklisted(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
+
+    OutWhiteListWallet(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
+
     OwnershipTransferred(
       previousOwner: string | null,
       newOwner: string | null
@@ -336,6 +624,26 @@ export class Antibots extends Contract {
   };
 
   estimateGas: {
+    addBlacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "addBlacklist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    addWhiteListed(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "addWhiteListed(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     disableBurnBeforeBlockNumber(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -354,6 +662,30 @@ export class Antibots extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    dropBlacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "dropBlacklist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    dropWhiteListed(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "dropWhiteListed(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    getBlacklist(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getBlacklist()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     getBurnBeforeBlockNumber(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getBurnBeforeBlockNumber()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -369,6 +701,30 @@ export class Antibots extends Contract {
     getIsTransferDisabled(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getIsTransferDisabled()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getWhiteListWallets(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getWhiteListWallets()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    isBlacklisted(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "isBlacklisted(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    isWhiteListed(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "isWhiteListed(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -394,6 +750,26 @@ export class Antibots extends Contract {
   };
 
   populateTransaction: {
+    addBlacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "addBlacklist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    addWhiteListed(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "addWhiteListed(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     disableBurnBeforeBlockNumber(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -411,6 +787,30 @@ export class Antibots extends Contract {
       blocksDuration: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
+
+    dropBlacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "dropBlacklist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    dropWhiteListed(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "dropWhiteListed(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    getBlacklist(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getBlacklist()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getBurnBeforeBlockNumber(
       overrides?: CallOverrides
@@ -433,6 +833,34 @@ export class Antibots extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "getIsTransferDisabled()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getWhiteListWallets(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getWhiteListWallets()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isBlacklisted(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "isBlacklisted(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isWhiteListed(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "isWhiteListed(address)"(
+      _account: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

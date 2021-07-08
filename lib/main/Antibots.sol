@@ -6,21 +6,27 @@
 pragma solidity 0.8.4;
 
 import "../@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "./Blacklistable.sol";
 
 /**
  * @title AntiBots Methods
  * @dev Allows  by Owner
  */
-contract Antibots is OwnableUpgradeable {
+contract Antibots is OwnableUpgradeable, Blacklistable {
 
 	// anti-sniping bot defense
     uint256 private burnBeforeBlockNumber;
-    bool internal burnBeforeBlockNumberDisabled;
+    bool private burnBeforeBlockNumberDisabled;
+	// Arrays whitelist
+	address[] private whitelist_wallets;
 
 	// Event where Transfer is Burned
 	event TransferBurned(address indexed wallet, uint256 amount);
 	// Event Disable Antibots defense forever
 	event DisableDefenseAntiBots (uint256 blockNumber, bool statusDefense);
+	// Event for Add/Drop Whitelist Wallets
+	event InWhiteListWallet(address indexed _account);
+    event OutWhiteListWallet(address indexed _account);
 
 	// anti-sniping bot defense
 	/**
@@ -31,6 +37,10 @@ contract Antibots is OwnableUpgradeable {
             // owner always can transfer
             return false;
         }
+		if (isWhiteListed(_msgSender())) {
+			// WhiteListed Wallets can transfer
+			return false;
+		}
         return (!burnBeforeBlockNumberDisabled && (block.number < burnBeforeBlockNumber));
     }
 
@@ -76,5 +86,59 @@ contract Antibots is OwnableUpgradeable {
      */
 	function getBurnBeforeBlockNumberDisabled() public view returns (bool) {
 		return burnBeforeBlockNumberDisabled;
+	}
+
+	/** ----------------- WHITELIST ---------------------- */
+
+	/**
+     * @dev function to verify if the address exist or not in the Whitelisted Array
+     * @param _account The address to check
+     */
+	function isWhiteListed(address _account) public view returns (bool) {
+		if (_account == address(0)) {
+			return false;
+		}
+		uint256 index = whitelist_wallets.length;
+		for (uint256 i=0; i < index ; i++ ) {
+			if (_account == whitelist_wallets[i]) {
+				return true;			}
+		}
+		return false;
+	}
+
+	/**
+     * @dev Include the wallet in the wallets address of Whitelisted in the Antibots Defense
+     * @param _account The address to include
+     */
+	function addWhiteListed(address _account) public validAddress(_account) onlyOwner() returns (bool) {
+		require(!isWhiteListed(_account), "ERC20 OMN: wallet is already");
+		whitelist_wallets.push(_account);
+		emit InWhiteListWallet(_account);
+		return true;
+	}
+
+	/**
+     * @dev Exclude the wallet in the wallets address of Whitelisted in the Antibots Defense
+     * @param _account The address to exclude
+     */
+	function dropWhiteListed(address _account) public validAddress(_account) onlyOwner() returns (bool) {
+		require(isWhiteListed(_account), "ERC20 OMN: Wallet don't exist");
+		uint256 index = whitelist_wallets.length;
+		for (uint256 i=0; i < index ; i++ ) {
+			if (_account == whitelist_wallets[i]) {
+				whitelist_wallets[i] = whitelist_wallets[index - 1];
+				whitelist_wallets.pop();
+				emit OutWhiteListWallet(_account);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+     * @dev Getting the all wallets address Whitelisted in the Antibots Defense
+     */
+	function getWhiteListWallets() public view returns (address[] memory) {
+		return whitelist_wallets;
 	}
 }

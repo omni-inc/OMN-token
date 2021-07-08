@@ -67,7 +67,7 @@ contract Blacklistable is OwnableUpgradeable {
      * @param _account The address to remove from the blacklist
      */
     function dropBlacklist(address _account) public validAddress(_account) onlyOwner() {
-		require(isBlacklisted(_account), "ERC20 OMN: Blacklisted Wallet don't exist");
+		require(isBlacklisted(_account), "ERC20 OMN: Wallet don't exist");
         blacklisted[_account] = false;
         emit OutBlacklisted(_account);
     }
