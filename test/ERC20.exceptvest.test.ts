@@ -39,11 +39,11 @@ describe("ERC20 Full Test except Vesting", async () => {
 		describe(' Basic Value', async () => {
 			it("1.1.- Verify the Name of the Token", async () => {
 				console.log("Name of The Token: ", (await omnitoken.name()).toString(), "=====> must be OMNI App");
-				expect(((await omnitoken.name()).toString())).to.be.equal('OMNI App');
+				expect(((await omnitoken.name()).toString())).to.be.equal('Fake Token');
 			});
 			it("1.2.- Verify the Tiker of the Token", async () => {
 				console.log("Name of The Token: ", (await omnitoken.symbol()).toString(), "====> must be OMN");
-				expect(((await omnitoken.symbol()).toString())).to.be.equal('OMN');
+				expect(((await omnitoken.symbol()).toString())).to.be.equal('FAKE');
 			});
 			it("1.3.- Verify the Decimals of the Token", async () => {
 				console.log("Name of The Token: ", (await omnitoken.decimals()), "=====> must be 18");
@@ -599,7 +599,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 			it('8.1.- initializes DOMAIN_SEPARATOR and PERMIT_TYPEHASH correctly', async () => {
 				assert.equal(await owner.getAddress(), '0x381eF709d8FEf0eb99F6c3723107863335005fE5');
 
-				assert.equal(name, 'OMNI App');
+				assert.equal(name, 'Fake Token');
 
 				assert.equal(await omnitoken.DOMAIN_SEPARATOR(), getDomainSeparator(name, omnitoken.address, chainId));
 			  })
@@ -947,6 +947,65 @@ describe("ERC20 Full Test except Vesting", async () => {
 				).to.emit(omnitoken, "TransferBurned");
 				console.log("User Balance After Second Burn:", (await omnitoken.balanceOf(await user.getAddress())).toString());
 				expect((await omnitoken.balanceOf(await user.getAddress())).toString()).to.be.equal('160');
+
+				// Add the user wallet in the whitelisted wallets array
+				await expect(
+					omnitoken.addWhiteListed(await user.getAddress())
+				).to.emit(omnitoken, "InWhiteListWallet");
+				console.log("User Address Add whitelisted");
+
+				// Add multiples Address in the Whitelisted Array
+				await expect(omnitoken.addWhiteListed(await accounts[10].getAddress())).to.emit(omnitoken, "InWhiteListWallet");
+				await expect(omnitoken.addWhiteListed(await accounts[11].getAddress())).to.emit(omnitoken, "InWhiteListWallet");
+				await expect(omnitoken.addWhiteListed(await accounts[12].getAddress())).to.emit(omnitoken, "InWhiteListWallet");
+				console.log("Add multiples whitelisted");
+
+				// Verify the user address are in the whitelisted wallets array
+				expect(await omnitoken.isWhiteListed(await user.getAddress())).to.be.equal(true);
+				whitelisted = await omnitoken.getWhiteListWallets();
+				console.log("List of Wallets Whitelisted: ", whitelisted);
+				console.log("User Balance After Whitelisted, Before Transfer:", (await omnitoken.balanceOf(await user.getAddress())).toString());
+				expect((await omnitoken.balanceOf(await user.getAddress())).toString()).to.be.equal('160');
+
+				// Revert if you add again
+				await expect(
+					omnitoken.addWhiteListed(await user.getAddress())
+				).to.be.revertedWith("ERC20 OMN: wallet is already");
+
+				//execute a transfer
+				await expect(
+					omnitoken.connect(user).transfer(await owner.getAddress(), tokenAmount)
+				).to.emit(omnitoken, "Transfer");
+				console.log("Owner Balance After first Tx:", (await omnitoken.balanceOf(await owner.getAddress())).toString());
+				await expect(
+					omnitoken.connect(accounts[10]).transfer(await owner.getAddress(), tokenAmount)
+				).to.emit(omnitoken, "Transfer");
+				console.log("Owner Balance After second Tx:", (await omnitoken.balanceOf(await owner.getAddress())).toString());
+				await expect(
+					omnitoken.connect(accounts[11]).transfer(await owner.getAddress(), tokenAmount)
+				).to.emit(omnitoken, "Transfer");
+				console.log("Owner Balance After third Tx:", (await omnitoken.balanceOf(await owner.getAddress())).toString());
+				await expect(
+					omnitoken.connect(accounts[12]).transfer(await owner.getAddress(), tokenAmount)
+				).to.emit(omnitoken, "Transfer");
+				console.log("Owner Balance After four Tx:", (await omnitoken.balanceOf(await owner.getAddress())).toString());
+
+				// Drop the user wallet of the whitelisted wallets array
+				await expect(
+					omnitoken.dropWhiteListed(await user.getAddress())
+				).to.emit(omnitoken, "OutWhiteListWallet");
+				console.log("User Address Drop whitelisted");
+
+				// Add multiples Address in the Whitelisted Array
+				await expect(omnitoken.dropWhiteListed(await accounts[10].getAddress())).to.emit(omnitoken, "OutWhiteListWallet");
+				await expect(omnitoken.dropWhiteListed(await accounts[11].getAddress())).to.emit(omnitoken, "OutWhiteListWallet");
+				await expect(omnitoken.dropWhiteListed(await accounts[12].getAddress())).to.emit(omnitoken, "OutWhiteListWallet");
+				console.log("Drop multiples whitelisted");
+
+				// Verify the user address are in the whitelisted wallets array
+				expect(await omnitoken.isWhiteListed(await user.getAddress())).to.be.equal(false);
+				whitelisted = await omnitoken.getWhiteListWallets();
+				console.log("List of Wallets Whitelisted: ", whitelisted);
 
 			});
 
