@@ -328,6 +328,8 @@ describe("ERC20 Full Test except Vesting", async () => {
 			it("4.6.- IncreaseAllowance / Mint / Burn only the Blacklisted Wallet", async () => {
 				// Accounts[6]
 				const walletZeroAddress = '0x0000000000000000000000000000000000000000';
+				console.log("Verify Allowance Accounts[0] to Accounts[6]:", (await omnitoken.allowance(await accounts[0].getAddress(), await accounts[6].getAddress())).toString());
+				expect((await omnitoken.allowance(await accounts[0].getAddress(), await accounts[6].getAddress())).toString()).to.be.equal('8888889000000000000000000');
 				console.log("We Expect Revert the Transaction: Try to Burn Token and send to Receipt (Accounts[6])");
 				await expect(omnitoken.burn('8888889000000000000000000')).to.emit(omnitoken, 'Transfer').withArgs(await accounts[0].getAddress(), walletZeroAddress,'8888889000000000000000000');
 				await expect(omnitoken.mint(await accounts[6].getAddress(), '8888889000000000000000000')).to.be.revertedWith("ERC20 OMN: recipient account is blacklisted");
@@ -337,6 +339,8 @@ describe("ERC20 Full Test except Vesting", async () => {
 				console.log("Balance After of Receipt: ", (await omnitoken.balanceOf(await accounts[6].getAddress())).toString(), "=====> must be 0");
 				expect(((await omnitoken.balanceOf(await accounts[6].getAddress())).toString())).to.be.equal('0');
 				// Accounts[10]
+				console.log("Verify Allowance Accounts[0] to Accounts[10]:", (await omnitoken.allowance(await accounts[0].getAddress(), await accounts[10].getAddress())).toString());
+				expect((await omnitoken.allowance(await accounts[0].getAddress(), await accounts[10].getAddress())).toString()).to.be.equal('30000000000000000000000000');
 				console.log("We Expect Revert the Transaction: Try to Burn Token and send to Receipt (Accounts[10])");
 				await expect(omnitoken.burn('8888889000000000000000000')).to.emit(omnitoken, 'Transfer').withArgs(await accounts[0].getAddress(), walletZeroAddress,'8888889000000000000000000');
 				await expect(omnitoken.mint(await accounts[10].getAddress(), '8888889000000000000000000')).to.be.revertedWith("ERC20 OMN: recipient account is blacklisted");
