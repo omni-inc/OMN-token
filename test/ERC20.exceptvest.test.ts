@@ -5,6 +5,7 @@ import { getPermitDigest, getDomainSeparator, sign } from '../utils/signatures';
 import { skipBlocks } from '../utils/helpers';
 import moment from 'moment';
 import 'dotenv/config';
+import { emit } from 'process';
 
 describe("ERC20 Full Test except Vesting", async () => {
 
@@ -271,7 +272,37 @@ describe("ERC20 Full Test except Vesting", async () => {
 				expect(((await omnitoken.balanceOf(await accounts[8].getAddress())).toString())).to.be.equal('30000000000000000000000000');
 			});
 
-			it("4.4.- IncreaseAllowance / Transfer / TransferFrom only the Blacklisted Wallet", async () => {
+			it("4.4.- IncreaseAllowance / Mint / Burn only the unBlacklisted Wallet", async () => {
+				// Accounts[4]
+				const walletZeroAddress = '0x0000000000000000000000000000000000000000';
+				await omnitoken.increaseAllowance(await accounts[4].getAddress(), '8888889000000000000000000');
+				console.log("Verify Allowance Accounts[0] to Accounts[4]:", (await omnitoken.allowance(await accounts[0].getAddress(), await accounts[4].getAddress())).toString());
+				expect((await omnitoken.allowance(await accounts[0].getAddress(), await accounts[4].getAddress())).toString()).to.be.equal('8888889000000000000000000');
+				await expect(omnitoken.burn('8888889000000000000000000')).to.emit(omnitoken, 'Transfer').withArgs(await accounts[0].getAddress(), walletZeroAddress,'8888889000000000000000000');
+				await expect(omnitoken.mint(await accounts[4].getAddress(), '8888889000000000000000000')).to.emit(omnitoken, 'Transfer').withArgs(walletZeroAddress, await accounts[4].getAddress(), '8888889000000000000000000');
+				await expect(omnitoken.mint(await accounts[0].getAddress(), '8888889000000000000000000')).to.be.revertedWith("ERC20: Can't Mint, it exceeds the maximum supply");
+				await expect(omnitoken.connect(accounts[4]).burn('8888889000000000000000000')).to.emit(omnitoken, 'Transfer').withArgs(await accounts[4].getAddress(), walletZeroAddress,'8888889000000000000000000');
+				await expect(omnitoken.mint(await accounts[0].getAddress(), '8888889000000000000000000')).to.emit(omnitoken, 'Transfer').withArgs(walletZeroAddress, await accounts[0].getAddress(), '8888889000000000000000000');
+				console.log("Balance After of Account Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "=====> must be 630000000000000000000000000");
+				expect(((await omnitoken.balanceOf(await accounts[0].getAddress())).toString())).to.be.equal('600000000000000000000000000');
+				console.log("Balance After of Receipt: ", (await omnitoken.balanceOf(await accounts[4].getAddress())).toString(), "=====> must be 8888889000000000000000000");
+				expect(((await omnitoken.balanceOf(await accounts[4].getAddress())).toString())).to.be.equal('8888889000000000000000000');
+				// Accounts[8]
+				await omnitoken.increaseAllowance(await accounts[8].getAddress(), '30000000000000000000000000');
+				console.log("Verify Allowance Accounts[0] to Accounts[8]:", (await omnitoken.allowance(await accounts[0].getAddress(), await accounts[8].getAddress())).toString());
+				expect((await omnitoken.allowance(await accounts[0].getAddress(), await accounts[8].getAddress())).toString()).to.be.equal('30000000000000000000000000');
+				await expect(omnitoken.burn('8888889000000000000000000')).to.emit(omnitoken, 'Transfer').withArgs(await accounts[0].getAddress(), walletZeroAddress,'8888889000000000000000000');
+				await expect(omnitoken.mint(await accounts[8].getAddress(), '8888889000000000000000000')).to.emit(omnitoken, 'Transfer').withArgs(walletZeroAddress, await accounts[8].getAddress(), '8888889000000000000000000');
+				await expect(omnitoken.mint(await accounts[0].getAddress(), '8888889000000000000000000')).to.be.revertedWith("ERC20: Can't Mint, it exceeds the maximum supply");
+				await expect(omnitoken.connect(accounts[8]).burn('8888889000000000000000000')).to.emit(omnitoken, 'Transfer').withArgs(await accounts[8].getAddress(), walletZeroAddress,'8888889000000000000000000');
+				await expect(omnitoken.mint(await accounts[0].getAddress(), '8888889000000000000000000')).to.emit(omnitoken, 'Transfer').withArgs(walletZeroAddress, await accounts[0].getAddress(), '8888889000000000000000000');
+				console.log("Balance After of Account Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "=====> must be 600000000000000000000000000");
+				expect(((await omnitoken.balanceOf(await accounts[0].getAddress())).toString())).to.be.equal('600000000000000000000000000');
+				console.log("Balance After of Receipt: ", (await omnitoken.balanceOf(await accounts[8].getAddress())).toString(), "=====> must be 30000000000000000000000000");
+				expect(((await omnitoken.balanceOf(await accounts[8].getAddress())).toString())).to.be.equal('30000000000000000000000000');
+			});
+
+			it("4.5.- IncreaseAllowance / Transfer / TransferFrom only the Blacklisted Wallet", async () => {
 				// Accounts[6]
 				await omnitoken.increaseAllowance(await accounts[6].getAddress(), '8888889000000000000000000');
 				console.log("Verify Allowance Accounts[0] to Accounts[6]:", (await omnitoken.allowance(await accounts[0].getAddress(), await accounts[6].getAddress())).toString());
@@ -288,6 +319,28 @@ describe("ERC20 Full Test except Vesting", async () => {
 				expect((await omnitoken.allowance(await accounts[0].getAddress(), await accounts[10].getAddress())).toString()).to.be.equal('30000000000000000000000000');
 				console.log("We Expect Revert the Transaction: Try to send total balance of Receipt (Accounts[10])");
 				await expect(omnitoken.connect(accounts[10]).transferFrom(await accounts[0].getAddress(), await accounts[10].getAddress(), '30000000000000000000000000')).to.be.revertedWith("ERC20 OMN: recipient account is blacklisted");
+				console.log("Balance After of Account Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "=====> must be 600000000000000000000000000");
+				expect(((await omnitoken.balanceOf(await accounts[0].getAddress())).toString())).to.be.equal('600000000000000000000000000');
+				console.log("Balance After of Receipt: ", (await omnitoken.balanceOf(await accounts[10].getAddress())).toString(), "=====> must be 0");
+				expect(((await omnitoken.balanceOf(await accounts[10].getAddress())).toString())).to.be.equal('0');
+			});
+
+			it("4.6.- IncreaseAllowance / Mint / Burn only the Blacklisted Wallet", async () => {
+				// Accounts[6]
+				const walletZeroAddress = '0x0000000000000000000000000000000000000000';
+				console.log("We Expect Revert the Transaction: Try to Burn Token and send to Receipt (Accounts[6])");
+				await expect(omnitoken.burn('8888889000000000000000000')).to.emit(omnitoken, 'Transfer').withArgs(await accounts[0].getAddress(), walletZeroAddress,'8888889000000000000000000');
+				await expect(omnitoken.mint(await accounts[6].getAddress(), '8888889000000000000000000')).to.be.revertedWith("ERC20 OMN: recipient account is blacklisted");
+				await expect(omnitoken.mint(await accounts[0].getAddress(), '8888889000000000000000000')).to.emit(omnitoken, 'Transfer').withArgs(walletZeroAddress, await accounts[0].getAddress(), '8888889000000000000000000');
+				console.log("Balance After of Account Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "=====> must be 600000000000000000000000000");
+				expect(((await omnitoken.balanceOf(await accounts[0].getAddress())).toString())).to.be.equal('600000000000000000000000000');
+				console.log("Balance After of Receipt: ", (await omnitoken.balanceOf(await accounts[6].getAddress())).toString(), "=====> must be 0");
+				expect(((await omnitoken.balanceOf(await accounts[6].getAddress())).toString())).to.be.equal('0');
+				// Accounts[10]
+				console.log("We Expect Revert the Transaction: Try to Burn Token and send to Receipt (Accounts[10])");
+				await expect(omnitoken.burn('8888889000000000000000000')).to.emit(omnitoken, 'Transfer').withArgs(await accounts[0].getAddress(), walletZeroAddress,'8888889000000000000000000');
+				await expect(omnitoken.mint(await accounts[10].getAddress(), '8888889000000000000000000')).to.be.revertedWith("ERC20 OMN: recipient account is blacklisted");
+				await expect(omnitoken.mint(await accounts[0].getAddress(), '8888889000000000000000000')).to.emit(omnitoken, 'Transfer').withArgs(walletZeroAddress, await accounts[0].getAddress(), '8888889000000000000000000');
 				console.log("Balance After of Account Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "=====> must be 600000000000000000000000000");
 				expect(((await omnitoken.balanceOf(await accounts[0].getAddress())).toString())).to.be.equal('600000000000000000000000000');
 				console.log("Balance After of Receipt: ", (await omnitoken.balanceOf(await accounts[10].getAddress())).toString(), "=====> must be 0");
