@@ -60,7 +60,7 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     "isOmniWallet(address)": FunctionFragment;
     "isStarted(uint256)": FunctionFragment;
     "isWhiteListed(address)": FunctionFragment;
-    "mint(uint256)": FunctionFragment;
+    "mint(address,uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "nonces(address)": FunctionFragment;
     "owner()": FunctionFragment;
@@ -225,7 +225,10 @@ interface OmniTokenV1Interface extends ethers.utils.Interface {
     functionFragment: "isWhiteListed",
     values: [string]
   ): string;
-  encodeFunctionData(functionFragment: "mint", values: [BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "mint",
+    values: [string, BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "nonces", values: [string]): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -898,11 +901,13 @@ export class OmniTokenV1 extends Contract {
     ): Promise<[boolean]>;
 
     mint(
+      _to: string,
       _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "mint(uint256)"(
+    "mint(address,uint256)"(
+      _to: string,
       _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -1441,11 +1446,13 @@ export class OmniTokenV1 extends Contract {
   ): Promise<boolean>;
 
   mint(
+    _to: string,
     _amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "mint(uint256)"(
+  "mint(address,uint256)"(
+    _to: string,
     _amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -1977,9 +1984,14 @@ export class OmniTokenV1 extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    mint(_amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
+    mint(
+      _to: string,
+      _amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    "mint(uint256)"(
+    "mint(address,uint256)"(
+      _to: string,
       _amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -2592,11 +2604,13 @@ export class OmniTokenV1 extends Contract {
     ): Promise<BigNumber>;
 
     mint(
+      _to: string,
       _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "mint(uint256)"(
+    "mint(address,uint256)"(
+      _to: string,
       _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -3099,11 +3113,13 @@ export class OmniTokenV1 extends Contract {
     ): Promise<PopulatedTransaction>;
 
     mint(
+      _to: string,
       _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "mint(uint256)"(
+    "mint(address,uint256)"(
+      _to: string,
       _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;

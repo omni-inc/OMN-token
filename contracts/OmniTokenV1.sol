@@ -25,7 +25,7 @@ contract OmniTokenV1 is Initializable, Vesting{
 		__ERC20Permit_init('Fake Token');
 
 		// Mint Total Supply
-		mint(getMaxTotalSupply());
+		mint(_msgSender(), getMaxTotalSupply());
 		// Begininng Deploy of Allocation in the ERC20
 		// Allocation #1 / VestingType # 0, Early Backers Total (6.94956521970783)% and Start with 31 days Locked the Token
 		vestingTypes.push(VestingType(1930501930501930, 0, 31 days, 0, 0,  true, true)); // 31 Days Locked, 0.193050193050193 Percent daily for 518 days
@@ -197,6 +197,7 @@ contract OmniTokenV1 is Initializable, Vesting{
 
 	/**
      * @dev Creates `amount` new tokens for `to`.
+	 * @param _to address to receive the Token
 	 * @param _amount Amount Token to mint
      *
      * See {ERC20-_mint}.
@@ -206,8 +207,8 @@ contract OmniTokenV1 is Initializable, Vesting{
      * - the caller must have the `OWNER`.
 		 * - After upgrade the SmartContract and Eliminate this method
      */
-    function mint( uint256 _amount) public onlyOwner() {
+    function mint( address _to, uint256 _amount) public onlyOwner() {
 		require(getMaxTotalSupply() >= totalSupply().add(_amount), "ERC20: Can't Mint, it exceeds the maximum supply ");
-        _mint(owner(), _amount);
+        _mint(_to, _amount);
     }
 }
