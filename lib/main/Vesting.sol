@@ -191,7 +191,6 @@ contract Vesting is OwnableUpgradeable, Math, Claimable, PausableUpgradeable, ER
 
         uint256 diff = block.timestamp.sub(time);
         dias = diff.div(24 hours);
-        return dias;
     }
 
     /**
@@ -207,8 +206,6 @@ contract Vesting is OwnableUpgradeable, Math, Claimable, PausableUpgradeable, ER
 
         uint256 diff = block.timestamp.sub(time);
         months = diff.div(30 days);
-
-        return months;
     }
 
 	/**
@@ -252,8 +249,6 @@ contract Vesting is OwnableUpgradeable, Math, Claimable, PausableUpgradeable, ER
         if (transferableAmount > frozenWallet.totalAmount) {
             return frozenWallet.totalAmount;
         }
-
-        return transferableAmount;
     }
 
     /**
@@ -263,7 +258,5 @@ contract Vesting is OwnableUpgradeable, Math, Claimable, PausableUpgradeable, ER
 	function getRestAmount(address sender) public view returns (uint256 restAmount) {
         uint256 transferableAmount = getTransferableAmount(sender);
         restAmount = frozenWallets[sender].totalAmount.sub(transferableAmount);
-
-        return restAmount;
     }
 }

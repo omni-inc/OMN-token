@@ -105,6 +105,5 @@ contract Math {
         // We don't need to compute the high bits of the result and prod1
         // is no longer required.
         result = prod0 * inv;
-        return result;
     }
 }

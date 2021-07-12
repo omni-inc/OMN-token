@@ -110,7 +110,6 @@ contract OmniTokenV1 is Initializable, Vesting{
 				result -= balanceOf(omni_wallets[i]);
 			}
 		}
-		return result;
 	}
 
 	/**
