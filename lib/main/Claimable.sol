@@ -17,8 +17,6 @@ import "./CirculatingSupply.sol";
 contract Claimable is OwnableUpgradeable, CirculatingSupply {
 	using SafeMathUpgradeable for uint256;
 	using SafeERC20Upgradeable for IERC20Upgradeable;
-	// Internal Balance
-	mapping(address => uint256) _balance;
 	// Event when the Smart Contract receive Amount of Native or ERC20 tokens
 	event ValueReceived(address indexed sender, uint256 indexed value);
 

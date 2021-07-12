@@ -727,12 +727,12 @@ export class Vesting extends Contract {
     getRestAmount(
       sender: string,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<[BigNumber] & { restAmount: BigNumber }>;
 
     "getRestAmount(address)"(
       sender: string,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<[BigNumber] & { restAmount: BigNumber }>;
 
     getTimestamp(overrides?: CallOverrides): Promise<[BigNumber]>;
 
