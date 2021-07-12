@@ -260,9 +260,9 @@ contract Vesting is OwnableUpgradeable, Math, Claimable, PausableUpgradeable, ER
      * @dev Auxiliary Method to permit get of token can't be transferable based on Allocation of the Frozen Wallet
 	 * @param sender Wallets of Stakeholders to verify amount of Token are locked based on Allocation
 	 */
-	function getRestAmount(address sender) public view returns (uint256) {
+	function getRestAmount(address sender) public view returns (uint256 restAmount) {
         uint256 transferableAmount = getTransferableAmount(sender);
-        uint256 restAmount = frozenWallets[sender].totalAmount.sub(transferableAmount);
+        restAmount = frozenWallets[sender].totalAmount.sub(transferableAmount);
 
         return restAmount;
     }
