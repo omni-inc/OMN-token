@@ -56,7 +56,7 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 		bsc_mainnet: {
 			chainId: 56,
 			url: process.env.URL_BSC,
-			gasPrice: 65000000000,
+			gasPrice: 20000000000,
 			accounts: {
 				mnemonic:process.env.MNEMONIC
 			}

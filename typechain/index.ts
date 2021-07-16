@@ -3,6 +3,7 @@
 /* eslint-disable */
 export type { ERC20Token } from "./ERC20Token";
 export type { OmniTokenV1 } from "./OmniTokenV1";
+export type { OmniTokenV2 } from "./OmniTokenV2";
 export type { OwnableUpgradeable } from "./OwnableUpgradeable";
 export type { IERC1271Upgradeable } from "./IERC1271Upgradeable";
 export type { PausableUpgradeable } from "./PausableUpgradeable";
@@ -19,6 +20,7 @@ export type { Vesting } from "./Vesting";
 
 export { ERC20Token__factory } from "./factories/ERC20Token__factory";
 export { OmniTokenV1__factory } from "./factories/OmniTokenV1__factory";
+export { OmniTokenV2__factory } from "./factories/OmniTokenV2__factory";
 export { OwnableUpgradeable__factory } from "./factories/OwnableUpgradeable__factory";
 export { IERC1271Upgradeable__factory } from "./factories/IERC1271Upgradeable__factory";
 export { PausableUpgradeable__factory } from "./factories/PausableUpgradeable__factory";

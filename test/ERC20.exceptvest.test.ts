@@ -39,7 +39,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 		describe(' Basic Value', async () => {
 			it("1.1.- Verify the Name of the Token", async () => {
 				console.log("Name of The Token: ", (await omnitoken.name()).toString(), "=====> must be OMNI App");
-				expect(((await omnitoken.name()).toString())).to.be.equal('OMNI App');
+				expect(((await omnitoken.name()).toString())).to.be.equal('OMNI Coin');
 			});
 			it("1.2.- Verify the Tiker of the Token", async () => {
 				console.log("Name of The Token: ", (await omnitoken.symbol()).toString(), "====> must be OMN");
@@ -623,9 +623,9 @@ describe("ERC20 Full Test except Vesting", async () => {
 		describe("Testing the ERC20 Permit Method a Auxiliary Methods", async () => {
 
 			it('8.1.- initializes DOMAIN_SEPARATOR and PERMIT_TYPEHASH correctly', async () => {
-				assert.equal(await owner.getAddress(), '0x381eF709d8FEf0eb99F6c3723107863335005fE5');
+				assert.equal(await owner.getAddress(), '0xc715Ed01c42e1A078BD61B9a89bfD1e3692b957d');
 
-				assert.equal(name, 'OMNI App');
+				assert.equal(name, 'OMNI Coin');
 
 				assert.equal(await omnitoken.DOMAIN_SEPARATOR(), getDomainSeparator(name, omnitoken.address, chainId));
 			  })

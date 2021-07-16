@@ -37,7 +37,7 @@ const main = async () => {
 	// Try to mint one additional Token
 	console.log("============= Try to Mint Any Additional Token (Expect Revert) =================");
 	try {
-		const estimatetx = await omnitoken.mint(1, {gasLimit: 1500000});
+		const estimatetx = await omnitoken.burn(1, {gasLimit: 1500000});
 		console.log("Gas Estimate: ", estimatetx, (await estimatetx.gasPrice).toString(), (await estimatetx.gasLimit).toString(), estimatetx.status);
 		if (estimatetx.gasLimit == null ) {
 			estimatetx.gasLimit = await ethers.provider.estimateGas(estimatetx);

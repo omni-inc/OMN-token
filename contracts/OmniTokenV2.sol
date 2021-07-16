@@ -11,7 +11,7 @@ import "../lib/@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol
 import "../lib/main/Vesting.sol";
 
 
-contract OmniTokenV1 is Initializable, Vesting{
+contract OmniTokenV2 is Initializable, Vesting{
 	using AddressUpgradeable for address;
 	using SafeMathUpgradeable for uint256;
 	using SafeERC20Upgradeable for IERC20Upgradeable;
@@ -20,9 +20,9 @@ contract OmniTokenV1 is Initializable, Vesting{
 
 	function initialize() initializer() public {
 		__Ownable_init();
-		__ERC20_init_unchained('XPTO Token', 'XPTO');
+		__ERC20_init_unchained('OMNI Coin', 'OMN');
 		__Pausable_init_unchained();
-		__ERC20Permit_init('XPTO Token');
+		__ERC20Permit_init('OMNI Coin');
 
 		// Mint Total Supply
 		mint(getMaxTotalSupply());
@@ -148,16 +148,12 @@ contract OmniTokenV1 is Initializable, Vesting{
         uint256 balance = balanceOf(sender);
         uint256 restAmount = getRestAmount(sender);
 
-        if (balance > frozenWallets[sender].totalAmount && balance.sub(frozenWallets[sender].totalAmount) >= amount) {
-            return true;
-        }
-
-        if (!isStarted(frozenWallets[sender].startDay) || balance.sub(amount) < restAmount) {
-            return false;
-        }
+		if(balance.sub(restAmount) < amount) {
+			return false;
+		}
 
         return true;
-    }
+	}
 
 	/**
      * @dev Override the Hook of Open Zeppelin for checking before execute the method transfer/transferFrom/mint/burn.
