@@ -20,9 +20,9 @@ contract OmniTokenV1 is Initializable, Vesting{
 
 	function initialize() initializer() public {
 		__Ownable_init();
-		__ERC20_init_unchained('XPTO Token', 'XPTO');
+		__ERC20_init_unchained('OMNI Coin', 'OMN');
 		__Pausable_init_unchained();
-		__ERC20Permit_init('XPTO Token');
+		__ERC20Permit_init('OMNI Coin');
 
 		// Mint Total Supply
 		mint(getMaxTotalSupply());
