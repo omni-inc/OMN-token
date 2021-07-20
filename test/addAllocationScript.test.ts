@@ -1,4 +1,3 @@
-import { Provider } from '@ethersproject/providers';
 import { ethers, upgrades } from 'hardhat';
 import { BigNumber, Signer } from "ethers";
 import  { expect, assert } from "chai";
@@ -38,7 +37,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 
 	async function sleep(timeout:number) {
 		return new Promise(resolve => setTimeout(resolve, timeout * 1000));
-	  }
+	}
 
 	//   ** Function Total Supply, Balance of, Name, Symbol, Decimals */
 	//   ** 1. Test Initial Value of Smart Contract : How it is working - Test Case */
@@ -89,8 +88,6 @@ describe("ERC20 Full Test except Vesting", async () => {
 		const omnitoken = new ethers.Contract('0xAe4A50E56c3c1a09059A8775BbFE98ec66bE6f1e', OmniTokenContract.raw.abi, accounts[0]);
 		// const OmniTokenV2 = await ethers.getContractFactory("OmniTokenV2");
 		// const omnitoken = await upgrades.deployProxy(OmniTokenV2);
-		const bytecode = OmniTokenContract.raw.bytecode;
-		console.info(`Bytecode: ${bytecode}`);
 		// verify the Address
 		console.log("OMNI Token deployed to:", omnitoken.address);
 
