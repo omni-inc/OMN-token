@@ -115,4 +115,7 @@ bin/
 cache/
 artifacts/
 
+# Allocation
+allocation/
+
 .openzeppelin/.session
