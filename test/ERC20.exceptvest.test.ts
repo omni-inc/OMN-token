@@ -623,7 +623,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 		describe("Testing the ERC20 Permit Method a Auxiliary Methods", async () => {
 
 			it('8.1.- initializes DOMAIN_SEPARATOR and PERMIT_TYPEHASH correctly', async () => {
-				assert.equal(await owner.getAddress(), '0xc715Ed01c42e1A078BD61B9a89bfD1e3692b957d');
+				assert.equal(await owner.getAddress(), '0x996D1ce6977Ed0B63cbB1b1fB002F8eD75309fEE');
 
 				assert.equal(name, 'OMNI Coin');
 

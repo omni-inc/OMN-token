@@ -46,17 +46,13 @@ const main = async () => {
 	// Define Owner Address
 	const owner = accounts[0];
 	// Create Instance of the contract
-	const contractAddress = '0xC403F245314960Df72f6c808fdFC5986B69357B1';
-	if (!contractAddress) {
-		throw new Error('Contract address is not set');
-	}
-	const OmniToken = await ethers.getContractAt("OmniTokenV2",contractAddress, owner);
-	// check if the contract is instanced
-	console.log("OMNI Coin Address:", OmniToken.address);
 
 	if (!existsSync('config.json')) throw new Error(`config.json does not exists`)
-	const config = JSON.parse(readFileSync('config.json').toString())
-	config.token = OmniToken.address
+	const config = JSON.parse(readFileSync('config.json').toString());
+	console.log("OMNI Coin config.token Address:", config.token);
+	const OmniToken = await ethers.getContractAt("OmniTokenV3", config.token, owner);
+	// check if the contract is instanced
+	console.log("OMNI Coin Address:", OmniToken.address);
 
 	const batch_size = Number(config.batch)
 	const account = accounts[0];
@@ -117,15 +113,16 @@ const main = async () => {
 		console.info(`Addresses: ${addresses}`)
 		console.info(`Amounts: ${amounts}`);
 		const allocation:number = config.allocation;
-
-		const gas = await token.estimateGas.addAllocations(addresses, amounts, allocation);
-		console.info(`EstimateGas TX: ${gas}`);
-		const recipient = await token.addAllocations(addresses, amounts, allocation, {gasLimit: gas, gasPrice: await getGasPrice(config.gasPrice) });
-		const tx = await recipient.wait();
-
-		nonce++;
-
-		console.info(`Generated TX: ${tx.transactionHash}`);
+		if (config.dryrun) {
+			console.info(`Allocation: ${allocation}`);
+		} else {
+			const gas = await token.estimateGas.addAllocations(addresses, amounts, allocation);
+			console.info(`EstimateGas TX: ${gas}`);
+			const recipient = await token.addAllocations(addresses, amounts, allocation, {gasLimit: gas, gasPrice: await getGasPrice(config.gasPrice) });
+			const tx = await recipient.wait();
+			nonce++;
+			console.info(`Generated TX: ${tx.transactionHash}`);
+		}
 	}
 
 }

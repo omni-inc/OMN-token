@@ -8,6 +8,8 @@ import "@typechain/ethers-v5";
 import '@openzeppelin/hardhat-upgrades';
 import 'hardhat-spdx-license-identifier';
 import '@nomiclabs/hardhat-etherscan';
+import '@nomiclabs/hardhat-truffle5';
+import "@nomiclabs/hardhat-web3";
 import 'dotenv/config';
 
 // This is a sample Hardhat task. To learn how to create your own go to

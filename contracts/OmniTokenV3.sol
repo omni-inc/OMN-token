@@ -11,7 +11,7 @@ import "../lib/@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol
 import "../lib/main/Vesting.sol";
 
 
-contract OmniTokenV2 is Initializable, Vesting{
+contract OmniTokenV3 is Initializable, Vesting{
 	using AddressUpgradeable for address;
 	using SafeMathUpgradeable for uint256;
 	using SafeERC20Upgradeable for IERC20Upgradeable;
