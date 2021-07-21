@@ -103,8 +103,9 @@ contract Vesting is OwnableUpgradeable, Math, Claimable, PausableUpgradeable, ER
 				monthlyAmount = 0;
 				 afterDay = vestingType.afterDays;
 			} else {
+				// WE FIXED PUBLIC ALLOCATION TO 50% MONTHLY AS PER OMNI WHITE PAPER.
 				dailyAmount = 0;
-				monthlyAmount = mulDiv(totalAmounts[j], vestingType.monthRate, 1e18);
+				monthlyAmount = mulDiv(totalAmounts[j], 500000000000000000, 1e18);
 				afterDay = vestingType.monthDelay.mul(30 days);
 			}
 			/**
