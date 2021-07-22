@@ -317,7 +317,7 @@ describe("ERC20 Only Vesting Test", async () => {
 			// ** Verify Allocation #1 Wallets day by day and unlocked Tokens
 			it("1.17.2.- Verify Daily Rate and Initial Iteration of Allocation #1, #2, #3, #4, #6 and #10 Beginning to TGE =============================================================", async () => {
 				// TGE Moment
-				console.log("Date for Token Generate Event: ", parseInt(TGE.add(4,'d').add(8, 'h').format('X')), TGE.format("dddd, MMMM Do YYYY, h:mm:ss a"));
+				console.log("Date for Token Generate Event: ", parseInt(TGE.add(6,'d').add(2, 'h').format('X')), TGE.format("dddd, MMMM Do YYYY, h:mm:ss a"));
 				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.format('X'))]);
 				await network.provider.send("evm_mine", []);
 				let time = Math.floor((await ethers.provider.getBlock("latest")).timestamp);
@@ -376,7 +376,7 @@ describe("ERC20 Only Vesting Test", async () => {
 			it("1.18.1.- Call the AddAllocation Method for Allocation #4 and upload all Wallets of the Vesting Process in the Smart Contract and Verify have the right Values", async () => {
 				// Add Allocation #4, Public Sale
 				// 30 Days - 1 seconds after TGE
-				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(10,'d').add(16,'h').format('X'))]);
+				await network.provider.send("evm_setNextBlockTimestamp", [parseInt(TGE.add(8,'d').add(22,'h').format('X'))]);
 				await network.provider.send("evm_mine", []);
 				let time = Math.floor((await ethers.provider.getBlock("latest")).timestamp);
 				console.log("Verify TimeStamp: ", time," Full Date: ", moment(time*1000).utc().format("dddd, MMMM Do YYYY, h:mm:ss a"));

@@ -120,7 +120,7 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 		gasPrice: 35,
 		coinmarketcap: process.env.COINMARKETCAP_API_KEY,
 		maxMethodDiff: 10,
-		excludeContracts: ['ERC20Token.sol']
+		excludeContracts: ['ERC20Token.sol', 'OmniTokenV1.sol', 'OmniTokenV2.sol']
 	},
 	contractSizer: {
 		alphaSort: true,

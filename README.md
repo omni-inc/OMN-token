@@ -43,6 +43,13 @@ npx hardhat test
 - URL_MOONBEAM_TESTNET=https://rpc.testnet.moonbeam.network
 
 ---
+### Certik Audit Report
+
+---
+
+[Certik Audit Report, with last Review](https://www.certik.org/projects/omni)
+
+---
 ### Last ETH Gas Reporter
 
 ---
@@ -60,4 +67,4 @@ npx hardhat test
 
 ---
 
-# OMN-token
+# OMN-token v3
