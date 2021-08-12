@@ -4,5 +4,5 @@
   "gas_price_gwei": 20,
   "airdrop_file": "",
 	"allocation": 3,
-	"dryrun": false
+	"dryrun": true
 }
