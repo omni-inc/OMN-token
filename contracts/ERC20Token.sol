@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: ISC
 
-/// @title OMNI Token V1 / Ethereum v1
-/// @author Alfredo Lopez / Arthur Miranda / OMNI App 2021.5 */
+/// @title OMNI Token V4 / Ethereum v1
+/// @author Alfredo Lopez / Arthur Miranda / OMNI App 2021.10 */
 
 pragma solidity 0.8.4;
 

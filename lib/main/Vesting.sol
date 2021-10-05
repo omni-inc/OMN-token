@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 
-/// @title OMNI Token V1 / Ethereum v1
-/// @author Alfredo Lopez / Arthur Miranda / OMNI App 2021.5 */
+/// @title OMNI Token V4 / Ethereum v1
+/// @author Alfredo Lopez / Arthur Miranda / OMNI App 2021.10 */
 
 pragma solidity 0.8.4;
 
@@ -13,31 +13,7 @@ import "../@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol
 import "../main/Claimable.sol";
 import "./Math.sol";
 
-struct FrozenWallet {
-	bool scheduled;
-	uint32 startDay;
-    uint32 afterDays;
-    address wallet;
-    uint256 totalAmount;
-    uint256 dailyAmount;
-	uint256 monthlyAmount;
-    uint256 initialAmount;
-}
 
-struct VestingType {
-    uint256 dailyRate;
-    uint256 initialRate;
-    uint256 afterDays;
-	uint256 monthRate;
-	uint256 monthDelay;
-	bool vesting;
-	bool vestingType; //true for daily rate and false for monthly rate
-}
-
-/**
- * @title Vesting Methods
- * @dev All Method to permit handle the Vesting Process of OMN token
- */
 contract Vesting is OwnableUpgradeable, Math, Claimable, PausableUpgradeable, ERC20PermitUpgradeable {
 
     /**
