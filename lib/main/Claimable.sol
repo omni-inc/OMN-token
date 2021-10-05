@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 
-/// @title OMNI Token V1 / Ethereum v1
-/// @author Alfredo Lopez / Arthur Miranda / OMNI App 2021.5 */
+/// @title OMNI Token V4 / Polygon v1
+/// @author Alfredo Lopez / Arthur Miranda / OMNI App 2021.10 */
 
 pragma solidity 0.8.4;
 
@@ -12,7 +12,8 @@ import "./CirculatingSupply.sol";
 
 /**
  * @title Claimable Methods
- * @dev Implementation of the claiming utils that can be useful for withdrawing accidentally sent tokens that are not used in bridge operations.
+ * @dev Implementation of the claiming utils that can be useful for withdrawing
+ * @dev accidentally sent tokens that are not used in bridge operations.
  */
 contract Claimable is OwnableUpgradeable, CirculatingSupply {
 	using SafeMathUpgradeable for uint256;
