@@ -19,12 +19,11 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
-interface OmniTokenV3Interface extends ethers.utils.Interface {
+interface OmniTokenV4Interface extends ethers.utils.Interface {
   functions: {
     "DOMAIN_SEPARATOR()": FunctionFragment;
     "addBlacklist(address)": FunctionFragment;
     "addOmniWallet(address)": FunctionFragment;
-    "addWhiteListed(address)": FunctionFragment;
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
@@ -33,23 +32,17 @@ interface OmniTokenV3Interface extends ethers.utils.Interface {
     "claimValues(address,address)": FunctionFragment;
     "decimals()": FunctionFragment;
     "decreaseAllowance(address,uint256)": FunctionFragment;
-    "disableBurnBeforeBlockNumber()": FunctionFragment;
-    "disableTransfers(uint256)": FunctionFragment;
     "dropBlacklist(address)": FunctionFragment;
     "dropOmniWallet(address)": FunctionFragment;
-    "dropWhiteListed(address)": FunctionFragment;
     "getBlacklist()": FunctionFragment;
-    "getBurnBeforeBlockNumber()": FunctionFragment;
-    "getBurnBeforeBlockNumberDisabled()": FunctionFragment;
-    "getIsTransferDisabled()": FunctionFragment;
     "getMaxTotalSupply()": FunctionFragment;
     "getOmniWallets()": FunctionFragment;
-    "getWhiteListWallets()": FunctionFragment;
+    "getReleaseTime()": FunctionFragment;
+    "getTimestamp()": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
     "initialize()": FunctionFragment;
     "isBlacklisted(address)": FunctionFragment;
     "isOmniWallet(address)": FunctionFragment;
-    "isWhiteListed(address)": FunctionFragment;
     "mint(uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "nonces(address)": FunctionFragment;
@@ -80,10 +73,6 @@ interface OmniTokenV3Interface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "addWhiteListed",
-    values: [string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "allowance",
     values: [string, string]
   ): string;
@@ -107,14 +96,6 @@ interface OmniTokenV3Interface extends ethers.utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "disableBurnBeforeBlockNumber",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "disableTransfers",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "dropBlacklist",
     values: [string]
   ): string;
@@ -123,23 +104,7 @@ interface OmniTokenV3Interface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "dropWhiteListed",
-    values: [string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "getBlacklist",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getBurnBeforeBlockNumber",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getBurnBeforeBlockNumberDisabled",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getIsTransferDisabled",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -151,7 +116,11 @@ interface OmniTokenV3Interface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "getWhiteListWallets",
+    functionFragment: "getReleaseTime",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTimestamp",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -168,10 +137,6 @@ interface OmniTokenV3Interface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "isOmniWallet",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isWhiteListed",
     values: [string]
   ): string;
   encodeFunctionData(functionFragment: "mint", values: [BigNumberish]): string;
@@ -234,10 +199,6 @@ interface OmniTokenV3Interface extends ethers.utils.Interface {
     functionFragment: "addOmniWallet",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "addWhiteListed",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
@@ -256,14 +217,6 @@ interface OmniTokenV3Interface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "disableBurnBeforeBlockNumber",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "disableTransfers",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "dropBlacklist",
     data: BytesLike
   ): Result;
@@ -272,23 +225,7 @@ interface OmniTokenV3Interface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "dropWhiteListed",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "getBlacklist",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getBurnBeforeBlockNumber",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getBurnBeforeBlockNumberDisabled",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getIsTransferDisabled",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -300,7 +237,11 @@ interface OmniTokenV3Interface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getWhiteListWallets",
+    functionFragment: "getReleaseTime",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getTimestamp",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -314,10 +255,6 @@ interface OmniTokenV3Interface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "isOmniWallet",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isWhiteListed",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
@@ -353,38 +290,30 @@ interface OmniTokenV3Interface extends ethers.utils.Interface {
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
-    "DisableDefenseAntiBots(uint256,bool)": EventFragment;
     "InBlacklisted(address)": EventFragment;
     "InOmniWallet(address)": EventFragment;
-    "InWhiteListWallet(address)": EventFragment;
     "OutBlacklisted(address)": EventFragment;
     "OutOmniWallet(address)": EventFragment;
-    "OutWhiteListWallet(address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "Paused(address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
-    "TransferBurned(address,uint256)": EventFragment;
     "Unpaused(address)": EventFragment;
     "ValueReceived(address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "DisableDefenseAntiBots"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "InBlacklisted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "InOmniWallet"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "InWhiteListWallet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OutBlacklisted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OutOmniWallet"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OutWhiteListWallet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "TransferBurned"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ValueReceived"): EventFragment;
 }
 
-export class OmniTokenV3 extends Contract {
+export class OmniTokenV4 extends Contract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -425,7 +354,7 @@ export class OmniTokenV3 extends Contract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: OmniTokenV3Interface;
+  interface: OmniTokenV4Interface;
 
   functions: {
     DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<[string]>;
@@ -448,16 +377,6 @@ export class OmniTokenV3 extends Contract {
     ): Promise<ContractTransaction>;
 
     "addOmniWallet(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    addWhiteListed(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "addWhiteListed(address)"(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -539,24 +458,6 @@ export class OmniTokenV3 extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    disableBurnBeforeBlockNumber(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "disableBurnBeforeBlockNumber()"(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    disableTransfers(
-      blocksDuration: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "disableTransfers(uint256)"(
-      blocksDuration: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     dropBlacklist(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -577,37 +478,9 @@ export class OmniTokenV3 extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    dropWhiteListed(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "dropWhiteListed(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     getBlacklist(overrides?: CallOverrides): Promise<[string[]]>;
 
     "getBlacklist()"(overrides?: CallOverrides): Promise<[string[]]>;
-
-    getBurnBeforeBlockNumber(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    "getBurnBeforeBlockNumber()"(
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    getBurnBeforeBlockNumberDisabled(
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    "getBurnBeforeBlockNumberDisabled()"(
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    getIsTransferDisabled(overrides?: CallOverrides): Promise<[boolean]>;
-
-    "getIsTransferDisabled()"(overrides?: CallOverrides): Promise<[boolean]>;
 
     getMaxTotalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -617,9 +490,13 @@ export class OmniTokenV3 extends Contract {
 
     "getOmniWallets()"(overrides?: CallOverrides): Promise<[string[]]>;
 
-    getWhiteListWallets(overrides?: CallOverrides): Promise<[string[]]>;
+    getReleaseTime(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "getWhiteListWallets()"(overrides?: CallOverrides): Promise<[string[]]>;
+    "getReleaseTime()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getTimestamp(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    "getTimestamp()"(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     increaseAllowance(
       spender: string,
@@ -657,16 +534,6 @@ export class OmniTokenV3 extends Contract {
     ): Promise<[boolean]>;
 
     "isOmniWallet(address)"(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    isWhiteListed(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    "isWhiteListed(address)"(
       _account: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
@@ -835,16 +702,6 @@ export class OmniTokenV3 extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  addWhiteListed(
-    _account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "addWhiteListed(address)"(
-    _account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   allowance(
     owner: string,
     spender: string,
@@ -918,24 +775,6 @@ export class OmniTokenV3 extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  disableBurnBeforeBlockNumber(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "disableBurnBeforeBlockNumber()"(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  disableTransfers(
-    blocksDuration: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "disableTransfers(uint256)"(
-    blocksDuration: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   dropBlacklist(
     _account: string,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -956,33 +795,9 @@ export class OmniTokenV3 extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  dropWhiteListed(
-    _account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "dropWhiteListed(address)"(
-    _account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   getBlacklist(overrides?: CallOverrides): Promise<string[]>;
 
   "getBlacklist()"(overrides?: CallOverrides): Promise<string[]>;
-
-  getBurnBeforeBlockNumber(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "getBurnBeforeBlockNumber()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  getBurnBeforeBlockNumberDisabled(overrides?: CallOverrides): Promise<boolean>;
-
-  "getBurnBeforeBlockNumberDisabled()"(
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  getIsTransferDisabled(overrides?: CallOverrides): Promise<boolean>;
-
-  "getIsTransferDisabled()"(overrides?: CallOverrides): Promise<boolean>;
 
   getMaxTotalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -992,9 +807,13 @@ export class OmniTokenV3 extends Contract {
 
   "getOmniWallets()"(overrides?: CallOverrides): Promise<string[]>;
 
-  getWhiteListWallets(overrides?: CallOverrides): Promise<string[]>;
+  getReleaseTime(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "getWhiteListWallets()"(overrides?: CallOverrides): Promise<string[]>;
+  "getReleaseTime()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "getTimestamp()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   increaseAllowance(
     spender: string,
@@ -1026,13 +845,6 @@ export class OmniTokenV3 extends Contract {
   isOmniWallet(_account: string, overrides?: CallOverrides): Promise<boolean>;
 
   "isOmniWallet(address)"(
-    _account: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  isWhiteListed(_account: string, overrides?: CallOverrides): Promise<boolean>;
-
-  "isWhiteListed(address)"(
     _account: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
@@ -1198,16 +1010,6 @@ export class OmniTokenV3 extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    addWhiteListed(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    "addWhiteListed(address)"(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
     allowance(
       owner: string,
       spender: string,
@@ -1278,20 +1080,6 @@ export class OmniTokenV3 extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    disableBurnBeforeBlockNumber(overrides?: CallOverrides): Promise<void>;
-
-    "disableBurnBeforeBlockNumber()"(overrides?: CallOverrides): Promise<void>;
-
-    disableTransfers(
-      blocksDuration: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "disableTransfers(uint256)"(
-      blocksDuration: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     dropBlacklist(_account: string, overrides?: CallOverrides): Promise<void>;
 
     "dropBlacklist(address)"(
@@ -1309,35 +1097,9 @@ export class OmniTokenV3 extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    dropWhiteListed(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    "dropWhiteListed(address)"(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
     getBlacklist(overrides?: CallOverrides): Promise<string[]>;
 
     "getBlacklist()"(overrides?: CallOverrides): Promise<string[]>;
-
-    getBurnBeforeBlockNumber(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getBurnBeforeBlockNumber()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getBurnBeforeBlockNumberDisabled(
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    "getBurnBeforeBlockNumberDisabled()"(
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    getIsTransferDisabled(overrides?: CallOverrides): Promise<boolean>;
-
-    "getIsTransferDisabled()"(overrides?: CallOverrides): Promise<boolean>;
 
     getMaxTotalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1347,9 +1109,13 @@ export class OmniTokenV3 extends Contract {
 
     "getOmniWallets()"(overrides?: CallOverrides): Promise<string[]>;
 
-    getWhiteListWallets(overrides?: CallOverrides): Promise<string[]>;
+    getReleaseTime(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "getWhiteListWallets()"(overrides?: CallOverrides): Promise<string[]>;
+    "getReleaseTime()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getTimestamp()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     increaseAllowance(
       spender: string,
@@ -1380,16 +1146,6 @@ export class OmniTokenV3 extends Contract {
     isOmniWallet(_account: string, overrides?: CallOverrides): Promise<boolean>;
 
     "isOmniWallet(address)"(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    isWhiteListed(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    "isWhiteListed(address)"(
       _account: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
@@ -1531,14 +1287,6 @@ export class OmniTokenV3 extends Contract {
       { owner: string; spender: string; value: BigNumber }
     >;
 
-    DisableDefenseAntiBots(
-      blockNumber: null,
-      statusDefense: null
-    ): TypedEventFilter<
-      [BigNumber, boolean],
-      { blockNumber: BigNumber; statusDefense: boolean }
-    >;
-
     InBlacklisted(
       _account: string | null
     ): TypedEventFilter<[string], { _account: string }>;
@@ -1547,19 +1295,11 @@ export class OmniTokenV3 extends Contract {
       _account: string | null
     ): TypedEventFilter<[string], { _account: string }>;
 
-    InWhiteListWallet(
-      _account: string | null
-    ): TypedEventFilter<[string], { _account: string }>;
-
     OutBlacklisted(
       _account: string | null
     ): TypedEventFilter<[string], { _account: string }>;
 
     OutOmniWallet(
-      _account: string | null
-    ): TypedEventFilter<[string], { _account: string }>;
-
-    OutWhiteListWallet(
       _account: string | null
     ): TypedEventFilter<[string], { _account: string }>;
 
@@ -1580,14 +1320,6 @@ export class OmniTokenV3 extends Contract {
     ): TypedEventFilter<
       [string, string, BigNumber],
       { from: string; to: string; value: BigNumber }
-    >;
-
-    TransferBurned(
-      wallet: string | null,
-      amount: null
-    ): TypedEventFilter<
-      [string, BigNumber],
-      { wallet: string; amount: BigNumber }
     >;
 
     Unpaused(account: null): TypedEventFilter<[string], { account: string }>;
@@ -1622,16 +1354,6 @@ export class OmniTokenV3 extends Contract {
     ): Promise<BigNumber>;
 
     "addOmniWallet(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    addWhiteListed(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "addWhiteListed(address)"(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1709,24 +1431,6 @@ export class OmniTokenV3 extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    disableBurnBeforeBlockNumber(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "disableBurnBeforeBlockNumber()"(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    disableTransfers(
-      blocksDuration: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "disableTransfers(uint256)"(
-      blocksDuration: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     dropBlacklist(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1747,35 +1451,9 @@ export class OmniTokenV3 extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    dropWhiteListed(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "dropWhiteListed(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     getBlacklist(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getBlacklist()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getBurnBeforeBlockNumber(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getBurnBeforeBlockNumber()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getBurnBeforeBlockNumberDisabled(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getBurnBeforeBlockNumberDisabled()"(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getIsTransferDisabled(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getIsTransferDisabled()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     getMaxTotalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1785,9 +1463,13 @@ export class OmniTokenV3 extends Contract {
 
     "getOmniWallets()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getWhiteListWallets(overrides?: CallOverrides): Promise<BigNumber>;
+    getReleaseTime(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "getWhiteListWallets()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "getReleaseTime()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getTimestamp()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     increaseAllowance(
       spender: string,
@@ -1825,16 +1507,6 @@ export class OmniTokenV3 extends Contract {
     ): Promise<BigNumber>;
 
     "isOmniWallet(address)"(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    isWhiteListed(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "isWhiteListed(address)"(
       _account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -2006,16 +1678,6 @@ export class OmniTokenV3 extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    addWhiteListed(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "addWhiteListed(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     allowance(
       owner: string,
       spender: string,
@@ -2094,24 +1756,6 @@ export class OmniTokenV3 extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    disableBurnBeforeBlockNumber(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "disableBurnBeforeBlockNumber()"(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    disableTransfers(
-      blocksDuration: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "disableTransfers(uint256)"(
-      blocksDuration: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     dropBlacklist(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -2132,43 +1776,9 @@ export class OmniTokenV3 extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    dropWhiteListed(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "dropWhiteListed(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     getBlacklist(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "getBlacklist()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getBurnBeforeBlockNumber(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getBurnBeforeBlockNumber()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getBurnBeforeBlockNumberDisabled(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getBurnBeforeBlockNumberDisabled()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getIsTransferDisabled(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getIsTransferDisabled()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
 
     getMaxTotalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -2182,13 +1792,15 @@ export class OmniTokenV3 extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getWhiteListWallets(
+    getReleaseTime(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getReleaseTime()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "getWhiteListWallets()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    getTimestamp(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getTimestamp()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     increaseAllowance(
       spender: string,
@@ -2226,16 +1838,6 @@ export class OmniTokenV3 extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "isOmniWallet(address)"(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    isWhiteListed(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "isWhiteListed(address)"(
       _account: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

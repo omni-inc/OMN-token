@@ -6,13 +6,13 @@
 pragma solidity 0.8.4;
 
 import "../@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import "./Antibots.sol";
+import "./Blacklistable.sol";
 
 /**
  * @title Circulating Supply Methods
  * @dev Allows update the wallets of OMNI Foundation by Owner
  */
-contract CirculatingSupply is OwnableUpgradeable, Antibots {
+contract CirculatingSupply is OwnableUpgradeable, Blacklistable{
 	// Array of address
     address[] internal omni_wallets;
 
