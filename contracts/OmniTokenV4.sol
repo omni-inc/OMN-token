@@ -17,6 +17,8 @@ contract OmniTokenV4 is Initializable, Vesting {
 	using SafeERC20Upgradeable for IERC20Upgradeable;
 	// Constant Max Total Supply of OMNI Social Media Network
  	uint256 private constant _maxTotalSupply = 638_888_889 * (uint256(10) ** uint256(18));
+	// Constant Initial Liquidity for the Omni Bridge
+	uint256 private constant _initSupply = 1_000_000 * (uint256(10) ** uint256(18));
 
 	function initialize() initializer() public {
 		__Ownable_init();
