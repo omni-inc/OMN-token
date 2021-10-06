@@ -29,6 +29,8 @@ contract OmniTokenV4 is Initializable, Math, Claimable, PausableUpgradeable, ERC
 		__Pausable_init_unchained();
 		__ERC20Permit_init('OMNI Coin');
 
+		// Add owner to Whitelist
+		addWhitelist(owner());
 		// Mint Total Supply
 		mint(getMaxTotalSupply());
 

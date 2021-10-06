@@ -22,9 +22,13 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 interface BlacklistableInterface extends ethers.utils.Interface {
   functions: {
     "addBlacklist(address)": FunctionFragment;
+    "addWhitelist(address)": FunctionFragment;
     "dropBlacklist(address)": FunctionFragment;
+    "dropWhitelist(address)": FunctionFragment;
     "getBlacklist()": FunctionFragment;
+    "getWhitelist()": FunctionFragment;
     "isBlacklisted(address)": FunctionFragment;
+    "isWhitelisted(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
@@ -35,7 +39,15 @@ interface BlacklistableInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
+    functionFragment: "addWhitelist",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "dropBlacklist",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "dropWhitelist",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -43,7 +55,15 @@ interface BlacklistableInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "getWhitelist",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "isBlacklisted",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isWhitelisted",
     values: [string]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -61,7 +81,15 @@ interface BlacklistableInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "addWhitelist",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "dropBlacklist",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "dropWhitelist",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -69,7 +97,15 @@ interface BlacklistableInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getWhitelist",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "isBlacklisted",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isWhitelisted",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -84,12 +120,16 @@ interface BlacklistableInterface extends ethers.utils.Interface {
 
   events: {
     "InBlacklisted(address)": EventFragment;
+    "InWhitelisted(address)": EventFragment;
     "OutBlacklisted(address)": EventFragment;
+    "OutWhitelisted(address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "InBlacklisted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "InWhitelisted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OutBlacklisted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OutWhitelisted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
 
@@ -147,6 +187,16 @@ export class Blacklistable extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    addWhitelist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "addWhitelist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     dropBlacklist(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -157,9 +207,23 @@ export class Blacklistable extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    dropWhitelist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "dropWhitelist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     getBlacklist(overrides?: CallOverrides): Promise<[string[]]>;
 
     "getBlacklist()"(overrides?: CallOverrides): Promise<[string[]]>;
+
+    getWhitelist(overrides?: CallOverrides): Promise<[string[]]>;
+
+    "getWhitelist()"(overrides?: CallOverrides): Promise<[string[]]>;
 
     isBlacklisted(
       _account: string,
@@ -167,6 +231,16 @@ export class Blacklistable extends Contract {
     ): Promise<[boolean]>;
 
     "isBlacklisted(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    isWhitelisted(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    "isWhitelisted(address)"(
       _account: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
@@ -204,6 +278,16 @@ export class Blacklistable extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  addWhitelist(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "addWhitelist(address)"(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   dropBlacklist(
     _account: string,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -214,13 +298,34 @@ export class Blacklistable extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  dropWhitelist(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "dropWhitelist(address)"(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   getBlacklist(overrides?: CallOverrides): Promise<string[]>;
 
   "getBlacklist()"(overrides?: CallOverrides): Promise<string[]>;
 
+  getWhitelist(overrides?: CallOverrides): Promise<string[]>;
+
+  "getWhitelist()"(overrides?: CallOverrides): Promise<string[]>;
+
   isBlacklisted(_account: string, overrides?: CallOverrides): Promise<boolean>;
 
   "isBlacklisted(address)"(
+    _account: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  isWhitelisted(_account: string, overrides?: CallOverrides): Promise<boolean>;
+
+  "isWhitelisted(address)"(
     _account: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
@@ -255,9 +360,23 @@ export class Blacklistable extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    addWhitelist(_account: string, overrides?: CallOverrides): Promise<void>;
+
+    "addWhitelist(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     dropBlacklist(_account: string, overrides?: CallOverrides): Promise<void>;
 
     "dropBlacklist(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    dropWhitelist(_account: string, overrides?: CallOverrides): Promise<void>;
+
+    "dropWhitelist(address)"(
       _account: string,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -266,12 +385,26 @@ export class Blacklistable extends Contract {
 
     "getBlacklist()"(overrides?: CallOverrides): Promise<string[]>;
 
+    getWhitelist(overrides?: CallOverrides): Promise<string[]>;
+
+    "getWhitelist()"(overrides?: CallOverrides): Promise<string[]>;
+
     isBlacklisted(
       _account: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     "isBlacklisted(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    isWhitelisted(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "isWhitelisted(address)"(
       _account: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
@@ -300,7 +433,15 @@ export class Blacklistable extends Contract {
       _account: string | null
     ): TypedEventFilter<[string], { _account: string }>;
 
+    InWhitelisted(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
+
     OutBlacklisted(
+      _account: string | null
+    ): TypedEventFilter<[string], { _account: string }>;
+
+    OutWhitelisted(
       _account: string | null
     ): TypedEventFilter<[string], { _account: string }>;
 
@@ -324,6 +465,16 @@ export class Blacklistable extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    addWhitelist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "addWhitelist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     dropBlacklist(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -334,9 +485,23 @@ export class Blacklistable extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    dropWhitelist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "dropWhitelist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     getBlacklist(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getBlacklist()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getWhitelist(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getWhitelist()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     isBlacklisted(
       _account: string,
@@ -344,6 +509,16 @@ export class Blacklistable extends Contract {
     ): Promise<BigNumber>;
 
     "isBlacklisted(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    isWhitelisted(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "isWhitelisted(address)"(
       _account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -382,6 +557,16 @@ export class Blacklistable extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    addWhitelist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "addWhitelist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     dropBlacklist(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -392,9 +577,23 @@ export class Blacklistable extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    dropWhitelist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "dropWhitelist(address)"(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     getBlacklist(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "getBlacklist()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getWhitelist(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getWhitelist()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     isBlacklisted(
       _account: string,
@@ -402,6 +601,16 @@ export class Blacklistable extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "isBlacklisted(address)"(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isWhitelisted(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "isWhitelisted(address)"(
       _account: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

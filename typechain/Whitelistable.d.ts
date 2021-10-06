@@ -19,19 +19,11 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
-interface CirculatingSupplyInterface extends ethers.utils.Interface {
+interface WhitelistableInterface extends ethers.utils.Interface {
   functions: {
-    "addBlacklist(address)": FunctionFragment;
-    "addOmniWallet(address)": FunctionFragment;
     "addWhitelist(address)": FunctionFragment;
-    "dropBlacklist(address)": FunctionFragment;
-    "dropOmniWallet(address)": FunctionFragment;
     "dropWhitelist(address)": FunctionFragment;
-    "getBlacklist()": FunctionFragment;
-    "getOmniWallets()": FunctionFragment;
     "getWhitelist()": FunctionFragment;
-    "isBlacklisted(address)": FunctionFragment;
-    "isOmniWallet(address)": FunctionFragment;
     "isWhitelisted(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
@@ -39,23 +31,7 @@ interface CirculatingSupplyInterface extends ethers.utils.Interface {
   };
 
   encodeFunctionData(
-    functionFragment: "addBlacklist",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "addOmniWallet",
-    values: [string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "addWhitelist",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "dropBlacklist",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "dropOmniWallet",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -63,24 +39,8 @@ interface CirculatingSupplyInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "getBlacklist",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getOmniWallets",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "getWhitelist",
     values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isBlacklisted",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isOmniWallet",
-    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "isWhitelisted",
@@ -97,23 +57,7 @@ interface CirculatingSupplyInterface extends ethers.utils.Interface {
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "addBlacklist",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "addOmniWallet",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "addWhitelist",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "dropBlacklist",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "dropOmniWallet",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -121,23 +65,7 @@ interface CirculatingSupplyInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getBlacklist",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getOmniWallets",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "getWhitelist",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isBlacklisted",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isOmniWallet",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -155,25 +83,17 @@ interface CirculatingSupplyInterface extends ethers.utils.Interface {
   ): Result;
 
   events: {
-    "InBlacklisted(address)": EventFragment;
-    "InOmniWallet(address)": EventFragment;
     "InWhitelisted(address)": EventFragment;
-    "OutBlacklisted(address)": EventFragment;
-    "OutOmniWallet(address)": EventFragment;
     "OutWhitelisted(address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "InBlacklisted"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "InOmniWallet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "InWhitelisted"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OutBlacklisted"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OutOmniWallet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OutWhitelisted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
 
-export class CirculatingSupply extends Contract {
+export class Whitelistable extends Contract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -214,55 +134,15 @@ export class CirculatingSupply extends Contract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: CirculatingSupplyInterface;
+  interface: WhitelistableInterface;
 
   functions: {
-    addBlacklist(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "addBlacklist(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    addOmniWallet(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "addOmniWallet(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     addWhitelist(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     "addWhitelist(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    dropBlacklist(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "dropBlacklist(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    dropOmniWallet(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "dropOmniWallet(address)"(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -277,37 +157,9 @@ export class CirculatingSupply extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    getBlacklist(overrides?: CallOverrides): Promise<[string[]]>;
-
-    "getBlacklist()"(overrides?: CallOverrides): Promise<[string[]]>;
-
-    getOmniWallets(overrides?: CallOverrides): Promise<[string[]]>;
-
-    "getOmniWallets()"(overrides?: CallOverrides): Promise<[string[]]>;
-
     getWhitelist(overrides?: CallOverrides): Promise<[string[]]>;
 
     "getWhitelist()"(overrides?: CallOverrides): Promise<[string[]]>;
-
-    isBlacklisted(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    "isBlacklisted(address)"(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    isOmniWallet(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    "isOmniWallet(address)"(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
 
     isWhitelisted(
       _account: string,
@@ -342,52 +194,12 @@ export class CirculatingSupply extends Contract {
     ): Promise<ContractTransaction>;
   };
 
-  addBlacklist(
-    _account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "addBlacklist(address)"(
-    _account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  addOmniWallet(
-    _account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "addOmniWallet(address)"(
-    _account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   addWhitelist(
     _account: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   "addWhitelist(address)"(
-    _account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  dropBlacklist(
-    _account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "dropBlacklist(address)"(
-    _account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  dropOmniWallet(
-    _account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "dropOmniWallet(address)"(
     _account: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -402,31 +214,9 @@ export class CirculatingSupply extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  getBlacklist(overrides?: CallOverrides): Promise<string[]>;
-
-  "getBlacklist()"(overrides?: CallOverrides): Promise<string[]>;
-
-  getOmniWallets(overrides?: CallOverrides): Promise<string[]>;
-
-  "getOmniWallets()"(overrides?: CallOverrides): Promise<string[]>;
-
   getWhitelist(overrides?: CallOverrides): Promise<string[]>;
 
   "getWhitelist()"(overrides?: CallOverrides): Promise<string[]>;
-
-  isBlacklisted(_account: string, overrides?: CallOverrides): Promise<boolean>;
-
-  "isBlacklisted(address)"(
-    _account: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  isOmniWallet(_account: string, overrides?: CallOverrides): Promise<boolean>;
-
-  "isOmniWallet(address)"(
-    _account: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
 
   isWhitelisted(_account: string, overrides?: CallOverrides): Promise<boolean>;
 
@@ -458,46 +248,12 @@ export class CirculatingSupply extends Contract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    addBlacklist(_account: string, overrides?: CallOverrides): Promise<void>;
-
-    "addBlacklist(address)"(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    addOmniWallet(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    "addOmniWallet(address)"(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
     addWhitelist(_account: string, overrides?: CallOverrides): Promise<void>;
 
     "addWhitelist(address)"(
       _account: string,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    dropBlacklist(_account: string, overrides?: CallOverrides): Promise<void>;
-
-    "dropBlacklist(address)"(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    dropOmniWallet(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    "dropOmniWallet(address)"(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
 
     dropWhitelist(_account: string, overrides?: CallOverrides): Promise<void>;
 
@@ -506,34 +262,9 @@ export class CirculatingSupply extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    getBlacklist(overrides?: CallOverrides): Promise<string[]>;
-
-    "getBlacklist()"(overrides?: CallOverrides): Promise<string[]>;
-
-    getOmniWallets(overrides?: CallOverrides): Promise<string[]>;
-
-    "getOmniWallets()"(overrides?: CallOverrides): Promise<string[]>;
-
     getWhitelist(overrides?: CallOverrides): Promise<string[]>;
 
     "getWhitelist()"(overrides?: CallOverrides): Promise<string[]>;
-
-    isBlacklisted(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    "isBlacklisted(address)"(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    isOmniWallet(_account: string, overrides?: CallOverrides): Promise<boolean>;
-
-    "isOmniWallet(address)"(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
 
     isWhitelisted(
       _account: string,
@@ -565,23 +296,7 @@ export class CirculatingSupply extends Contract {
   };
 
   filters: {
-    InBlacklisted(
-      _account: string | null
-    ): TypedEventFilter<[string], { _account: string }>;
-
-    InOmniWallet(
-      _account: string | null
-    ): TypedEventFilter<[string], { _account: string }>;
-
     InWhitelisted(
-      _account: string | null
-    ): TypedEventFilter<[string], { _account: string }>;
-
-    OutBlacklisted(
-      _account: string | null
-    ): TypedEventFilter<[string], { _account: string }>;
-
-    OutOmniWallet(
       _account: string | null
     ): TypedEventFilter<[string], { _account: string }>;
 
@@ -599,52 +314,12 @@ export class CirculatingSupply extends Contract {
   };
 
   estimateGas: {
-    addBlacklist(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "addBlacklist(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    addOmniWallet(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "addOmniWallet(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     addWhitelist(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     "addWhitelist(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    dropBlacklist(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "dropBlacklist(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    dropOmniWallet(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "dropOmniWallet(address)"(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -659,37 +334,9 @@ export class CirculatingSupply extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    getBlacklist(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getBlacklist()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getOmniWallets(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getOmniWallets()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     getWhitelist(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getWhitelist()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    isBlacklisted(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "isBlacklisted(address)"(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    isOmniWallet(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "isOmniWallet(address)"(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     isWhitelisted(
       _account: string,
@@ -725,52 +372,12 @@ export class CirculatingSupply extends Contract {
   };
 
   populateTransaction: {
-    addBlacklist(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "addBlacklist(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    addOmniWallet(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "addOmniWallet(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     addWhitelist(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     "addWhitelist(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    dropBlacklist(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "dropBlacklist(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    dropOmniWallet(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "dropOmniWallet(address)"(
       _account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -785,39 +392,9 @@ export class CirculatingSupply extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    getBlacklist(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "getBlacklist()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getOmniWallets(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "getOmniWallets()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     getWhitelist(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "getWhitelist()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    isBlacklisted(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "isBlacklisted(address)"(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    isOmniWallet(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "isOmniWallet(address)"(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
 
     isWhitelisted(
       _account: string,
