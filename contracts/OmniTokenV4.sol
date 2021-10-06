@@ -106,6 +106,20 @@ contract OmniTokenV4 is Initializable, Math, Claimable, PausableUpgradeable, ERC
     }
 
 	/**
+     * @dev Method to permit to get the Exactly Unix Epoch of Token Generate Event
+     */
+	function getReleaseTime() public pure returns (uint256) {
+        return 1626440400; // "Friday, 16 July 2021 13:00:00 GMT"
+    }
+
+    /**
+     * @dev Auxiliary Method to permit to get the Last Exactly Unix Epoch of Blockchain timestamp
+     */
+    function getTimestamp() public view returns (uint256) {
+        return block.timestamp;
+    }
+
+	/**
      * @dev Destroys `amount` tokens from the caller.
      * @param amount Amount token to burn
      * See {ERC20-_burn}.

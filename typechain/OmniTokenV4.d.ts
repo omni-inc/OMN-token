@@ -39,6 +39,8 @@ interface OmniTokenV4Interface extends ethers.utils.Interface {
     "getBlacklist()": FunctionFragment;
     "getMaxTotalSupply()": FunctionFragment;
     "getOmniWallets()": FunctionFragment;
+    "getReleaseTime()": FunctionFragment;
+    "getTimestamp()": FunctionFragment;
     "getWhitelist()": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
     "initialize()": FunctionFragment;
@@ -123,6 +125,14 @@ interface OmniTokenV4Interface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getOmniWallets",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getReleaseTime",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTimestamp",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -252,6 +262,14 @@ interface OmniTokenV4Interface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getOmniWallets",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getReleaseTime",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getTimestamp",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -531,6 +549,14 @@ export class OmniTokenV4 extends Contract {
     getOmniWallets(overrides?: CallOverrides): Promise<[string[]]>;
 
     "getOmniWallets()"(overrides?: CallOverrides): Promise<[string[]]>;
+
+    getReleaseTime(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    "getReleaseTime()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getTimestamp(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    "getTimestamp()"(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     getWhitelist(overrides?: CallOverrides): Promise<[string[]]>;
 
@@ -875,6 +901,14 @@ export class OmniTokenV4 extends Contract {
 
   "getOmniWallets()"(overrides?: CallOverrides): Promise<string[]>;
 
+  getReleaseTime(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "getReleaseTime()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "getTimestamp()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   getWhitelist(overrides?: CallOverrides): Promise<string[]>;
 
   "getWhitelist()"(overrides?: CallOverrides): Promise<string[]>;
@@ -1193,6 +1227,14 @@ export class OmniTokenV4 extends Contract {
     getOmniWallets(overrides?: CallOverrides): Promise<string[]>;
 
     "getOmniWallets()"(overrides?: CallOverrides): Promise<string[]>;
+
+    getReleaseTime(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getReleaseTime()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getTimestamp()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     getWhitelist(overrides?: CallOverrides): Promise<string[]>;
 
@@ -1582,6 +1624,14 @@ export class OmniTokenV4 extends Contract {
 
     "getOmniWallets()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getReleaseTime(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getReleaseTime()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getTimestamp()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     getWhitelist(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getWhitelist()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1936,6 +1986,16 @@ export class OmniTokenV4 extends Contract {
     "getOmniWallets()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    getReleaseTime(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getReleaseTime()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getTimestamp(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getTimestamp()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getWhitelist(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
