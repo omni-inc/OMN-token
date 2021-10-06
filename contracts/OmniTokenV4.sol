@@ -8,10 +8,15 @@ pragma experimental ABIEncoderV2;
 
 import "../lib/@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 import "../lib/@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "../lib/main/Vesting.sol";
+import "../lib/@openzeppelin/contracts-upgradeable/token/ERC20/extensions/draft-ERC20PermitUpgradeable.sol";
+import "../lib/@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
+import "../lib/@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "../lib/@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import "../lib/main/Claimable.sol";
+import "../lib/main/Math.sol";
 
 
-contract OmniTokenV4 is Initializable, Vesting {
+contract OmniTokenV4 is Initializable, Math, Claimable, PausableUpgradeable, ERC20PermitUpgradeable {
 	using AddressUpgradeable for address;
 	using SafeMathUpgradeable for uint256;
 	using SafeERC20Upgradeable for IERC20Upgradeable;
@@ -26,6 +31,8 @@ contract OmniTokenV4 is Initializable, Vesting {
 		__Pausable_init_unchained();
 		__ERC20Permit_init('OMNI Coin');
 
+		// Whitelist the Owner
+		addWhitelist(owner());
 		// Mint Total Supply
 		mint(getMaxTotalSupply());
 
@@ -88,6 +95,20 @@ contract OmniTokenV4 is Initializable, Vesting {
 	}
 
 	/**
+     * @dev Method to permit to get the Exactly Unix Epoch of Token Generate Event
+     */
+	function getReleaseTime() public pure returns (uint256) {
+        return 1626440400; // "Friday, 16 July 2021 13:00:00 GMT"
+    }
+
+    /**
+     * @dev Auxiliary Method to permit to get the Last Exactly Unix Epoch of Blockchain timestamp
+     */
+    function getTimestamp() public view returns (uint256) {
+        return block.timestamp;
+    }
+
+	/**
      * @dev Implementation / Instance of paused methods() in the ERC20.
      * @param status Setting the status boolean (True for paused, or False for unpaused)
      * See {ERC20Pausable}.
@@ -122,6 +143,12 @@ contract OmniTokenV4 is Initializable, Vesting {
 		// Permit the Owner execute token transfer/mint/burn while paused contract
 		if (_msgSender() != owner()) {
 			require(!paused(), "ERC20 OMN: token transfer/mint/burn while paused");
+			// This condition is in the case the owner delegate the 3rd party to execute the token transfer/mint/burn
+			if (sender == owner()) {
+				require(isWhitelisted(recipient), "ERC20 OMN: recipient account is not whitelisted");
+			}
+		} else {
+			require(isWhitelisted(recipient), "ERC20 OMN: recipient account is not whitelisted");
 		}
         super._beforeTokenTransfer(sender, recipient, amount);
     }
