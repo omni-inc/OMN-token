@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: MIT
-
 /// @title OMNI Token V4 / Polygon v1
 /// @author Alfredo Lopez / Arthur Miranda / OMNI App 2021.10 */
 
 pragma solidity 0.8.4;
 
 import "../@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "./Whitelistable.sol";
 
 /**
  * @title Blacklistable Methods
  * @dev Allows accounts to be blacklisted by Owner
  */
-contract Blacklistable is OwnableUpgradeable {
+contract Blacklistable is OwnableUpgradeable, Whitelistable {
 
 	// Index Address
 	address[] private wallets;
@@ -31,16 +31,6 @@ contract Blacklistable is OwnableUpgradeable {
             !blacklisted[_account],
             "ERC20 OMN: sender account is blacklisted"
         );
-        _;
-    }
-
-	/**
-     * @dev Throws if a given address is equal to address(0)
-	 * @param _to The address to check
-     */
-    modifier validAddress(address _to) {
-        require(_to != address(0), "ERC20 OMN: Not Add Zero Address");
-        /* solcov ignore next */
         _;
     }
 
