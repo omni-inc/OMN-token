@@ -6,12 +6,15 @@
 pragma solidity 0.8.4;
 pragma experimental ABIEncoderV2;
 
+import "../lib/@openzeppelin/contracts-upgradeable/token/ERC20/extensions/draft-ERC20PermitUpgradeable.sol";
+import "../lib/@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
+import "../lib/@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "../lib/@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
-import "../lib/@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "../lib/main/Vesting.sol";
+import "../lib/@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import "../lib/main/Claimable.sol";
+import "../lib/main/Math.sol";
 
-
-contract OmniTokenV4 is Initializable, Vesting {
+contract OmniTokenV4 is Initializable, Math, Claimable, PausableUpgradeable, ERC20PermitUpgradeable {
 	using AddressUpgradeable for address;
 	using SafeMathUpgradeable for uint256;
 	using SafeERC20Upgradeable for IERC20Upgradeable;
@@ -122,6 +125,12 @@ contract OmniTokenV4 is Initializable, Vesting {
 		// Permit the Owner execute token transfer/mint/burn while paused contract
 		if (_msgSender() != owner()) {
 			require(!paused(), "ERC20 OMN: token transfer/mint/burn while paused");
+			// This condition is in the case the owner delegate the 3rd party to execute the token transfer/mint/burn
+			if (sender == owner()) {
+				require(isWhitelisted(recipient), "ERC20 OMN: recipient account is not whitelisted");
+			}
+		} else {
+			require(isWhitelisted(recipient), "ERC20 OMN: recipient account is not whitelisted");
 		}
         super._beforeTokenTransfer(sender, recipient, amount);
     }
