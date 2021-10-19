@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: ISC
 
-/// @title OMNI Token V4 / Polygon v1
-/// @author Alfredo Lopez / Arthur Miranda / OMNI App 2021.10 */
+/// @title OMNI Token V5 / Polygon v1
+/// @author Alfredo Lopez / OMNI App 2021.10 */
 
 pragma solidity 0.8.4;
 pragma experimental ABIEncoderV2;

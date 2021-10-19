@@ -148,8 +148,8 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 	etherscan: {
 		// Your API key for Etherscan
 		// Obtain one at https://etherscan.io/
-		// apiKey: process.env.ETHERSCAN_API_KEY
-		apiKey: process.env.BSCSCAN_API_KEY
+		apiKey: process.env.ETHERSCAN_API_KEY
+		// apiKey: process.env.BSCSCAN_API_KEY
 	},
 	spdxLicenseIdentifier: {
 		overwrite: true,
