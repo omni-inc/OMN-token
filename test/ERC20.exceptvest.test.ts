@@ -38,8 +38,8 @@ describe("ERC20 Full Test except Vesting", async () => {
 		expect(((await omnitoken.totalSupply()).toString())).to.be.equal('638888889000000000000000000');
 		describe(' Basic Value', async () => {
 			it("1.1.- Verify the Name of the Token", async () => {
-				console.log("Name of The Token: ", (await omnitoken.name()).toString(), "=====> must be OMNI People Driven");
-				expect(((await omnitoken.name()).toString())).to.be.equal('OMNI People Driven');
+				console.log("Name of The Token: ", (await omnitoken.name()).toString(), "=====> must be OMNI TOKEN");
+				expect(((await omnitoken.name()).toString())).to.be.equal('OMNI Token');
 			});
 			it("1.2.- Verify the Tiker of the Token", async () => {
 				console.log("Name of The Token: ", (await omnitoken.symbol()).toString(), "====> must be OAI");
@@ -113,9 +113,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 
 		describe('Verify Balance Of / Transfer', async () => {
 			it("3.1.- Execute a Transfer, and Verify the changes in Owner Account, and Receipt Account", async () => {
-				await expect((omnitoken.transfer(await accounts[1].getAddress(), '8888889000000000000000000'))).to.be.revertedWith("ERC20 OMN: recipient account is not whitelisted");
-				await omnitoken.addWhitelist(await accounts[1].getAddress());
-				await omnitoken.transfer(await accounts[1].getAddress(), '8888889000000000000000000')
+				await omnitoken.transfer(await accounts[1].getAddress(), '8888889000000000000000000');
 				console.log("Balance After of Account Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "=====> must be 630000000000000000000000000");
 				expect(((await omnitoken.balanceOf(await accounts[0].getAddress())).toString())).to.be.equal('630000000000000000000000000');
 				console.log("Balance After of Receipt: ", (await omnitoken.balanceOf(await accounts[1].getAddress())).toString(), "=====> must be 8888889000000000000000000");
@@ -255,7 +253,6 @@ describe("ERC20 Full Test except Vesting", async () => {
 			it("4.3.- IncreaseAllowance / Transfer / TransferFrom only the unBlacklisted Wallet", async () => {
 				// Accounts[4]
 				await omnitoken.increaseAllowance(await accounts[4].getAddress(), '8888889000000000000000000');
-				await omnitoken.addWhitelist(await accounts[4].getAddress());
 				console.log("Verify Allowance Accounts[0] to Accounts[4]:", (await omnitoken.allowance(await accounts[0].getAddress(), await accounts[4].getAddress())).toString());
 				expect((await omnitoken.allowance(await accounts[0].getAddress(), await accounts[4].getAddress())).toString()).to.be.equal('8888889000000000000000000');
 				await omnitoken.connect(accounts[4]).transferFrom(await accounts[0].getAddress(), await accounts[4].getAddress(), '8888889000000000000000000');
@@ -265,7 +262,6 @@ describe("ERC20 Full Test except Vesting", async () => {
 				expect(((await omnitoken.balanceOf(await accounts[4].getAddress())).toString())).to.be.equal('8888889000000000000000000');
 				// Accounts[8]
 				await omnitoken.increaseAllowance(await accounts[8].getAddress(), '30000000000000000000000000');
-				await omnitoken.addWhitelist(await accounts[8].getAddress());
 				console.log("Verify Allowance Accounts[0] to Accounts[8]:", (await omnitoken.allowance(await accounts[0].getAddress(), await accounts[8].getAddress())).toString());
 				expect((await omnitoken.allowance(await accounts[0].getAddress(), await accounts[8].getAddress())).toString()).to.be.equal('30000000000000000000000000');
 				await omnitoken.connect(accounts[8]).transferFrom(await accounts[0].getAddress(), await accounts[8].getAddress(), '30000000000000000000000000');
@@ -304,7 +300,6 @@ describe("ERC20 Full Test except Vesting", async () => {
 			it("4.5.- IncreaseAllowance / Transfer / TransferFrom only the Blacklisted Wallet", async () => {
 				// Accounts[6]
 				await omnitoken.increaseAllowance(await accounts[6].getAddress(), '8888889000000000000000000');
-				await omnitoken.addWhitelist(await accounts[6].getAddress());
 				console.log("Verify Allowance Accounts[0] to Accounts[6]:", (await omnitoken.allowance(await accounts[0].getAddress(), await accounts[6].getAddress())).toString());
 				expect((await omnitoken.allowance(await accounts[0].getAddress(), await accounts[6].getAddress())).toString()).to.be.equal('8888889000000000000000000');
 				console.log("We Expect Revert the Transaction: Try to send total balance of Receipt (Accounts[6])");
@@ -315,7 +310,6 @@ describe("ERC20 Full Test except Vesting", async () => {
 				expect(((await omnitoken.balanceOf(await accounts[6].getAddress())).toString())).to.be.equal('0');
 				// Accounts[10]
 				await omnitoken.increaseAllowance(await accounts[10].getAddress(), '30000000000000000000000000');
-				await omnitoken.addWhitelist(await accounts[10].getAddress());
 				console.log("Verify Allowance Accounts[0] to Accounts[10]:", (await omnitoken.allowance(await accounts[0].getAddress(), await accounts[10].getAddress())).toString());
 				expect((await omnitoken.allowance(await accounts[0].getAddress(), await accounts[10].getAddress())).toString()).to.be.equal('30000000000000000000000000');
 				console.log("We Expect Revert the Transaction: Try to send total balance of Receipt (Accounts[10])");
@@ -339,7 +333,6 @@ describe("ERC20 Full Test except Vesting", async () => {
 	it("5. Should the right value of the Circulating Supply for add, drop any wallets in the Array for OMNI Wallets", async () => {
 		const OmniToken = await ethers.getContractFactory("OmniTokenV4");
 		const omnitoken = await upgrades.deployProxy(OmniToken);
-		const walletZeroAddress = '0x0000000000000000000000000000000000000000';
 
 		await omnitoken.deployed();
 		// verify the Address
@@ -349,12 +342,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 		expect((await omnitoken.balanceOf(await accounts[0].getAddress())).toString()).to.be.equal('638888889000000000000000000');
 		console.log("Total Supply: ", (await omnitoken.totalSupply()).toString(), "must be 638 million!!! in wei");
 		expect(((await omnitoken.totalSupply()).toString())).to.be.equal('638888889000000000000000000');
-		await expect(omnitoken.transfer((await accounts[19].getAddress()).toString(), '888889000000000000000000')).to.be.revertedWith("ERC20 OMN: recipient account is not whitelisted");
-		await omnitoken.addWhitelist((await accounts[19].getAddress()).toString());
-		await omnitoken.transfer((await accounts[19].getAddress()).toString(), '888889000000000000000000');
-		await expect(omnitoken.connect(accounts[19]).burn('888889000000000000000000')).to.emit(omnitoken, 'Transfer').withArgs(await accounts[19].getAddress(), walletZeroAddress,'888889000000000000000000');
-		await expect(omnitoken.mint('888889000000000000000000')).to.emit(omnitoken, 'Transfer').withArgs(walletZeroAddress, await accounts[0].getAddress(), '888889000000000000000000');
-		await omnitoken.transfer((await accounts[19].getAddress()).toString(), '888889000000000000000000');
+		await expect(omnitoken.transfer((await accounts[19].getAddress()).toString(),'888889000000000000000000')).to.emit(omnitoken, 'Transfer').withArgs(await accounts[0].getAddress(), await accounts[19].getAddress(), '888889000000000000000000');
 
 		describe("Add Wallet to the blacklist and getting the list, and drop someone, and update the list", async () => {
 			it("5.1.- Sending Token to Different Wallets and Verify the Circulating Supply with zero OMNI Wallets", async () => {
@@ -363,8 +351,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 				console.log("Verify Owner Address Balance with Start: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString());
 				expect((await omnitoken.balanceOf(await accounts[0].getAddress())).toString()).to.equal('638000000000000000000000000');
 				console.log("Execute multiples Transfer for all odd Account from 4 to 18")
-				for (let i = 4; i <= 18; i += 2) {
-					await omnitoken.addWhitelist((await accounts[i].getAddress()).toString());
+				for (let i=4; i <= 18; i+=2) {
 					await expect(omnitoken.transfer(await accounts[i].getAddress(),'1000000000000000000000000')).to.emit(omnitoken, 'Transfer').withArgs(await accounts[0].getAddress(), await accounts[i].getAddress(), '1000000000000000000000000');
 					console.log("Account ", i, "Receipt Address for Verify Circulating: ", await accounts[i].getAddress());
 				}
@@ -434,8 +421,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 			it("5.6.- Sending token another Count not included in OMNI Wallets: ", async () => {
 				await expect(omnitoken.connect(accounts[1]).addOmniWallet(await accounts[0].getAddress())).to.be.revertedWith("Ownable: caller is not the owner");
 				console.log("Transfer Token to Accounts 2, 6, 10, 14 and 18:");
-				await omnitoken.addWhitelist(await accounts[2].getAddress());
-				for (let i = 2; i <= 18; i += 4) {
+				for (let i=2; i <= 18; i+=4) {
 					await expect(omnitoken.transfer(await accounts[i].getAddress(),'1000000000000000000000000')).to.emit(omnitoken, 'Transfer').withArgs(await accounts[0].getAddress(), await accounts[i].getAddress(), '1000000000000000000000000');
 					console.log("Account ", i, "Receipt Address for Verify Circulating: ", await accounts[i].getAddress());
 					console.log("Balance Receipt Address for Verify Circulating: ", (await omnitoken.balanceOf(await accounts[i].getAddress())).toString());
@@ -639,7 +625,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 			it('8.1.- initializes DOMAIN_SEPARATOR and PERMIT_TYPEHASH correctly', async () => {
 				assert.equal(await owner.getAddress(), '0xc715Ed01c42e1A078BD61B9a89bfD1e3692b957d');
 
-				assert.equal(name, 'OMNI Coin');
+				assert.equal(name, 'OMNI Token');
 
 				assert.equal(await omnitoken.DOMAIN_SEPARATOR(), getDomainSeparator(name, omnitoken.address, chainId));
 			  })
@@ -745,8 +731,6 @@ describe("ERC20 Full Test except Vesting", async () => {
 				// we do not want, so we're manually signing here
 				const { v, r, s } = sign(digest, ownerPrivateKey);
 
-				// Add Whitelist
-				await omnitoken.addWhitelist(approve.owner);
 				// transfer OMN token to smart contract address
 				await omnitoken.transfer(approve.owner, ethers.utils.parseEther(String(5000)));
 				expect((await omnitoken.balanceOf(approve.owner)).toString()).to.be.equal(ethers.utils.parseEther(String(5000)).toString());

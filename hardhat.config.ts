@@ -135,10 +135,10 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 	},
 	gasReporter: {
 		currency: 'USD',
-		gasPrice: 35,
+		gasPrice: 65,
 		coinmarketcap: process.env.COINMARKETCAP_API_KEY,
 		maxMethodDiff: 10,
-		excludeContracts: ['ERC20Token.sol', 'OmniTokenV1.sol', 'OmniTokenV2.sol']
+		excludeContracts: ['ERC20Token.sol']
 	},
 	contractSizer: {
 		alphaSort: true,

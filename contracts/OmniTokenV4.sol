@@ -25,9 +25,9 @@ contract OmniTokenV4 is Initializable, Math, Claimable, PausableUpgradeable, ERC
 
 	function initialize() initializer() public {
 		__Ownable_init();
-		__ERC20_init_unchained('OMNI People Driven', 'OAI');
+		__ERC20_init_unchained('OMNI Token', 'OAI');
 		__Pausable_init_unchained();
-		__ERC20Permit_init('OMNI People Driven');
+		__ERC20Permit_init('OMNI Token');
 
 		// Mint Total Supply
 		mint(getMaxTotalSupply());
