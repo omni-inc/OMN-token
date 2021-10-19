@@ -2,7 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { ERC20Token } from "./ERC20Token";
-export type { OmniTokenV5 } from "./OmniTokenV5";
+export type { OmniTokenV4 } from "./OmniTokenV4";
 export type { OwnableUpgradeable } from "./OwnableUpgradeable";
 export type { IERC1271Upgradeable } from "./IERC1271Upgradeable";
 export type { PausableUpgradeable } from "./PausableUpgradeable";
@@ -16,7 +16,7 @@ export type { CirculatingSupply } from "./CirculatingSupply";
 export type { Claimable } from "./Claimable";
 
 export { ERC20Token__factory } from "./factories/ERC20Token__factory";
-export { OmniTokenV5__factory } from "./factories/OmniTokenV5__factory";
+export { OmniTokenV4__factory } from "./factories/OmniTokenV4__factory";
 export { OwnableUpgradeable__factory } from "./factories/OwnableUpgradeable__factory";
 export { IERC1271Upgradeable__factory } from "./factories/IERC1271Upgradeable__factory";
 export { PausableUpgradeable__factory } from "./factories/PausableUpgradeable__factory";

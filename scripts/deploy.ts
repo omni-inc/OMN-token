@@ -22,7 +22,7 @@ const main = async () => {
 
   // console.log("Accounts:", accounts.map((a) => a.address));
 
-  	const OmniToken = await ethers.getContractFactory("OmniTokenV5");
+  	const OmniToken = await ethers.getContractFactory("OmniTokenV4");
 	//const Erc20Token = await ethers.getContractFactory("ERC20Token");
 	const omnitoken = await upgrades.deployProxy(OmniToken);
 	//const erc20Token = await upgrades.deployProxy(Erc20Token);

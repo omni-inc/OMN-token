@@ -17,7 +17,7 @@ contract ERC20Token is OwnableUpgradeable, ERC20Upgradeable {
 	using ECDSAUpgradeable for bytes32;
 
     function initialize() initializer public {
-        __ERC20_init('ERC20 Token', 'WETH');
+        __ERC20_init('FAKE Token', 'FETH');
 		__Ownable_init();
     }
 
