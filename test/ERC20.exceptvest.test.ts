@@ -38,12 +38,12 @@ describe("ERC20 Full Test except Vesting", async () => {
 		expect(((await omnitoken.totalSupply()).toString())).to.be.equal('638888889000000000000000000');
 		describe(' Basic Value', async () => {
 			it("1.1.- Verify the Name of the Token", async () => {
-				console.log("Name of The Token: ", (await omnitoken.name()).toString(), "=====> must be OMNI App");
-				expect(((await omnitoken.name()).toString())).to.be.equal('OMNI Coin');
+				console.log("Name of The Token: ", (await omnitoken.name()).toString(), "=====> must be OMNI People Driven");
+				expect(((await omnitoken.name()).toString())).to.be.equal('OMNI People Driven');
 			});
 			it("1.2.- Verify the Tiker of the Token", async () => {
-				console.log("Name of The Token: ", (await omnitoken.symbol()).toString(), "====> must be OMN");
-				expect(((await omnitoken.symbol()).toString())).to.be.equal('OMN');
+				console.log("Name of The Token: ", (await omnitoken.symbol()).toString(), "====> must be OAI");
+				expect(((await omnitoken.symbol()).toString())).to.be.equal('OAI');
 			});
 			it("1.3.- Verify the Decimals of the Token", async () => {
 				console.log("Name of The Token: ", (await omnitoken.decimals()), "=====> must be 18");

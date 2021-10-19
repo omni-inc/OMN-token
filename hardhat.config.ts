@@ -70,6 +70,24 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 				count:parseInt(`${process.env.ACCOUNTS}`)
 			}
 		},
+		polygon: {
+			chainId: 137,
+			url: `https://polygon-mainnet.infura.io/v3/${process.env.INFURAKEY}`,
+			gasPrice: 2000000000,
+			accounts: {
+				mnemonic:process.env.MNEMONIC,
+				count:parseInt(`${process.env.ACCOUNTS}`)
+			}
+		},
+		mumbai: {
+			chainId: 80001,
+			url: `https://polygon-mumbai.infura.io/v3/${process.env.INFURAKEY}`,
+			gasPrice: 1000000000,
+			accounts: {
+				mnemonic:process.env.MNEMONIC,
+				count:parseInt(`${process.env.ACCOUNTS}`)
+			}
+		},
 		moonbase: {
 			// Need to go to Dicord channel and get DEV (coin in Moonbase Alphanet)
 			// And Verify Procedure in https://docs.moonbeam.network/networks/testnet/

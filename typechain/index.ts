@@ -14,8 +14,6 @@ export type { IERC20Upgradeable } from "./IERC20Upgradeable";
 export type { Blacklistable } from "./Blacklistable";
 export type { CirculatingSupply } from "./CirculatingSupply";
 export type { Claimable } from "./Claimable";
-export type { Vesting } from "./Vesting";
-export type { Whitelistable } from "./Whitelistable";
 
 export { ERC20Token__factory } from "./factories/ERC20Token__factory";
 export { OmniTokenV4__factory } from "./factories/OmniTokenV4__factory";
@@ -30,5 +28,3 @@ export { IERC20Upgradeable__factory } from "./factories/IERC20Upgradeable__facto
 export { Blacklistable__factory } from "./factories/Blacklistable__factory";
 export { CirculatingSupply__factory } from "./factories/CirculatingSupply__factory";
 export { Claimable__factory } from "./factories/Claimable__factory";
-export { Vesting__factory } from "./factories/Vesting__factory";
-export { Whitelistable__factory } from "./factories/Whitelistable__factory";

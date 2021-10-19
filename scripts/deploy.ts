@@ -3,7 +3,8 @@
 //
 // When running the script with `hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
-import {run, ethers, upgrades} from 'hardhat';
+import { run, ethers, upgrades } from 'hardhat';
+import { BigNumber } from "ethers";
 import "@nomiclabs/hardhat-ethers";
 
 const main = async () => {
@@ -21,7 +22,7 @@ const main = async () => {
 
   // console.log("Accounts:", accounts.map((a) => a.address));
 
-  	const OmniToken = await ethers.getContractFactory("OmniTokenV3");
+  	const OmniToken = await ethers.getContractFactory("OmniTokenV4");
 	const Erc20Token = await ethers.getContractFactory("ERC20Token");
 	const omnitoken = await upgrades.deployProxy(OmniToken);
 	const erc20Token = await upgrades.deployProxy(Erc20Token);
@@ -37,7 +38,7 @@ const main = async () => {
 	// Try to mint one additional Token
 	console.log("============= Try to Mint Any Additional Token (Expect Revert) =================");
 	try {
-		const estimatetx = await omnitoken.burn(1, {gasLimit: 1500000});
+		const estimatetx = await omnitoken.mint(1, {gasLimit: 1500000});
 		console.log("Gas Estimate: ", estimatetx, (await estimatetx.gasPrice).toString(), (await estimatetx.gasLimit).toString(), estimatetx.status);
 		if (estimatetx.gasLimit == null ) {
 			estimatetx.gasLimit = await ethers.provider.estimateGas(estimatetx);
@@ -45,7 +46,7 @@ const main = async () => {
 		const receipt = await estimatetx.wait();
 		console.log("Receipt Error: ", receipt);
 		console.log("ChainId: ", (await estimatetx.chainId).toString());
-	} catch (error) {
+	} catch (error: any) {
 		console.log("Type Error: ", JSON.stringify(error.name));
 		console.log("Code Error: ", JSON.stringify(error.code));
 		console.log("Transaction Hash: ", JSON.stringify(error.transactionHash));

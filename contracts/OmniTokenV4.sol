@@ -25,12 +25,10 @@ contract OmniTokenV4 is Initializable, Math, Claimable, PausableUpgradeable, ERC
 
 	function initialize() initializer() public {
 		__Ownable_init();
-		__ERC20_init_unchained('OMNI Coin', 'OMN');
+		__ERC20_init_unchained('OMNI People Driven', 'OAI');
 		__Pausable_init_unchained();
-		__ERC20Permit_init('OMNI Coin');
+		__ERC20Permit_init('OMNI People Driven');
 
-		// Add owner to Whitelist
-		addWhitelist(owner());
 		// Mint Total Supply
 		mint(getMaxTotalSupply());
 
@@ -141,12 +139,6 @@ contract OmniTokenV4 is Initializable, Math, Claimable, PausableUpgradeable, ERC
 		// Permit the Owner execute token transfer/mint/burn while paused contract
 		if (_msgSender() != owner()) {
 			require(!paused(), "ERC20 OMN: token transfer/mint/burn while paused");
-			// This condition is in the case the owner delegate the 3rd party to execute the token transfer/mint/burn
-			if (sender == owner()) {
-				require(isWhitelisted(recipient), "ERC20 OMN: recipient account is not whitelisted");
-			}
-		} else {
-			require(isWhitelisted(recipient), "ERC20 OMN: recipient account is not whitelisted");
 		}
         super._beforeTokenTransfer(sender, recipient, amount);
     }
