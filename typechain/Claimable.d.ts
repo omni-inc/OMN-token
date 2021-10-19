@@ -23,17 +23,13 @@ interface ClaimableInterface extends ethers.utils.Interface {
   functions: {
     "addBlacklist(address)": FunctionFragment;
     "addOmniWallet(address)": FunctionFragment;
-    "addWhitelist(address)": FunctionFragment;
     "claimValues(address,address)": FunctionFragment;
     "dropBlacklist(address)": FunctionFragment;
     "dropOmniWallet(address)": FunctionFragment;
-    "dropWhitelist(address)": FunctionFragment;
     "getBlacklist()": FunctionFragment;
     "getOmniWallets()": FunctionFragment;
-    "getWhitelist()": FunctionFragment;
     "isBlacklisted(address)": FunctionFragment;
     "isOmniWallet(address)": FunctionFragment;
-    "isWhitelisted(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
@@ -45,10 +41,6 @@ interface ClaimableInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "addOmniWallet",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "addWhitelist",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -64,10 +56,6 @@ interface ClaimableInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "dropWhitelist",
-    values: [string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "getBlacklist",
     values?: undefined
   ): string;
@@ -76,19 +64,11 @@ interface ClaimableInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "getWhitelist",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "isBlacklisted",
     values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "isOmniWallet",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isWhitelisted",
     values: [string]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -110,10 +90,6 @@ interface ClaimableInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "addWhitelist",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "claimValues",
     data: BytesLike
   ): Result;
@@ -126,10 +102,6 @@ interface ClaimableInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "dropWhitelist",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "getBlacklist",
     data: BytesLike
   ): Result;
@@ -138,19 +110,11 @@ interface ClaimableInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getWhitelist",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "isBlacklisted",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "isOmniWallet",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isWhitelisted",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -166,20 +130,16 @@ interface ClaimableInterface extends ethers.utils.Interface {
   events: {
     "InBlacklisted(address)": EventFragment;
     "InOmniWallet(address)": EventFragment;
-    "InWhitelisted(address)": EventFragment;
     "OutBlacklisted(address)": EventFragment;
     "OutOmniWallet(address)": EventFragment;
-    "OutWhitelisted(address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "ValueReceived(address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "InBlacklisted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "InOmniWallet"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "InWhitelisted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OutBlacklisted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OutOmniWallet"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OutWhitelisted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ValueReceived"): EventFragment;
 }
@@ -248,16 +208,6 @@ export class Claimable extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    addWhitelist(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "addWhitelist(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     claimValues(
       _token: string,
       _to: string,
@@ -290,16 +240,6 @@ export class Claimable extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    dropWhitelist(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "dropWhitelist(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     getBlacklist(overrides?: CallOverrides): Promise<[string[]]>;
 
     "getBlacklist()"(overrides?: CallOverrides): Promise<[string[]]>;
@@ -307,10 +247,6 @@ export class Claimable extends Contract {
     getOmniWallets(overrides?: CallOverrides): Promise<[string[]]>;
 
     "getOmniWallets()"(overrides?: CallOverrides): Promise<[string[]]>;
-
-    getWhitelist(overrides?: CallOverrides): Promise<[string[]]>;
-
-    "getWhitelist()"(overrides?: CallOverrides): Promise<[string[]]>;
 
     isBlacklisted(
       _account: string,
@@ -328,16 +264,6 @@ export class Claimable extends Contract {
     ): Promise<[boolean]>;
 
     "isOmniWallet(address)"(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    isWhitelisted(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    "isWhitelisted(address)"(
       _account: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
@@ -385,16 +311,6 @@ export class Claimable extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  addWhitelist(
-    _account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "addWhitelist(address)"(
-    _account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   claimValues(
     _token: string,
     _to: string,
@@ -427,16 +343,6 @@ export class Claimable extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  dropWhitelist(
-    _account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "dropWhitelist(address)"(
-    _account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   getBlacklist(overrides?: CallOverrides): Promise<string[]>;
 
   "getBlacklist()"(overrides?: CallOverrides): Promise<string[]>;
@@ -444,10 +350,6 @@ export class Claimable extends Contract {
   getOmniWallets(overrides?: CallOverrides): Promise<string[]>;
 
   "getOmniWallets()"(overrides?: CallOverrides): Promise<string[]>;
-
-  getWhitelist(overrides?: CallOverrides): Promise<string[]>;
-
-  "getWhitelist()"(overrides?: CallOverrides): Promise<string[]>;
 
   isBlacklisted(_account: string, overrides?: CallOverrides): Promise<boolean>;
 
@@ -459,13 +361,6 @@ export class Claimable extends Contract {
   isOmniWallet(_account: string, overrides?: CallOverrides): Promise<boolean>;
 
   "isOmniWallet(address)"(
-    _account: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  isWhitelisted(_account: string, overrides?: CallOverrides): Promise<boolean>;
-
-  "isWhitelisted(address)"(
     _account: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
@@ -510,13 +405,6 @@ export class Claimable extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    addWhitelist(_account: string, overrides?: CallOverrides): Promise<void>;
-
-    "addWhitelist(address)"(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     claimValues(
       _token: string,
       _to: string,
@@ -546,13 +434,6 @@ export class Claimable extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    dropWhitelist(_account: string, overrides?: CallOverrides): Promise<void>;
-
-    "dropWhitelist(address)"(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     getBlacklist(overrides?: CallOverrides): Promise<string[]>;
 
     "getBlacklist()"(overrides?: CallOverrides): Promise<string[]>;
@@ -560,10 +441,6 @@ export class Claimable extends Contract {
     getOmniWallets(overrides?: CallOverrides): Promise<string[]>;
 
     "getOmniWallets()"(overrides?: CallOverrides): Promise<string[]>;
-
-    getWhitelist(overrides?: CallOverrides): Promise<string[]>;
-
-    "getWhitelist()"(overrides?: CallOverrides): Promise<string[]>;
 
     isBlacklisted(
       _account: string,
@@ -578,16 +455,6 @@ export class Claimable extends Contract {
     isOmniWallet(_account: string, overrides?: CallOverrides): Promise<boolean>;
 
     "isOmniWallet(address)"(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    isWhitelisted(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    "isWhitelisted(address)"(
       _account: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
@@ -620,19 +487,11 @@ export class Claimable extends Contract {
       _account: string | null
     ): TypedEventFilter<[string], { _account: string }>;
 
-    InWhitelisted(
-      _account: string | null
-    ): TypedEventFilter<[string], { _account: string }>;
-
     OutBlacklisted(
       _account: string | null
     ): TypedEventFilter<[string], { _account: string }>;
 
     OutOmniWallet(
-      _account: string | null
-    ): TypedEventFilter<[string], { _account: string }>;
-
-    OutWhitelisted(
       _account: string | null
     ): TypedEventFilter<[string], { _account: string }>;
 
@@ -674,16 +533,6 @@ export class Claimable extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    addWhitelist(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "addWhitelist(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     claimValues(
       _token: string,
       _to: string,
@@ -716,16 +565,6 @@ export class Claimable extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    dropWhitelist(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "dropWhitelist(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     getBlacklist(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getBlacklist()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -733,10 +572,6 @@ export class Claimable extends Contract {
     getOmniWallets(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getOmniWallets()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getWhitelist(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getWhitelist()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     isBlacklisted(
       _account: string,
@@ -754,16 +589,6 @@ export class Claimable extends Contract {
     ): Promise<BigNumber>;
 
     "isOmniWallet(address)"(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    isWhitelisted(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "isWhitelisted(address)"(
       _account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -812,16 +637,6 @@ export class Claimable extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    addWhitelist(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "addWhitelist(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     claimValues(
       _token: string,
       _to: string,
@@ -854,16 +669,6 @@ export class Claimable extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    dropWhitelist(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "dropWhitelist(address)"(
-      _account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     getBlacklist(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "getBlacklist()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -873,10 +678,6 @@ export class Claimable extends Contract {
     "getOmniWallets()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
-
-    getWhitelist(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "getWhitelist()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     isBlacklisted(
       _account: string,
@@ -894,16 +695,6 @@ export class Claimable extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "isOmniWallet(address)"(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    isWhitelisted(
-      _account: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "isWhitelisted(address)"(
       _account: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

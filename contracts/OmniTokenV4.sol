@@ -22,17 +22,13 @@ contract OmniTokenV4 is Initializable, Math, Claimable, PausableUpgradeable, ERC
 	using SafeERC20Upgradeable for IERC20Upgradeable;
 	// Constant Max Total Supply of OMNI Social Media Network
  	uint256 private constant _maxTotalSupply = 638_888_889 * (uint256(10) ** uint256(18));
-	// Constant Initial Liquidity for the Omni Bridge
-	uint256 private constant _initSupply = 1_000_000 * (uint256(10) ** uint256(18));
 
 	function initialize() initializer() public {
 		__Ownable_init();
-		__ERC20_init_unchained('OMNI Coin', 'OMN');
+		__ERC20_init_unchained('OMNI Token', 'OAI');
 		__Pausable_init_unchained();
-		__ERC20Permit_init('OMNI Coin');
+		__ERC20Permit_init('OMNI Token');
 
-		// Whitelist the Owner
-		addWhitelist(owner());
 		// Mint Total Supply
 		mint(getMaxTotalSupply());
 
@@ -143,12 +139,6 @@ contract OmniTokenV4 is Initializable, Math, Claimable, PausableUpgradeable, ERC
 		// Permit the Owner execute token transfer/mint/burn while paused contract
 		if (_msgSender() != owner()) {
 			require(!paused(), "ERC20 OMN: token transfer/mint/burn while paused");
-			// This condition is in the case the owner delegate the 3rd party to execute the token transfer/mint/burn
-			if (sender == owner()) {
-				require(isWhitelisted(recipient), "ERC20 OMN: recipient account is not whitelisted");
-			}
-		} else {
-			require(isWhitelisted(recipient), "ERC20 OMN: recipient account is not whitelisted");
 		}
         super._beforeTokenTransfer(sender, recipient, amount);
     }
