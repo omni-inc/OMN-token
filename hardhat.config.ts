@@ -73,7 +73,7 @@ export default {
     polygon: {
       chainId: 137,
       url: `https://polygon-mainnet.infura.io/v3/${process.env.INFURAKEY}`,
-      gasPrice: 2000000000,
+      gasPrice: 65000000000,
       accounts: {
         mnemonic: process.env.MNEMONIC,
         count: parseInt(`${process.env.ACCOUNTS}`),
@@ -138,7 +138,7 @@ export default {
     gasPrice: 65,
     coinmarketcap: process.env.COINMARKETCAP_API_KEY,
     maxMethodDiff: 10,
-    excludeContracts: ['ERC20Token.sol'],
+    excludeContracts: [],
   },
   contractSizer: {
     alphaSort: true,
@@ -149,8 +149,8 @@ export default {
     // Your API key for Etherscan
     // Obtain one at https://etherscan.io/
     // apiKey: process.env.ETHERSCAN_API_KEY
-    apiKey: process.env.BSCSCAN_API_KEY
-    // apiKey: process.env.POLYGON_API_KEY,
+    // apiKey: process.env.BSCSCAN_API_KEY
+    apiKey: process.env.POLYGON_API_KEY,
   },
   spdxLicenseIdentifier: {
     overwrite: true,
