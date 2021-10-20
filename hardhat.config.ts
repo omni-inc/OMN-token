@@ -31,7 +31,7 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 		mainnet: {
 			chainId: 1,
 			url: `https://mainnet.infura.io/v3/${process.env.INFURAKEY}`,
-			gasPrice: 65000000000,
+			gasPrice: 80000000000,
 			accounts: {
 				mnemonic:process.env.MNEMONIC
 			}
@@ -117,10 +117,10 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 	},
 	gasReporter: {
 		currency: 'USD',
-		gasPrice: 35,
+		gasPrice: 70,
 		coinmarketcap: process.env.COINMARKETCAP_API_KEY,
 		maxMethodDiff: 10,
-		excludeContracts: ['ERC20Token.sol', 'OmniTokenV1.sol', 'OmniTokenV2.sol']
+		excludeContracts: ['OmniTokenV1.sol', 'OmniTokenV2.sol']
 	},
 	contractSizer: {
 		alphaSort: true,
@@ -130,8 +130,8 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 	etherscan: {
 		// Your API key for Etherscan
 		// Obtain one at https://etherscan.io/
-		// apiKey: process.env.ETHERSCAN_API_KEY
-		apiKey: process.env.BSCSCAN_API_KEY
+		apiKey: process.env.ETHERSCAN_API_KEY
+		// apiKey: process.env.BSCSCAN_API_KEY
 	},
 	spdxLicenseIdentifier: {
 		overwrite: true,

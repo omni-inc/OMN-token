@@ -32,6 +32,7 @@ const main = async () => {
 	console.log("Omni Token deployed to:", omnitoken.address);
 	// console.log("ERC20 Token deployed to:", erc20Token.address);
 	// Verify the balance of the Owner
+	console.log("Omni Token Owner Address:", await omnitoken.owner());
 	console.log("Balance of the Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "must be 638 million!!! in wei");
 	console.log("Total Supply: ", (await omnitoken.totalSupply()).toString(), "must be 638 million!!! in wei");
 	// Try to mint one additional Token
