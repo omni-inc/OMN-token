@@ -159,7 +159,7 @@ contract OmniTokenV4 is Initializable, Vesting{
 	 * @dev Override the Hook of Open Zeppelin Function Symbol for change the Tiker.
 	 */
 	function symbol() public view virtual override returns (string memory) {
-		return "OMNICOINV2";
+		return "OAI";
 	}
 
 
