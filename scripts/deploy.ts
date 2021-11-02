@@ -45,7 +45,7 @@ const main = async () => {
 		const receipt = await estimatetx.wait();
 		console.log("Receipt Error: ", receipt);
 		console.log("ChainId: ", (await estimatetx.chainId).toString());
-	} catch (error) {
+	} catch (error: any) {
 		console.log("Type Error: ", JSON.stringify(error.name));
 		console.log("Code Error: ", JSON.stringify(error.code));
 		console.log("Transaction Hash: ", JSON.stringify(error.transactionHash));

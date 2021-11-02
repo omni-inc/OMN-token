@@ -26,10 +26,12 @@ const main = async () => {
 	const OmniTokenV3 = await ethers.getContractFactory("OmniTokenV3");
 	const OmniTokenV4 = await ethers.getContractFactory("OmniTokenV4");
 	// const Erc20Token = await ethers.getContractFactory("ERC20Token");
-	// const omnitokenV1 = await upgrades.deployProxy(OmniTokenV1);
-	// console.log("First Address: ", omnitokenV1.address);
-	const omnitokenV4 = await upgrades.upgradeProxy('0xaBc6790673a60b8A7f588450f59D2d256b1aeF7F', OmniTokenV4);
+	// const omnitokenV3 = await upgrades.deployProxy(OmniTokenV3);
+	// console.log("First Address: ", omnitokenV3.address);
+	// console.log("Original Symbol: ", (await omnitokenV3.symbol()).toString());
+	const omnitokenV4 = await upgrades.upgradeProxy('0xdd5AA1A515D14a3aFf6968ece07661f787d21B19', OmniTokenV4);
 	console.log("Confirm Address: ", omnitokenV4.address);
+	console.log("New Symbol: ", (await omnitokenV4.symbol()).toString());
 }
 
 
