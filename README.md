@@ -1,4 +1,4 @@
-# OMNI Contracts V3
+# OMNI Contracts V4
 
 Before to Start
 
@@ -67,4 +67,4 @@ npx hardhat test
 
 ---
 
-# OMN-token v3
+# OMN-token v4
