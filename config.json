@@ -1,8 +1,8 @@
 {
-  "token": "0xaBc6790673a60b8A7f588450f59D2d256b1aeF7F",
+  "token": "0x9c8D2277AE4c434A6B5b5B0cb4561eCf4fFcd8Ab",
   "batch": 100,
   "gas_price_gwei": 20,
-  "airdrop_file": "",
-	"allocation": 3,
-	"dryrun": true
+  "airdrop_file": "seed.csv",
+	"allocation": 9,
+	"dryrun": false
 }

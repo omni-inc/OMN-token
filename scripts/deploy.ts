@@ -33,6 +33,7 @@ const main = async () => {
 	// console.log("ERC20 Token deployed to:", erc20Token.address);
 	// Verify the balance of the Owner
 	console.log("Balance of the Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "must be 638 million!!! in wei");
+	console.log("Address of the Owner: ", (await omnitoken.owner()).toString());
 	console.log("Total Supply: ", (await omnitoken.totalSupply()).toString(), "must be 638 million!!! in wei");
 	// Try to mint one additional Token
 	console.log("============= Try to Mint Any Additional Token (Expect Revert) =================");
@@ -44,13 +45,12 @@ const main = async () => {
 		};
 		const receipt = await estimatetx.wait();
 		console.log("Receipt Error: ", receipt);
-	} catch (error) {
+	} catch (error:any) {
 		console.log("Type Error: ", JSON.stringify(error.name));
 		console.log("Code Error: ", JSON.stringify(error.code));
 		console.log("Transaction Hash: ", JSON.stringify(error.transactionHash));
 		console.log(error.message);
 	}
-
 }
 
 // We recommend this pattern to be able to use async/await everywhere

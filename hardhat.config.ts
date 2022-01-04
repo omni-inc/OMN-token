@@ -15,27 +15,30 @@ import 'dotenv/config';
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
 task("accounts", "Prints the list of accounts", async (args, hre) => {
-  const accounts = await hre.ethers.getSigners();
+	const accounts = await hre.ethers.getSigners();
 
-  for (const account of accounts) {
-    console.log(account.address);
-  }
+	for (const account of accounts) {
+		console.log(account.address);
+	}
 });
 
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
 
+const priv1 = process.env.PRIVATE_KEY2;
+const priv2 = process.env.PRIVATE_KEY12;
+
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
- export default  {
+export default {
 	networks: {
 		mainnet: {
 			chainId: 1,
 			url: `https://mainnet.infura.io/v3/${process.env.INFURAKEY}`,
 			gasPrice: 65000000000,
 			accounts: {
-				mnemonic:process.env.MNEMONIC
+				mnemonic: process.env.MNEMONIC
 			}
 		},
 		ropsten: {
@@ -43,7 +46,7 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 			url: `https://ropsten.infura.io/v3/${process.env.INFURAKEY}`,
 			gasPrice: 65000000000,
 			accounts: {
-				mnemonic:process.env.MNEMONIC
+				mnemonic: process.env.MNEMONIC
 			}
 		},
 		rinkeby: {
@@ -51,26 +54,46 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 			url: `https://rinkeby.infura.io/v3/${process.env.INFURAKEY}`,
 			gasPrice: 65000000000,
 			accounts: {
-				mnemonic:process.env.MNEMONIC,
-				count:parseInt(`${process.env.ACCOUNTS}`)
+				mnemonic: process.env.MNEMONIC,
+				count: parseInt(`${process.env.ACCOUNTS}`)
 			}
 		},
 		bsc_mainnet: {
 			chainId: 56,
 			url: process.env.URL_BSC,
-			gasPrice: 20000000000,
-			accounts: {
-				mnemonic:process.env.MNEMONIC
-			}
+			gasPrice: 5000000000,
+			accounts: [priv1, priv2]
+			// accounts: {
+			// 	mnemonic: process.env.MNEMONIC
+			// }
 		},
 		bsc_testnet: {
 			chainId: 97,
 			url: process.env.URL_TESTNET_BSC,
 			gasPrice: 20000000000,
 			accounts: {
-				mnemonic:process.env.MNEMONIC,
-				count:parseInt(`${process.env.ACCOUNTS}`)
+				mnemonic: process.env.MNEMONIC,
+				count: parseInt(`${process.env.ACCOUNTS}`)
 			}
+		},
+		polygon: {
+			chainId: 137,
+			url: `https://polygon-mainnet.infura.io/v3/${process.env.INFURAKEY}`,
+			gasPrice: 65000000000,
+			accounts: {
+				mnemonic: process.env.MNEMONIC,
+				count: parseInt(`${process.env.ACCOUNTS}`)
+			},
+		},
+		mumbai: {
+			chainId: 80001,
+			url: `https://polygon-mumbai.infura.io/v3/${process.env.INFURAKEY}`,
+			gasPrice: 15000000000,
+			accounts: [priv1, priv2],
+			// accounts: {
+			// 	mnemonic: process.env.MNEMONIC,
+			// 	count: parseInt(`${process.env.ACCOUNTS}`)
+			// },
 		},
 		moonbase: {
 			// Need to go to Dicord channel and get DEV (coin in Moonbase Alphanet)
@@ -81,7 +104,7 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 			url: process.env.URL_MOONBEAM_TESTNET,
 			gasPrice: 50000000000,
 			accounts: {
-				mnemonic:process.env.MNEMONIC
+				mnemonic: process.env.MNEMONIC
 			}
 		},
 		localhost: {
@@ -94,8 +117,8 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 			blockGasLimit: 149000000,
 			chainId: 31337,
 			accounts: {
-				mnemonic:process.env.MNEMONIC,
-				count:parseInt(`${process.env.ACCOUNTS}`)
+				mnemonic: process.env.MNEMONIC,
+				count: parseInt(`${process.env.ACCOUNTS}`)
 			}
 		}
 	},
@@ -133,7 +156,9 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 		// Your API key for Etherscan
 		// Obtain one at https://etherscan.io/
 		// apiKey: process.env.ETHERSCAN_API_KEY
-		apiKey: process.env.BSCSCAN_API_KEY
+		// apiKey: process.env.BSCSCAN_API_KEY
+		apiKey: process.env.POLYGON_API_KEY
+
 	},
 	spdxLicenseIdentifier: {
 		overwrite: true,
