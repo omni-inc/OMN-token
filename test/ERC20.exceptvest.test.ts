@@ -49,6 +49,9 @@ describe("ERC20 Full Test except Vesting", async () => {
 				console.log("Name of The Token: ", (await omnitoken.decimals()), "=====> must be 18");
 				expect((await omnitoken.decimals())).to.be.equal(18);
 			});
+			it("1.4.- Getting th e Max Supply", async () => {
+				console.log("Max Supply: ", (await omnitoken.getMaxTotalSupply()).toString()," =====> must be maximum higher value in wei for uin256");
+			})
 		});
 	});
 
@@ -276,10 +279,10 @@ describe("ERC20 Full Test except Vesting", async () => {
 				const walletZeroAddress = '0x0000000000000000000000000000000000000000';
 				await omnitoken.increaseAllowance(await accounts[4].getAddress(), '8888889000000000000000000');
 				console.log("Verify Allowance Accounts[0] to Accounts[4]:", (await omnitoken.allowance(await accounts[0].getAddress(), await accounts[4].getAddress())).toString());
-				await expect((await omnitoken.allowance(await accounts[0].getAddress(), await accounts[4].getAddress())).toString()).to.be.equal('8888889000000000000000000');
+				expect((await omnitoken.allowance(await accounts[0].getAddress(), await accounts[4].getAddress())).toString()).to.be.equal('8888889000000000000000000');
 				await expect(omnitoken.burn('8888889000000000000000000')).to.emit(omnitoken, 'Transfer').withArgs(await accounts[0].getAddress(), walletZeroAddress,'8888889000000000000000000');
 				await expect(omnitoken.mint('8888889000000000000000000')).to.emit(omnitoken, 'Transfer').withArgs(walletZeroAddress, await accounts[0].getAddress(), '8888889000000000000000000');
-				await expect(omnitoken.mint('8888889000000000000000000')).to.be.revertedWith("ERC20: Can't Mint, it exceeds the maximum supply");
+				// await expect(omnitoken.mint('8888889000000000000000000')).to.be.revertedWith("ERC20: Can't Mint, it exceeds the maximum supply");
 				console.log("Balance After of Account Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "=====> must be 630000000000000000000000000");
 				expect(((await omnitoken.balanceOf(await accounts[0].getAddress())).toString())).to.be.equal('600000000000000000000000000');
 				console.log("Balance After of Receipt: ", (await omnitoken.balanceOf(await accounts[4].getAddress())).toString(), "=====> must be 8888889000000000000000000");
@@ -287,10 +290,10 @@ describe("ERC20 Full Test except Vesting", async () => {
 				// Accounts[8]
 				await omnitoken.increaseAllowance(await accounts[8].getAddress(), '30000000000000000000000000');
 				console.log("Verify Allowance Accounts[0] to Accounts[8]:", (await omnitoken.allowance(await accounts[0].getAddress(), await accounts[8].getAddress())).toString());
-				await expect((await omnitoken.allowance(await accounts[0].getAddress(), await accounts[8].getAddress())).toString()).to.be.equal('30000000000000000000000000');
+				expect((await omnitoken.allowance(await accounts[0].getAddress(), await accounts[8].getAddress())).toString()).to.be.equal('30000000000000000000000000');
 				await expect(omnitoken.burn('8888889000000000000000000')).to.emit(omnitoken, 'Transfer').withArgs(await accounts[0].getAddress(), walletZeroAddress,'8888889000000000000000000');
 				await expect(omnitoken.mint('8888889000000000000000000')).to.emit(omnitoken, 'Transfer').withArgs(walletZeroAddress, await accounts[0].getAddress(), '8888889000000000000000000');
-				await expect(omnitoken.mint('8888889000000000000000000')).to.be.revertedWith("ERC20: Can't Mint, it exceeds the maximum supply");
+				// await expect(omnitoken.mint('8888889000000000000000000')).to.be.revertedWith("ERC20: Can't Mint, it exceeds the maximum supply");
 				console.log("Balance After of Account Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "=====> must be 600000000000000000000000000");
 				expect(((await omnitoken.balanceOf(await accounts[0].getAddress())).toString())).to.be.equal('600000000000000000000000000');
 				console.log("Balance After of Receipt: ", (await omnitoken.balanceOf(await accounts[8].getAddress())).toString(), "=====> must be 30000000000000000000000000");
@@ -623,7 +626,7 @@ describe("ERC20 Full Test except Vesting", async () => {
 		describe("Testing the ERC20 Permit Method a Auxiliary Methods", async () => {
 
 			it('8.1.- initializes DOMAIN_SEPARATOR and PERMIT_TYPEHASH correctly', async () => {
-				assert.equal(await owner.getAddress(), '0xBa471a7D233abd8dEB52b4aEAa169d7E5fB03830');
+				assert.equal(await owner.getAddress(), '0x496709ABC83d7580D3ed1B9f64BA467a2b0e6cd5');
 
 				assert.equal(name, 'OMNI Coin');
 
@@ -754,266 +757,266 @@ describe("ERC20 Full Test except Vesting", async () => {
 	//   ** t1. Verify DOMAIN_SEPARATOR ERC20 Permit Methods */
 	//   ** t2. Verify ERC20 Permit Methods worked with thr right value and revert when is wrong */
 
-	it("9.- Testing Method ERC20 Permit for gas less transaction and Verify the Approval process and Event", async () => {
+	// it("9.- Testing Method ERC20 Permit for gas less transaction and Verify the Approval process and Event", async () => {
 
-		const OmniToken = await ethers.getContractFactory("OmniTokenV4");
-		const Erc20Token = await ethers.getContractFactory("ERC20Token");
-		const omnitoken = await upgrades.deployProxy(OmniToken);
-		const erc20Token = await upgrades.deployProxy(Erc20Token);
+	// 	const OmniToken = await ethers.getContractFactory("OmniTokenV4");
+	// 	const Erc20Token = await ethers.getContractFactory("ERC20Token");
+	// 	const omnitoken = await upgrades.deployProxy(OmniToken);
+	// 	const erc20Token = await upgrades.deployProxy(Erc20Token);
 
-		await omnitoken.deployed();
-		await erc20Token.deployed();
-		// verify the Address
-		console.log("OMNI Token deployed to:", omnitoken.address);
-		console.log("ERC20 Token deployed to:", erc20Token.address);
-		// Verify the balance of the Owner
-		console.log("Balance of the Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "must be 638 million!!! in wei");
-		expect((await omnitoken.balanceOf(await accounts[0].getAddress())).toString()).to.be.equal('638888889000000000000000000');
-		console.log("Total Supply: ", (await omnitoken.totalSupply()).toString(), "must be 638 million!!! in wei");
-		expect(((await omnitoken.totalSupply()).toString())).to.be.equal('638888889000000000000000000');
+	// 	await omnitoken.deployed();
+	// 	await erc20Token.deployed();
+	// 	// verify the Address
+	// 	console.log("OMNI Token deployed to:", omnitoken.address);
+	// 	console.log("ERC20 Token deployed to:", erc20Token.address);
+	// 	// Verify the balance of the Owner
+	// 	console.log("Balance of the Owner: ", (await omnitoken.balanceOf(await accounts[0].getAddress())).toString(), "must be 638 million!!! in wei");
+	// 	expect((await omnitoken.balanceOf(await accounts[0].getAddress())).toString()).to.be.equal('638888889000000000000000000');
+	// 	console.log("Total Supply: ", (await omnitoken.totalSupply()).toString(), "must be 638 million!!! in wei");
+	// 	expect(((await omnitoken.totalSupply()).toString())).to.be.equal('638888889000000000000000000');
 
-		// variables of ERC Permit Test
-		const PRIVATEKEY = `${process.env.PRIVATE_KEY}`
-		const ownerPrivateKey = Buffer.from(PRIVATEKEY, 'hex');
-		const chainId = 31337; // buidlerevm chain id
-		let defenseBlockDuration: number;
+	// 	// variables of ERC Permit Test
+	// 	const PRIVATEKEY = `${process.env.PRIVATE_KEY}`
+	// 	const ownerPrivateKey = Buffer.from(PRIVATEKEY, 'hex');
+	// 	const chainId = 31337; // buidlerevm chain id
+	// 	let defenseBlockDuration: number;
 
-		const owner = accounts[0];
-		const user = accounts[1];
-		const tokenAmount = BigNumber.from(10);
-		const name:string = (await omnitoken.name()).toString();
+	// 	const owner = accounts[0];
+	// 	const user = accounts[1];
+	// 	const tokenAmount = BigNumber.from(10);
+	// 	const name:string = (await omnitoken.name()).toString();
 
-		describe('9.- Test From AntiBots Defense', async () => {
+	// 	describe('9.- Test From AntiBots Defense', async () => {
 
-			beforeEach(async () => {
-				// initialize
-				defenseBlockDuration = 20
+	// 		beforeEach(async () => {
+	// 			// initialize
+	// 			defenseBlockDuration = 20
 
-				// give some tokens to nonOwner for tests
-				omnitoken.transfer(await user.getAddress(), tokenAmount.mul(2));
-				omnitoken.transfer(await accounts[10].getAddress(), tokenAmount.mul(2));
-				omnitoken.transfer(await accounts[11].getAddress(), tokenAmount.mul(2));
-				omnitoken.transfer(await accounts[12].getAddress(), tokenAmount.mul(2));
-			});
+	// 			// give some tokens to nonOwner for tests
+	// 			omnitoken.transfer(await user.getAddress(), tokenAmount.mul(2));
+	// 			omnitoken.transfer(await accounts[10].getAddress(), tokenAmount.mul(2));
+	// 			omnitoken.transfer(await accounts[11].getAddress(), tokenAmount.mul(2));
+	// 			omnitoken.transfer(await accounts[12].getAddress(), tokenAmount.mul(2));
+	// 		});
 
-			it("9.1.- Should run disableTransfers only by owner", async () => {
-				await expect(
-					omnitoken.connect(user).disableTransfers(defenseBlockDuration)
-				).to.be.revertedWith("caller is not the owner");
-			});
+	// 		it("9.1.- Should run disableTransfers only by owner", async () => {
+	// 			await expect(
+	// 				omnitoken.connect(user).disableTransfers(defenseBlockDuration)
+	// 			).to.be.revertedWith("caller is not the owner");
+	// 		});
 
-			it("9.2.- Anti-bot defense should be off after deploy", async () => {
-				const isTransferDisabled = await omnitoken.getIsTransferDisabled();
-				expect(isTransferDisabled).to.be.equal(false);
-			});
+	// 		it("9.2.- Anti-bot defense should be off after deploy", async () => {
+	// 			const isTransferDisabled = await omnitoken.getIsTransferDisabled();
+	// 			expect(isTransferDisabled).to.be.equal(false);
+	// 		});
 
-			it("9.3.- Should burn when transfer for regular wallets if defense is on", async () => {
-				const supply: BigNumber = await omnitoken.totalSupply();
+	// 		it("9.3.- Should burn when transfer for regular wallets if defense is on", async () => {
+	// 			const supply: BigNumber = await omnitoken.totalSupply();
 
-				await omnitoken.disableTransfers(defenseBlockDuration);
+	// 			await omnitoken.disableTransfers(defenseBlockDuration);
 
-				// owner should transfer
-				expect(await omnitoken.getIsTransferDisabled()).to.be.equal(true);
+	// 			// owner should transfer
+	// 			expect(await omnitoken.getIsTransferDisabled()).to.be.equal(true);
 
-				const senderBalance: BigNumber = await omnitoken.balanceOf(await user.getAddress());
-				const receiverBalance: BigNumber = await omnitoken.balanceOf(await owner.getAddress());
+	// 			const senderBalance: BigNumber = await omnitoken.balanceOf(await user.getAddress());
+	// 			const receiverBalance: BigNumber = await omnitoken.balanceOf(await owner.getAddress());
 
-				// try to send tokens
-				await expect(omnitoken.connect(user).transfer(await owner.getAddress(), tokenAmount))
-					.to.emit(omnitoken, "TransferBurned")
-					.withArgs(await user.getAddress(), tokenAmount);
+	// 			// try to send tokens
+	// 			await expect(omnitoken.connect(user).transfer(await owner.getAddress(), tokenAmount))
+	// 				.to.emit(omnitoken, "TransferBurned")
+	// 				.withArgs(await user.getAddress(), tokenAmount);
 
-				// balance of sender should decreased
-				const newSenderBalance: BigNumber = await omnitoken.balanceOf(
-					await user.getAddress()
-				);
-				expect(newSenderBalance).to.equal(senderBalance.sub(tokenAmount));
+	// 			// balance of sender should decreased
+	// 			const newSenderBalance: BigNumber = await omnitoken.balanceOf(
+	// 				await user.getAddress()
+	// 			);
+	// 			expect(newSenderBalance).to.equal(senderBalance.sub(tokenAmount));
 
-				// balance of receiver should be unchanged
-				const newReceiverBalance: BigNumber = await omnitoken.balanceOf(
-					await owner.getAddress()
-				);
-				expect(newReceiverBalance).to.equal(receiverBalance);
+	// 			// balance of receiver should be unchanged
+	// 			const newReceiverBalance: BigNumber = await omnitoken.balanceOf(
+	// 				await owner.getAddress()
+	// 			);
+	// 			expect(newReceiverBalance).to.equal(receiverBalance);
 
-				// total supply should decreased after burn
-				const newSupply: BigNumber = await omnitoken.totalSupply();
-				expect(newSupply).to.equal(supply.sub(tokenAmount));
-			});
+	// 			// total supply should decreased after burn
+	// 			const newSupply: BigNumber = await omnitoken.totalSupply();
+	// 			expect(newSupply).to.equal(supply.sub(tokenAmount));
+	// 		});
 
-			it("9.4.- Should revert when transfer for frozen wallets if defense is on", async () => {
-				const frozenAMount = 100;
-				await omnitoken.addAllocations([await user.getAddress()], [frozenAMount], "0");
+	// 		it("9.4.- Should revert when transfer for frozen wallets if defense is on", async () => {
+	// 			const frozenAMount = 100;
+	// 			await omnitoken.addAllocations([await user.getAddress()], [frozenAMount], "0");
 
-				const canTransfer = await omnitoken.canTransfer(
-					await user.getAddress(),
-					BigNumber.from(frozenAMount)
-				);
-				expect(canTransfer).to.be.equal(false);
+	// 			const canTransfer = await omnitoken.canTransfer(
+	// 				await user.getAddress(),
+	// 				BigNumber.from(frozenAMount)
+	// 			);
+	// 			expect(canTransfer).to.be.equal(false);
 
-				const supply: BigNumber = await omnitoken.totalSupply();
+	// 			const supply: BigNumber = await omnitoken.totalSupply();
 
-				await omnitoken.disableTransfers(defenseBlockDuration);
+	// 			await omnitoken.disableTransfers(defenseBlockDuration);
 
-				// transfers should be disabled
-				expect(await omnitoken.getIsTransferDisabled()).to.be.equal(true);
+	// 			// transfers should be disabled
+	// 			expect(await omnitoken.getIsTransferDisabled()).to.be.equal(true);
 
-				const senderBalance: BigNumber = await omnitoken.balanceOf(await user.getAddress());
-				const receiverBalance: BigNumber = await omnitoken.balanceOf(await owner.getAddress());
+	// 			const senderBalance: BigNumber = await omnitoken.balanceOf(await user.getAddress());
+	// 			const receiverBalance: BigNumber = await omnitoken.balanceOf(await owner.getAddress());
 
-				// try to send tokens
-				await expect(
-					omnitoken.connect(user).transfer(await owner.getAddress(), senderBalance)
-				).to.be.revertedWith("Wait for vesting day!");
+	// 			// try to send tokens
+	// 			await expect(
+	// 				omnitoken.connect(user).transfer(await owner.getAddress(), senderBalance)
+	// 			).to.be.revertedWith("Wait for vesting day!");
 
-				// balance of sender shouldn't change
-				const newSenderBalance: BigNumber = await omnitoken.balanceOf(
-					await user.getAddress()
-				);
-				expect(newSenderBalance).to.equal(senderBalance);
+	// 			// balance of sender shouldn't change
+	// 			const newSenderBalance: BigNumber = await omnitoken.balanceOf(
+	// 				await user.getAddress()
+	// 			);
+	// 			expect(newSenderBalance).to.equal(senderBalance);
 
-				// balance of receiver should be unchanged
-				const newReceiverBalance: BigNumber = await omnitoken.balanceOf(
-					await owner.getAddress()
-				);
-				expect(newReceiverBalance).to.equal(receiverBalance);
+	// 			// balance of receiver should be unchanged
+	// 			const newReceiverBalance: BigNumber = await omnitoken.balanceOf(
+	// 				await owner.getAddress()
+	// 			);
+	// 			expect(newReceiverBalance).to.equal(receiverBalance);
 
-				// total supply shouldn't change
-				const newSupply: BigNumber = await omnitoken.totalSupply();
-				expect(newSupply).to.equal(supply);
-			});
+	// 			// total supply shouldn't change
+	// 			const newSupply: BigNumber = await omnitoken.totalSupply();
+	// 			expect(newSupply).to.equal(supply);
+	// 		});
 
-			it("9.5.- Should transfer with the defense is on, when the addresses are whitelisted ", async () => {
-				await omnitoken.disableTransfers(defenseBlockDuration);
+	// 		it("9.5.- Should transfer with the defense is on, when the addresses are whitelisted ", async () => {
+	// 			await omnitoken.disableTransfers(defenseBlockDuration);
 
-				// Verify the AntiBots Defense it's on
-				expect(await omnitoken.getIsTransferDisabled()).to.be.equal(true);
- 	 			console.log("Defense AntiBots ON");
-				console.log("User Balance Before Burn:", (await omnitoken.balanceOf(await user.getAddress())).toString());
-				expect((await omnitoken.balanceOf(await user.getAddress())).toString()).to.be.equal('190');
+	// 			// Verify the AntiBots Defense it's on
+	// 			expect(await omnitoken.getIsTransferDisabled()).to.be.equal(true);
+ 	//  			console.log("Defense AntiBots ON");
+	// 			console.log("User Balance Before Burn:", (await omnitoken.balanceOf(await user.getAddress())).toString());
+	// 			expect((await omnitoken.balanceOf(await user.getAddress())).toString()).to.be.equal('190');
 
-				// Burn the transfer because the address is not in the whitelisted
-				await expect(
-					omnitoken.connect(user).transfer(await owner.getAddress(), tokenAmount)
-				).to.emit(omnitoken, "TransferBurned");
-				console.log("User Balance After Burn:", (await omnitoken.balanceOf(await user.getAddress())).toString());
-				expect((await omnitoken.balanceOf(await user.getAddress())).toString()).to.be.equal('180');
+	// 			// Burn the transfer because the address is not in the whitelisted
+	// 			await expect(
+	// 				omnitoken.connect(user).transfer(await owner.getAddress(), tokenAmount)
+	// 			).to.emit(omnitoken, "TransferBurned");
+	// 			console.log("User Balance After Burn:", (await omnitoken.balanceOf(await user.getAddress())).toString());
+	// 			expect((await omnitoken.balanceOf(await user.getAddress())).toString()).to.be.equal('180');
 
-				// Add the user wallet in the whitelisted wallets array
-				await expect(
-					omnitoken.addWhiteListed(await user.getAddress())
-				).to.emit(omnitoken, "InWhiteListWallet");
-				console.log("User Address Add whitelisted");
+	// 			// Add the user wallet in the whitelisted wallets array
+	// 			await expect(
+	// 				omnitoken.addWhiteListed(await user.getAddress())
+	// 			).to.emit(omnitoken, "InWhiteListWallet");
+	// 			console.log("User Address Add whitelisted");
 
-				// Add multiples Address in the Whitelisted Array
-				await expect(omnitoken.addWhiteListed(await accounts[10].getAddress())).to.emit(omnitoken, "InWhiteListWallet");
-				await expect(omnitoken.addWhiteListed(await accounts[11].getAddress())).to.emit(omnitoken, "InWhiteListWallet");
-				await expect(omnitoken.addWhiteListed(await accounts[12].getAddress())).to.emit(omnitoken, "InWhiteListWallet");
-				console.log("Add multiples whitelisted");
+	// 			// Add multiples Address in the Whitelisted Array
+	// 			await expect(omnitoken.addWhiteListed(await accounts[10].getAddress())).to.emit(omnitoken, "InWhiteListWallet");
+	// 			await expect(omnitoken.addWhiteListed(await accounts[11].getAddress())).to.emit(omnitoken, "InWhiteListWallet");
+	// 			await expect(omnitoken.addWhiteListed(await accounts[12].getAddress())).to.emit(omnitoken, "InWhiteListWallet");
+	// 			console.log("Add multiples whitelisted");
 
-				// Verify the user address are in the whitelisted wallets array
-				expect(await omnitoken.isWhiteListed(await user.getAddress())).to.be.equal(true);
-				let whitelisted = await omnitoken.getWhiteListWallets();
-				console.log("List of Wallets Whitelisted: ", whitelisted);
-				console.log("User Balance After Whitelisted, Before Transfer:", (await omnitoken.balanceOf(await user.getAddress())).toString());
-				expect((await omnitoken.balanceOf(await user.getAddress())).toString()).to.be.equal('180');
+	// 			// Verify the user address are in the whitelisted wallets array
+	// 			expect(await omnitoken.isWhiteListed(await user.getAddress())).to.be.equal(true);
+	// 			let whitelisted = await omnitoken.getWhiteListWallets();
+	// 			console.log("List of Wallets Whitelisted: ", whitelisted);
+	// 			console.log("User Balance After Whitelisted, Before Transfer:", (await omnitoken.balanceOf(await user.getAddress())).toString());
+	// 			expect((await omnitoken.balanceOf(await user.getAddress())).toString()).to.be.equal('180');
 
-				// Revert if you add again
-				await expect(
-					omnitoken.addWhiteListed(await user.getAddress())
-				).to.be.revertedWith("ERC20 OMN: wallet is already");
+	// 			// Revert if you add again
+	// 			await expect(
+	// 				omnitoken.addWhiteListed(await user.getAddress())
+	// 			).to.be.revertedWith("ERC20 OMN: wallet is already");
 
-				//execute a transfer
-				await expect(
-					omnitoken.connect(user).transfer(await owner.getAddress(), tokenAmount)
-				).to.emit(omnitoken, "Transfer");
-				console.log("Owner Balance After first Tx:", (await omnitoken.balanceOf(await owner.getAddress())).toString());
-				await expect(
-					omnitoken.connect(accounts[10]).transfer(await owner.getAddress(), tokenAmount)
-				).to.emit(omnitoken, "Transfer");
-				console.log("Owner Balance After second Tx:", (await omnitoken.balanceOf(await owner.getAddress())).toString());
-				await expect(
-					omnitoken.connect(accounts[11]).transfer(await owner.getAddress(), tokenAmount)
-				).to.emit(omnitoken, "Transfer");
-				console.log("Owner Balance After third Tx:", (await omnitoken.balanceOf(await owner.getAddress())).toString());
-				await expect(
-					omnitoken.connect(accounts[12]).transfer(await owner.getAddress(), tokenAmount)
-				).to.emit(omnitoken, "Transfer");
-				console.log("Owner Balance After four Tx:", (await omnitoken.balanceOf(await owner.getAddress())).toString());
+	// 			//execute a transfer
+	// 			await expect(
+	// 				omnitoken.connect(user).transfer(await owner.getAddress(), tokenAmount)
+	// 			).to.emit(omnitoken, "Transfer");
+	// 			console.log("Owner Balance After first Tx:", (await omnitoken.balanceOf(await owner.getAddress())).toString());
+	// 			await expect(
+	// 				omnitoken.connect(accounts[10]).transfer(await owner.getAddress(), tokenAmount)
+	// 			).to.emit(omnitoken, "Transfer");
+	// 			console.log("Owner Balance After second Tx:", (await omnitoken.balanceOf(await owner.getAddress())).toString());
+	// 			await expect(
+	// 				omnitoken.connect(accounts[11]).transfer(await owner.getAddress(), tokenAmount)
+	// 			).to.emit(omnitoken, "Transfer");
+	// 			console.log("Owner Balance After third Tx:", (await omnitoken.balanceOf(await owner.getAddress())).toString());
+	// 			await expect(
+	// 				omnitoken.connect(accounts[12]).transfer(await owner.getAddress(), tokenAmount)
+	// 			).to.emit(omnitoken, "Transfer");
+	// 			console.log("Owner Balance After four Tx:", (await omnitoken.balanceOf(await owner.getAddress())).toString());
 
-				// Drop the user wallet of the whitelisted wallets array
-				await expect(
-					omnitoken.dropWhiteListed(await user.getAddress())
-				).to.emit(omnitoken, "OutWhiteListWallet");
-				console.log("User Address Drop whitelisted");
+	// 			// Drop the user wallet of the whitelisted wallets array
+	// 			await expect(
+	// 				omnitoken.dropWhiteListed(await user.getAddress())
+	// 			).to.emit(omnitoken, "OutWhiteListWallet");
+	// 			console.log("User Address Drop whitelisted");
 
-				// Add multiples Address in the Whitelisted Array
-				await expect(omnitoken.dropWhiteListed(await accounts[10].getAddress())).to.emit(omnitoken, "OutWhiteListWallet");
-				await expect(omnitoken.dropWhiteListed(await accounts[11].getAddress())).to.emit(omnitoken, "OutWhiteListWallet");
-				await expect(omnitoken.dropWhiteListed(await accounts[12].getAddress())).to.emit(omnitoken, "OutWhiteListWallet");
-				console.log("Drop multiples whitelisted");
+	// 			// Add multiples Address in the Whitelisted Array
+	// 			await expect(omnitoken.dropWhiteListed(await accounts[10].getAddress())).to.emit(omnitoken, "OutWhiteListWallet");
+	// 			await expect(omnitoken.dropWhiteListed(await accounts[11].getAddress())).to.emit(omnitoken, "OutWhiteListWallet");
+	// 			await expect(omnitoken.dropWhiteListed(await accounts[12].getAddress())).to.emit(omnitoken, "OutWhiteListWallet");
+	// 			console.log("Drop multiples whitelisted");
 
-				// Verify the user address are in the whitelisted wallets array
-				expect(await omnitoken.isWhiteListed(await user.getAddress())).to.be.equal(false);
-				whitelisted = await omnitoken.getWhiteListWallets();
-				console.log("List of Wallets Whitelisted: ", whitelisted);
-				console.log("User Balance After Drop Whitelisted, Before Burn:", (await omnitoken.balanceOf(await user.getAddress())).toString());
-				expect((await omnitoken.balanceOf(await user.getAddress())).toString()).to.be.equal('170');
+	// 			// Verify the user address are in the whitelisted wallets array
+	// 			expect(await omnitoken.isWhiteListed(await user.getAddress())).to.be.equal(false);
+	// 			whitelisted = await omnitoken.getWhiteListWallets();
+	// 			console.log("List of Wallets Whitelisted: ", whitelisted);
+	// 			console.log("User Balance After Drop Whitelisted, Before Burn:", (await omnitoken.balanceOf(await user.getAddress())).toString());
+	// 			expect((await omnitoken.balanceOf(await user.getAddress())).toString()).to.be.equal('170');
 
-				// Revert if you drop again
-				await expect(
-					omnitoken.dropWhiteListed(await user.getAddress())
-				).to.be.revertedWith("ERC20 OMN: Wallet don't exist");
+	// 			// Revert if you drop again
+	// 			await expect(
+	// 				omnitoken.dropWhiteListed(await user.getAddress())
+	// 			).to.be.revertedWith("ERC20 OMN: Wallet don't exist");
 
-				// Verify the AntiBots Defense still on
-				expect(await omnitoken.getIsTransferDisabled()).to.be.equal(true);
+	// 			// Verify the AntiBots Defense still on
+	// 			expect(await omnitoken.getIsTransferDisabled()).to.be.equal(true);
 
-				// Burn the transfer because the address is not in the whitelisted
-				await expect(
-					omnitoken.connect(user).transfer(await owner.getAddress(), tokenAmount)
-				).to.emit(omnitoken, "TransferBurned");
-				console.log("User Balance After Second Burn:", (await omnitoken.balanceOf(await user.getAddress())).toString());
-				expect((await omnitoken.balanceOf(await user.getAddress())).toString()).to.be.equal('160');
+	// 			// Burn the transfer because the address is not in the whitelisted
+	// 			await expect(
+	// 				omnitoken.connect(user).transfer(await owner.getAddress(), tokenAmount)
+	// 			).to.emit(omnitoken, "TransferBurned");
+	// 			console.log("User Balance After Second Burn:", (await omnitoken.balanceOf(await user.getAddress())).toString());
+	// 			expect((await omnitoken.balanceOf(await user.getAddress())).toString()).to.be.equal('160');
 
-			});
+	// 		});
 
-			it("9.6.- Should transfer after defense is over", async () => {
-				await omnitoken.disableTransfers(defenseBlockDuration);
+	// 		it("9.6.- Should transfer after defense is over", async () => {
+	// 			await omnitoken.disableTransfers(defenseBlockDuration);
 
-				expect(await omnitoken.getIsTransferDisabled()).to.be.equal(true);
+	// 			expect(await omnitoken.getIsTransferDisabled()).to.be.equal(true);
 
-				// wait until defense is over
-				await skipBlocks(defenseBlockDuration);
+	// 			// wait until defense is over
+	// 			await skipBlocks(defenseBlockDuration);
 
-				expect(await omnitoken.getIsTransferDisabled()).to.be.equal(false);
+	// 			expect(await omnitoken.getIsTransferDisabled()).to.be.equal(false);
 
-				await expect(
-					omnitoken.connect(user).transfer(await owner.getAddress(), tokenAmount)
-				).to.not.emit(omnitoken, "TransferBurned");
-			});
+	// 			await expect(
+	// 				omnitoken.connect(user).transfer(await owner.getAddress(), tokenAmount)
+	// 			).to.not.emit(omnitoken, "TransferBurned");
+	// 		});
 
-			it("9.7.- Should disable defense calling disableBurnBeforeBlockNumber method", async () => {
-				await omnitoken.disableBurnBeforeBlockNumber();
+	// 		it("9.7.- Should disable defense calling disableBurnBeforeBlockNumber method", async () => {
+	// 			await omnitoken.disableBurnBeforeBlockNumber();
 
-				const burnBeforeBlockNumber = await omnitoken.getBurnBeforeBlockNumber();
-				expect(burnBeforeBlockNumber).to.be.equal(0);
+	// 			const burnBeforeBlockNumber = await omnitoken.getBurnBeforeBlockNumber();
+	// 			expect(burnBeforeBlockNumber).to.be.equal(0);
 
-				const burnBeforeBlockNumberDisabled =
-					await omnitoken.getBurnBeforeBlockNumberDisabled();
-				expect(burnBeforeBlockNumberDisabled).to.be.equal(true);
+	// 			const burnBeforeBlockNumberDisabled =
+	// 				await omnitoken.getBurnBeforeBlockNumberDisabled();
+	// 			expect(burnBeforeBlockNumberDisabled).to.be.equal(true);
 
-				await expect(
-					omnitoken.disableTransfers(defenseBlockDuration)
-				).to.be.revertedWith("Bot defense is disabled");
-			});
+	// 			await expect(
+	// 				omnitoken.disableTransfers(defenseBlockDuration)
+	// 			).to.be.revertedWith("Bot defense is disabled");
+	// 		});
 
-			it("9.8.- Should run disableBurnBeforeBlockNumber only by owner", async () => {
-				await expect(
-					omnitoken.connect(user).disableBurnBeforeBlockNumber()
-				).to.be.revertedWith("caller is not the owner");
-			});
+	// 		it("9.8.- Should run disableBurnBeforeBlockNumber only by owner", async () => {
+	// 			await expect(
+	// 				omnitoken.connect(user).disableBurnBeforeBlockNumber()
+	// 			).to.be.revertedWith("caller is not the owner");
+	// 		});
 
-		})
+	// 	})
 
-	});
+	// });
 
 });

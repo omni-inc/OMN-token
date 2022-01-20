@@ -12,7 +12,7 @@ import "./Antibots.sol";
  * @title Circulating Supply Methods
  * @dev Allows update the wallets of OMNI Foundation by Owner
  */
-contract CirculatingSupply is OwnableUpgradeable, Antibots {
+contract CirculatingSupply is OwnableUpgradeable, Blacklistable {
 	// Array of address
     address[] internal omni_wallets;
 

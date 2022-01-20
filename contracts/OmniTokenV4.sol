@@ -25,7 +25,7 @@ contract OmniTokenV4 is Initializable, Vesting{
 		__ERC20Permit_init('OMNI Coin');
 
 		// Mint Total Supply
-		mint(getMaxTotalSupply());
+		mint(_maxTotalSupply);
 		// Begininng Deploy of Allocation in the ERC20
 		// Allocation #1 / VestingType # 0, Early Backers Total (6.94956521970783)% and Start with 31 days Locked the Token
 		vestingTypes.push(VestingType(1930501930501930, 0, 31 days, 0, 0,  true, true)); // 31 Days Locked, 0.193050193050193 Percent daily for 518 days
@@ -61,7 +61,7 @@ contract OmniTokenV4 is Initializable, Vesting{
      * See {ERC20-_burn}.
      */
 	function getMaxTotalSupply() public pure returns (uint256) {
-		return _maxTotalSupply;
+		return type(uint256).max;
 	}
 
 	/**
@@ -103,9 +103,8 @@ contract OmniTokenV4 is Initializable, Vesting{
      * @dev Circulating Supply Method for Calculated based on Wallets of OMNI Foundation
      */
 	function circulatingSupply() public view returns (uint256 result) {
-		uint256 index = omni_wallets.length;
 		result = totalSupply().sub(balanceOf(owner()));
-		for (uint256 i=0; i < index ; i++ ) {
+		for (uint256 i=0; i < omni_wallets.length ; i++ ) {
 			if ((omni_wallets[i] != address(0)) && (result != 0)) {
 				result -= balanceOf(omni_wallets[i]);
 			}
@@ -178,24 +177,6 @@ contract OmniTokenV4 is Initializable, Vesting{
 		}
         require(canTransfer(sender, amount), "ERC20 OMN: Wait for vesting day!");
         super._beforeTokenTransfer(sender, recipient, amount);
-    }
-
-	/**
-     * @dev Override the Standard Transfer Method of Open Zeppelin for checking before if Transfer status is Enabled or Disable.
-	 * @param sender Addres of Sender of the token
-	 * @param recipient Address of Receptor of the token
-     * @param amount Amount token to transfer/transferFrom/mint/burn
-     * See {https://github.com/ShieldFinanceHQ/contracts/blob/master/contracts/ShieldToken.sol}.
-     */
-	function _transfer(address sender, address recipient, uint256 amount) internal override {
-        if (isTransferDisabled()) {
-            // anti-sniping bot defense is on
-            // burn tokens instead of transferring them >:]
-            super._burn(sender, amount);
-            emit TransferBurned(sender, amount);
-        } else {
-            super._transfer(sender, recipient, amount);
-        }
     }
 
 	/**
